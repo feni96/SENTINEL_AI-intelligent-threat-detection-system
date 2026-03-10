@@ -1,0 +1,342 @@
+/* Reports.css */
+
+.page-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Report Controls Card */
+.report-controls.card {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.filter-group select,
+.filter-group input[type="date"] {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: white;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.filter-group.actions {
+  justify-content: flex-end;
+  display: flex;
+  align-items: center;
+}
+
+/* Report Preview */
+.report-preview {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.report-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+}
+
+.report-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.report-metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-light);
+}
+
+.metadata-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metadata-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.metadata-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 0.25rem;
+}
+
+/* Report Sections */
+.report-section {
+  margin-bottom: 2.5rem;
+}
+
+.report-section h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--accent-light);
+  padding-bottom: 0.5rem;
+}
+
+/* Threat Summary */
+.summary-stats {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.stat-big {
+  text-align: center;
+  background: var(--accent-gradient);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  min-width: 150px;
+}
+
+.stat-big .stat-label {
+  color: white;
+  opacity: 0.9;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.stat-big .stat-number {
+  display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white; /* changed from light gray to white for better contrast */
+  line-height: 1.2;
+}
+
+.severity-breakdown {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.severity-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  min-width: 80px;
+}
+
+.severity-item.critical {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.severity-item.high {
+  background: #fed7aa;
+  color: #b45309;
+}
+.severity-item.medium {
+  background: #fef9c3;
+  color: #a16207;
+}
+.severity-item.low {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.severity-name {
+  font-weight: 600;
+}
+.severity-count {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.top-ips,
+.repeated-sources {
+  margin-top: 1.5rem;
+}
+
+.top-ips h4,
+.repeated-sources h4 {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.top-ips ul {
+  list-style: none;
+  padding: 0;
+  max-width: 400px;
+}
+
+.top-ips li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--border-light);
+  color: var(--text-primary); /* added – makes the IP text visible */
+}
+
+.ip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ip-tag {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 0.25rem 0.75rem;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.chart-card {
+  background: #f8fafc;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-light);
+}
+
+.chart-card h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* System Health */
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.health-item {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+
+.health-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.health-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Recommendations */
+.recommendations-list {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendations-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #445361;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-left: 4px solid var(--accent);
+  color: white; /* added – makes the recommendation text visible on dark background */
+}
+
+.recommendations-list i {
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+  .filter-group.actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .report-metadata {
+    grid-template-columns: 1fr;
+  }
+  .summary-stats {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stat-big {
+    width: 100%;
+  }
+  .severity-breakdown {
+    justify-content: space-around;
+  }
+}
