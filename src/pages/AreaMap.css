@@ -1,5 +1,77 @@
 /* AreaMap.css */
 
+/* Universal Dark Mode Styles */
+html.dark .map-description {
+  color: var(--text-secondary);
+}
+
+html.dark .map-container {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .zone-tile {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .zone-tile:hover {
+  background: var(--bg-quaternary);
+  border-color: var(--accent);
+}
+
+html.dark .zone-name {
+  color: var(--text-primary);
+}
+
+html.dark .zone-status {
+  color: var(--text-secondary);
+}
+
+html.dark .zone-details {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .zone-details h3 {
+  color: var(--text-primary);
+}
+
+html.dark .zone-details p {
+  color: var(--text-secondary);
+}
+
+html.dark .flow-explanation {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .flow-explanation h4 {
+  color: var(--text-primary);
+}
+
+html.dark .flow-explanation ol li {
+  color: var(--text-secondary);
+}
+
+html.dark .data-source-note {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .data-source-note p {
+  color: var(--text-primary);
+}
+
+html.dark .data-source-note strong {
+  color: var(--text-primary);
+}
+
 .map-description {
   color: var(--text-secondary);
   margin-bottom: 1.5rem;
@@ -7,7 +79,7 @@
 
 /* Map Container */
 .map-container {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
   border: 1px solid var(--border-light);
@@ -23,7 +95,7 @@
 }
 
 .zone-tile {
-  background: #f8fafc;
+  background: #dbeafe; /* Blue background */
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid var(--border-light);
@@ -31,6 +103,35 @@
   cursor: pointer;
   transition: var(--transition);
   overflow: hidden;
+}
+
+/* Specific zone colors */
+.zone-tile[data-zone="zone1"] {
+  background: #394ff0; /* Data Center - Light blue */
+}
+
+.zone-tile[data-zone="zone2"] {
+  background: #394ff0; /* Admin Office - Orange */
+}
+
+.zone-tile[data-zone="zone3"] {
+  background: #394ff0; /* Library - Purple */
+}
+
+.zone-tile[data-zone="zone4"] {
+  background:#394ff0; /* Computer Labs - Yellow */
+}
+
+.zone-tile[data-zone="zone5"] {
+  background: #394ff0; /* Dormitory Network - Red */
+}
+
+.zone-tile[data-zone="zone6"] {
+  background: #394ff0; /* Staff Network - Teal */
+}
+
+.zone-tile[data-zone="zone7"] {
+  background: #394ff0; /* Student WiFi - Indigo */
 }
 
 .zone-tile:hover {
@@ -143,7 +244,7 @@
 
 /* Zone Details Panel */
 .zone-details-panel {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
   border: 1px solid var(--border-light);

@@ -1,369 +1,1236 @@
 /* Threats.css – Compact Version */
 
-/* Filters Bar */
-.filters-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  background: white;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+
+
+/* Dark Mode Text Colors */
+
+html.dark .filters-bar {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
 }
+
+
+
+html.dark .threats-table th,
+
+html.dark .threats-table td {
+
+  color: var(--text-primary);
+
+  border-color: var(--border-light);
+
+}
+
+
+
+html.dark .threats-table thead th {
+
+  background-color: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+}
+
+
+
+html.dark .threat-card {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-light);
+
+}
+
+
+
+html.dark .threat-details {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-light);
+
+}
+
+
+
+/* Filters Bar */
+
+.filters-bar {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  margin-bottom: 1.5rem;
+
+  background: white;
+
+  padding: 0.75rem 1rem;
+
+  border-radius: 0.75rem;
+
+  border: 1px solid var(--border-light);
+
+  box-shadow: var(--shadow-sm);
+
+}
+
+
+
+html.dark .filters-bar {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
+
+html.dark .filters-bar {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
 
 .filter-group {
+
   display: flex;
+
   align-items: center;
+
   gap: 0.25rem;
+
 }
+
+
 
 .filter-group label {
+
   font-weight: 500;
+
   color: var(--text-secondary);
+
   font-size: 0.8rem;
+
   white-space: nowrap;
+
 }
+
+
 
 .filter-group select {
+
   padding: 0.25rem 1.5rem 0.25rem 0.75rem;
+
   border-radius: 20px;
+
   border: 1px solid var(--border-light);
+
   background: white;
+
   color: var(--text-primary);
+
   font-size: 0.8rem;
+
   cursor: pointer;
+
   appearance: none;
+
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
   background-repeat: no-repeat;
+
   background-position: right 0.4rem center;
+
 }
+
+
+
+html.dark .filter-group select {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
+
+html.dark .filter-group select {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
 
 .filter-group select:focus {
+
   outline: none;
+
   border-color: var(--accent);
+
 }
 
-/* Threats main layout */
-.threats-main {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
 
-.threats-table-section {
-  flex: 2;
-  transition: flex 0.3s ease;
-  min-width: 0;
-}
 
-.threats-table-section.with-details {
-  flex: 1.5;
-}
+/* Action Buttons - for threat table */
 
-/* Table */
-.threats-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-}
+.btn-icon {
 
-.threats-table th {
-  white-space: nowrap;
-  text-align: left;
-  padding: 0.6rem 0.5rem;
-  color: var(--text-secondary);
-  font-weight: 600;
-  border-bottom: 2px solid var(--border-light);
-}
+  background: var(--accent);
 
-.threats-table td {
-  padding: 0.6rem 0.5rem;
-  border-bottom: 1px solid var(--border-light);
+  border: none;
+
   color: var(--text-primary);
-  vertical-align: middle;
-}
 
-.threats-table tbody tr:hover {
-  background: #f1f5f9;
+  padding: 0.4rem;
+
+  border-radius: 0.4rem;
+
   cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 28px;
+
+  height: 28px;
+
+  font-size: 0.875rem;
+
+  margin: 0 2px;
+
 }
 
-.critical-row {
-  background-color: rgba(239, 68, 68, 0.05);
-  border-left: 3px solid #ef4444;
+
+
+.btn-icon:hover {
+
+  background: var(--accent-hover);
+
+  transform: scale(1.1);
+
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+
 }
 
-.threat-id {
-  font-family: monospace;
-  font-weight: 600;
-  color: var(--accent);
+
+
+.btn-icon i {
+
+  color: var(--text-primary);
+
 }
+
+
+
+html.dark .btn-icon i {
+
+  color: var(--text-primary);
+
+}
+
+
+
+/* Threat Actions Container */
 
 .threat-actions {
+
   display: flex;
-  gap: 0.2rem;
-  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 4px;
+
+  justify-content: flex-start;
+
 }
+
+
+
+/* Special styling for different action types */
+
+.btn-icon[title*="investigate"] {
+
+  background: #10b981;
+
+}
+
+
+
+.btn-icon[title*="investigate"]:hover {
+
+  background: #059669;
+
+}
+
+
+
+.btn-icon[title*="resolve"] {
+
+  background: #3b82f6;
+
+}
+
+
+
+.btn-icon[title*="resolve"]:hover {
+
+  background: #2563eb;
+
+}
+
+
+
+.btn-icon[title*="falsePositive"] {
+
+  background: #f59e0b;
+
+}
+
+
+
+.btn-icon[title*="falsePositive"]:hover {
+
+  background: #d97706;
+
+}
+
+
+
+/* Threats main layout */
+
+.threats-main {
+
+  display: flex;
+
+  gap: 1rem;
+
+  margin-bottom: 1.5rem;
+
+}
+
+
+
+.threats-table-section {
+
+  flex: 2;
+
+  transition: flex 0.3s ease;
+
+  min-width: 0;
+
+}
+
+
+
+.threats-table-section.with-details {
+
+  flex: 1.5;
+
+}
+
+
+
+/* Table */
+
+.threats-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 0.8rem;
+
+}
+
+
+
+html.dark .threats-table {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+}
+
+
+
+.threats-table th {
+
+  white-space: nowrap;
+
+  text-align: left;
+
+  padding: 0.6rem 0.5rem;
+
+  color: var(--text-secondary);
+
+  font-weight: 600;
+
+  border-bottom: 2px solid var(--border-light);
+
+}
+
+
+
+html.dark .threats-table th {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
+
+.threats-table td {
+
+  padding: 0.6rem 0.5rem;
+
+  border-bottom: 1px solid var(--border-light);
+
+  color: var(--text-primary);
+
+  vertical-align: middle;
+
+}
+
+
+
+html.dark .threats-table td {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
+
+.threats-table tbody tr:hover {
+
+  background: var(--bg-tertiary);
+
+  cursor: pointer;
+
+}
+
+
+
+html.dark .threats-table tbody tr:hover {
+
+  background: var(--bg-hover);
+
+}
+
+
+
+.critical-row {
+
+  background-color: rgba(249, 249, 249, 0.05);
+
+  border-left: 3px solid #ef4444;
+
+}
+
+
+
+html.dark .critical-row {
+
+  background-color: rgba(239, 68, 68, 0.1);
+
+  border-left: 3px solid var(--danger);
+
+}
+
+
+
+.threat-id {
+
+  font-family: monospace;
+
+  font-weight: 600;
+
+  color: var(--accent);
+
+}
+
+
+
+html.dark .threat-id {
+
+  color: var(--accent);
+
+}
+
+
+
+.threat-actions {
+
+  display: flex;
+
+  gap: 0.2rem;
+
+  flex-wrap: wrap;
+
+}
+
+
 
 /* Badges */
+
 .badge {
+
   padding: 0.2rem 0.5rem;
+
   border-radius: 20px;
+
   font-size: 0.7rem;
+
   font-weight: 600;
+
   text-transform: capitalize;
+
   display: inline-block;
+
   white-space: nowrap;
+
 }
+
+
 
 .badge-critical {
+
   background: #fee2e2;
+
   color: #b91c1c;
+
 }
+
 .badge-high {
+
   background: #fed7aa;
+
   color: #b45309;
+
 }
+
 .badge-medium {
+
   background: #fef9c3;
+
   color: #a16207;
+
 }
+
 .badge-low {
+
   background: #dcfce7;
+
   color: #166534;
+
 }
+
 .badge-new {
+
   background: #dbeafe;
+
   color: #1e40af;
+
 }
+
 .badge-investigating {
+
   background: #fef9c3;
+
   color: #a16207;
+
 }
+
 .badge-resolved {
+
   background: #dcfce7;
+
   color: #166534;
+
 }
+
 .badge-falsepositive {
+
   background: #e2e8f0;
+
   color: #475569;
+
 }
+
 .badge-default {
+
   background: #e2e8f0;
+
   color: #475569;
+
 }
+
+
+
+/* Dark mode badge styles */
+
+html.dark .badge-critical {
+
+  background: var(--danger-bg);
+
+  color: var(--danger);
+
+  border-color: var(--danger);
+
+}
+
+
+
+html.dark .badge-high {
+
+  background: var(--warning-bg);
+
+  color: var(--warning);
+
+  border-color: var(--warning);
+
+}
+
+
+
+html.dark .badge-medium {
+
+  background: var(--warning-bg);
+
+  color: var(--warning);
+
+  border-color: var(--warning);
+
+}
+
+
+
+html.dark .badge-low {
+
+  background: var(--success-bg);
+
+  color: var(--success);
+
+  border-color: var(--success);
+
+}
+
+
+
+html.dark .badge-new {
+
+  background: var(--info-bg);
+
+  color: var(--info);
+
+  border-color: var(--info);
+
+}
+
+
+
+html.dark .badge-investigating {
+
+  background: var(--warning-bg);
+
+  color: var(--warning);
+
+  border-color: var(--warning);
+
+}
+
+
+
+html.dark .badge-resolved {
+
+  background: var(--success-bg);
+
+  color: var(--success);
+
+  border-color: var(--success);
+
+}
+
+
+
+html.dark .badge-falsepositive {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
+
+html.dark .badge-default {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
 
 .confidence {
+
   font-family: monospace;
+
   font-weight: 600;
+
   color: var(--accent);
+
   font-size: 0.8rem;
+
 }
+
+
+
+html.dark .confidence {
+
+  color: var(--accent);
+
+}
+
+
 
 /* Details Panel */
+
 .details-panel {
+
   flex: 1;
-  background: white;
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
   border-radius: 1rem;
+
   border: 1px solid var(--border-light);
+
   box-shadow: var(--shadow-md);
+
   padding: 1rem;
+
   height: fit-content;
+
   position: sticky;
+
   top: 2rem;
+
   max-width: 280px;
+
   font-size: 0.85rem;
+
 }
+
+
+
+html.dark .details-panel {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
 
 .details-header {
+
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
+
   margin-bottom: 0.75rem;
+
   padding-bottom: 0.4rem;
+
   border-bottom: 1px solid var(--border-light);
+
 }
+
+
 
 .details-header h4 {
+
   font-size: 1rem;
+
   font-weight: 600;
+
   color: var(--text-primary);
+
   margin: 0;
+
 }
+
+
 
 .details-content p {
+
   margin: 0.5rem 0;
+
   line-height: 1.4;
+
   word-break: break-word;
+
 }
+
+
 
 .details-content ul {
+
   margin: 0.5rem 0 1rem 1.25rem;
+
 }
+
+
 
 .timeline {
+
   list-style-type: none;
+
   padding: 0;
+
   margin: 0.5rem 0 1rem 0;
+
 }
+
+
 
 .timeline li {
+
   padding: 0.25rem 0;
+
   border-left: 2px solid var(--accent-light);
+
   padding-left: 0.75rem;
+
   margin-bottom: 0.25rem;
+
 }
+
+
 
 .details-actions {
+
   margin-top: 1rem;
+
   display: flex;
+
   justify-content: flex-end;
+
 }
+
+
 
 /* Area Visualization */
+
 .area-viz-section {
+
   margin: 1.5rem 0;
+
 }
+
+
 
 .area-viz-section h2 {
+
   font-size: 1.3rem;
+
   font-weight: 600;
+
   margin-bottom: 1rem;
+
   color: var(--text-primary);
+
 }
+
+
 
 .campus-map {
-  background: white;
+
+  background: var(--bg-secondary);
+
   border-radius: 1rem;
+
   padding: 1rem;
+
   border: 1px solid var(--border-light);
+
   box-shadow: var(--shadow-sm);
+
 }
+
+
 
 .map-placeholder {
+
   background: #f1f5f9;
+
   border-radius: 0.75rem;
+
   padding: 1rem;
+
   text-align: center;
+
   color: var(--text-secondary);
+
   font-size: 0.9rem;
+
 }
+
+
+
+html.dark .map-placeholder {
+
+  background: var(--bg-tertiary);
+
+  color: var(--text-secondary);
+
+}
+
+
 
 .zones-grid {
+
   display: grid;
+
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
   gap: 0.75rem;
+
   margin-bottom: 1rem;
+
 }
+
+
 
 .zone-card {
-  background: white;
+
+  background: var(--bg-secondary);
+
   border-radius: 0.75rem;
+
   padding: 0.75rem;
+
   text-align: left;
+
   border-left: 4px solid;
+
   box-shadow: var(--shadow-sm);
+
 }
+
+
+
+html.dark .zone-card {
+
+  background: var(--bg-secondary);
+
+  color: var(--text-primary);
+
+  border-color: var(--border-primary);
+
+}
+
+
 
 .zone-card h4 {
+
   font-size: 0.95rem;
+
   margin: 0 0 0.25rem 0;
+
 }
+
+
 
 .zone-card p {
+
   font-size: 0.8rem;
+
   color: var(--text-secondary);
+
   margin: 0.2rem 0;
+
 }
+
+
 
 .risk-badge {
+
   display: inline-block;
+
   padding: 0.2rem 0.4rem;
+
   border-radius: 20px;
+
   font-size: 0.65rem;
+
   font-weight: 600;
+
   text-transform: uppercase;
+
 }
+
 .risk-badge.critical {
+
   background: #fee2e2;
+
   color: #b91c1c;
+
 }
+
 .risk-badge.high {
+
   background: #fed7aa;
+
   color: #b45309;
+
 }
+
 .risk-badge.medium {
+
   background: #fef9c3;
+
   color: #a16207;
+
 }
+
 .risk-badge.low {
+
   background: #dcfce7;
+
   color: #166534;
+
 }
+
+
+
+/* Dark mode risk badge styles */
+
+html.dark .risk-badge.critical {
+
+  background: var(--danger-bg);
+
+  color: var(--danger);
+
+  border-color: var(--danger);
+
+}
+
+
+
+html.dark .risk-badge.high {
+
+  background: var(--warning-bg);
+
+  color: var(--warning);
+
+  border-color: var(--warning);
+
+}
+
+
+
+html.dark .risk-badge.medium {
+
+  background: var(--warning-bg);
+
+  color: var(--warning);
+
+  border-color: var(--warning);
+
+}
+
+
+
+html.dark .risk-badge.low {
+
+  background: var(--success-bg);
+
+  color: var(--success);
+
+  border-color: var(--success);
+
+}
+
+
 
 .map-note {
+
   margin-top: 0.75rem;
+
   font-style: italic;
+
   color: var(--text-secondary);
+
   font-size: 0.8rem;
+
 }
+
+
 
 /* ML Insight Card */
+
 .ml-insight-card {
-  background: white;
+
+  background: var(--bg-secondary);
+
   border-radius: 1rem;
+
   padding: 1rem;
+
   border: 1px solid var(--border-light);
+
   box-shadow: var(--shadow-sm);
+
   margin-top: 1.5rem;
+
 }
+
+
 
 .ml-insight-card h3 {
+
   margin-top: 0;
+
   margin-bottom: 0.75rem;
+
   display: flex;
+
   align-items: center;
+
   gap: 0.5rem;
+
   font-size: 1.1rem;
+
 }
+
+
 
 .ml-details {
+
   display: flex;
+
   flex-wrap: wrap;
+
   gap: 1.5rem;
+
 }
+
+
 
 .ml-item {
+
   display: flex;
+
   flex-direction: column;
+
 }
+
+
 
 .ml-label {
+
   font-size: 0.7rem;
+
   color: var(--text-secondary);
+
   text-transform: uppercase;
+
   letter-spacing: 0.02em;
+
 }
+
+
 
 .ml-value {
+
   font-size: 1rem;
+
   font-weight: 600;
+
   color: var(--text-primary);
+
 }
+
+
 
 /* Stats Section */
+
 .stats-section {
+
   margin-top: 1.5rem;
+
 }
 
+
+
 .stats-section h2 {
+
   font-size: 1.3rem;
+
   font-weight: 600;
+
   margin-bottom: 1rem;
+
   color: var(--text-primary);
+
 }
+
+
 
 .charts-grid {
   display: grid;
@@ -373,7 +1240,7 @@
 }
 
 .chart-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1rem;
   border: 1px solid var(--border-light);
@@ -388,90 +1255,178 @@
   letter-spacing: 0.02em;
 }
 
+
+
 /* Responsive */
+
 @media (max-width: 1200px) {
+
   .threats-main {
+
     flex-direction: column;
+
   }
+
   .details-panel {
+
     max-width: 100%;
+
     position: static;
+
   }
+
 }
+
+
 
 @media (max-width: 992px) {
+
   .filters-bar {
+
     flex-direction: column;
+
     align-items: stretch;
+
     padding: 0.75rem;
+
   }
+
   .filter-group {
+
     width: 100%;
+
     justify-content: space-between;
+
   }
+
   .filter-group select {
+
     width: 100%;
+
   }
+
   .table-responsive {
+
     overflow-x: auto;
+
     margin: 0;
+
     padding: 0;
+
   }
+
   .threats-table {
+
     min-width: 600px;
+
   }
+
   .charts-grid {
+
     grid-template-columns: 1fr;
+
   }
+
 }
+
+
 
 @media (max-width: 768px) {
+
   .dashboard-content {
+
     padding: 1rem;
+
   }
+
   .content-header {
+
     flex-direction: column;
+
     align-items: flex-start;
+
     gap: 1rem;
+
   }
+
   .search-bar {
+
     width: 100%;
+
   }
+
   .search-bar input {
+
     width: 100%;
+
   }
+
   .metrics-grid {
+
     grid-template-columns: 1fr;
+
   }
+
   .threats-table {
+
     min-width: 500px;
+
   }
+
   .ml-details {
+
     flex-direction: column;
+
     gap: 1rem;
+
   }
+
   .zones-grid {
+
     grid-template-columns: 1fr;
+
   }
+
 }
 
+
+
 @media (max-width: 576px) {
+
   .threats-table {
+
     min-width: 450px;
+
   }
+
   .badge {
+
     font-size: 0.65rem;
+
     padding: 0.15rem 0.3rem;
+
   }
+
   .filter-group {
+
     flex-direction: column;
+
     align-items: flex-start;
+
     gap: 0.2rem;
+
   }
+
   .filter-group select {
+
     width: 100%;
+
   }
+
   .filters-bar {
+
     padding: 0.5rem;
+
   }
+
 }

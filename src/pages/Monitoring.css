@@ -1,5 +1,73 @@
 /* Monitoring.css */
 
+/* Universal Dark Mode Styles */
+html.dark .page-description {
+  color: var(--text-secondary);
+}
+
+html.dark .monitoring-grid {
+  color: var(--text-primary);
+}
+
+html.dark .status-badge {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .status-active {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+html.dark .status-inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+html.dark .ingestion-summary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .summary-row {
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .monitoring-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .monitoring-card h3 {
+  color: var(--text-primary);
+}
+
+html.dark .monitoring-card p {
+  color: var(--text-secondary);
+}
+
+html.dark .monitoring-table {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .monitoring-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .monitoring-table td {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 .page-description {
   color: var(--text-secondary);
   margin-bottom: 2rem;
@@ -32,12 +100,31 @@
   color: #b91c1c;
 }
 
+/* Dark mode status badges override */
+html.dark .status-active {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+html.dark .status-inactive {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
 /* Ingestion summary */
 .ingestion-summary {
-  background: #f8fafc;
+  background: var(--bg-secondary);
   border-radius: 0.75rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
+}
+
+html.dark .ingestion-summary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .summary-row {
@@ -109,10 +196,16 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: #f1f5f9;
+  background: var(--bg-secondary);
   border-radius: 2rem;
   padding: 1rem;
   margin-top: 2rem;
+}
+
+html.dark .pipeline-diagram {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .pipeline-step {

@@ -1,5 +1,29 @@
 /* Analytics.css */
 
+/* Dark Mode Text Colors */
+html.dark .page-description {
+  color: var(--text-secondary);
+}
+
+html.dark .analytics-section h2 {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+html.dark .chart-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+html.dark .chart-card h4 {
+  color: var(--text-secondary);
+}
+
+html.dark .analytics-section {
+  color: var(--text-primary);
+}
+
 .page-description {
   color: var(--text-secondary);
   margin-bottom: 2rem;
@@ -33,11 +57,17 @@
 }
 
 .chart-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .chart-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .chart-card h4 {
@@ -63,6 +93,12 @@
   padding: 1rem;
   border-left: 4px solid;
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .zone-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .zone-card.risk-low {
@@ -135,12 +171,18 @@
 }
 
 .health-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1.25rem;
   text-align: center;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .health-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .health-label {
@@ -172,11 +214,17 @@
 }
 
 .insight-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1.25rem;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .insight-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .insight-card h4 {

@@ -1,9 +1,11 @@
-/* Sidebar.css – modern dark sidebar for Sentinel AI */
-
+/* ============================================
+   Sidebar – Modern Glassmorphic Dark Theme
+   ============================================ */
 .sidebar {
   width: 280px;
-  background: #0f172a; /* --bg-sidebar */
-  border-right: 1px solid #334155; /* --border-light */
+  background: linear-gradient(145deg, #012069 0%, #0a0f1e 100%);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   padding: 2rem 1rem;
   overflow-y: auto;
   height: 100vh;
@@ -11,56 +13,304 @@
   top: 0;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(2, 22, 99, 0.05);
+  border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #fffffff0;
+  border-radius: 4px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Brand / Logo at top */
+.sidebar .brand {
+  padding: 0 1rem 1.5rem 1rem;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: -0.02em;
+}
+
+/* Navigation container */
+.sidebar .nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  flex: 1;
 }
 
 /* Navigation links */
 .sidebar .nav-link {
-  color: #94a3b8; /* --text-secondary */
+  color: #f3f5f7;
   padding: 0.75rem 1rem;
-  margin: 0.25rem 0;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  border: none;
   background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Icons */
+/* Icon styling */
 .sidebar .nav-link i {
   font-size: 1.25rem;
-  width: 24px;
+  width: 28px;
   text-align: center;
+  transition: transform 0.2s;
+  color: #ffffff; /* White for all sidebar content icons */
 }
 
-/* Hover and active states */
-.sidebar .nav-link:hover,
-.sidebar .nav-link.active {
-  background: linear-gradient(135deg, #4f46e5, #818cf8); /* --accent-gradient */
+/* Area Map icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/map"] i {
+  color: #ffffff !important;
+}
+
+/* Dashboard icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/dashboard"] i {
+  color: #ffffff !important;
+}
+
+/* Threats icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/threats"] i {
+  color: #ffffff !important;
+}
+
+/* Reports icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/reports"] i {
+  color: #ffffff !important;
+}
+
+/* Analytics icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/analytics"] i {
+  color: #ffffff !important;
+}
+
+/* AI Model icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/ai-model"] i {
+  color: #ffffff !important;
+}
+
+/* Audit Log icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/audit-log"] i {
+  color: #ffffff !important;
+}
+
+/* Settings icon specific - white for visibility on dark blue background */
+.sidebar .nav-link[href="/settings"] i {
+  color: #ffffff !important;
+}
+
+
+
+/* Light mode specific icon color */
+:not(html.dark) .sidebar .nav-link i {
+  color: #1e3a8a; /* Dark blue for icons in light mode */
+}
+
+/* Dark mode for icons */
+html.dark .sidebar .nav-link i {
+  color: #1e3a8a; /* Dark blue for icons in dark mode */
+}
+
+/* Hover effect */
+.sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.08);
   color: white;
   transform: translateX(4px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
 }
 
-/* Optional: Branding / logo area at top */
-.sidebar .brand {
-  padding: 0 1rem 1.5rem 1rem;
-  border-bottom: 1px solid #334155;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
+.sidebar .nav-link:hover i {
+  transform: scale(1.05);
+  color: white;
+}
+
+/* Dark mode for icons */
+html.dark .sidebar .nav-link i {
+  color: #1e3a8a; /* Dark blue for icons in dark mode */
+}
+
+html.dark .sidebar .nav-link:hover i {
+  color: white; /* White on hover in dark mode */
+}
+
+/* Active link – gradient background + glow */
+.sidebar .nav-link.active {
   background: linear-gradient(135deg, #4f46e5, #818cf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 
-/* Make sure Bootstrap's "flex-column" doesn't interfere */
-.sidebar .nav {
+.sidebar .nav-link.active i {
+  color: white;
+}
+
+/* Optional: add a subtle indicator for active link */
+.sidebar .nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: white;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Dark mode adjustments (already dark, but keep consistency) */
+html.dark .sidebar {
+  background: linear-gradient(145deg, #0a0f1e 0%, #020617 100%);
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1001;
+  color: white;
+  font-size: 1.2rem;
+  transition: var(--transition);
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--accent-hover);
+  transform: scale(1.1);
+}
+
+/* Mobile Expanded State */
+.sidebar.mobile-expanded {
+  width: 100% !important;
+  height: auto !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 999 !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* Mobile Menu Navigation */
+.nav.mobile-open {
+  display: flex !important;
+  flex-direction: column !important;
+  position: absolute !important;
+  top: 60px !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: var(--bg-secondary) !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  box-shadow: var(--shadow-lg) !important;
+  z-index: 1000 !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.nav.mobile-open .nav-link {
   display: flex;
-  flex-direction: column;
-  width: 100%;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0;
+  border-radius: 0.5rem;
+  transition: var(--transition);
+}
+
+.nav.mobile-open .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Landscape Mobile Support */
+@media (max-width: 768px) and (orientation: landscape) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: auto;
+    max-height: 50vh;
+  }
+  .dashboard-content {
+    margin-top: 50vh;
+    padding-top: 1rem;
+  }
+  
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+/* Split Window Support - Show menu icon */
+@media (max-height: 600px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+}
+
+/* Responsive: on smaller screens, sidebar collapses or becomes full width */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+    padding: 1rem;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1rem;
+  }
+  .sidebar .brand {
+    display: none;
+  }
+  .sidebar .nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.5rem;
+  }
+  .sidebar .nav-link {
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+  }
+  .sidebar .nav-link i {
+    width: 20px;
+    font-size: 1rem;
+  }
+  .sidebar .nav-link span {
+    display: inline-block;
+  }
+  .sidebar .nav-link:hover {
+    transform: translateY(-2px);
+  }
+  
 }

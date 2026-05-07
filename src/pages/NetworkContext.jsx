@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./NetworkContext.css";
 
 export default function NetworkContext() {
+  const { t } = useTranslation();
   // ---------- Mock Zone Data (would be derived from network logs) ----------
   const [zones] = useState([
     { id: 1, name: "Library", ipRange: "10.0.2.0/24", threatCount: 15, riskLevel: "medium" },
@@ -44,9 +46,9 @@ export default function NetworkContext() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>Network Context</h1>
+            <h1>{t("networkContext")}</h1>
             <p className="page-description">
-              Campus zone mapping and traffic context – used as input for AI threat detection, not network control.
+              {t("networkContextDescription")}
             </p>
           </div>
 

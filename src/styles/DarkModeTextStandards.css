@@ -1,0 +1,608 @@
+/* ============================================
+   UNIVERSAL DARK MODE STANDARDS
+   Complete consistency across ALL elements, forms, and content
+   ============================================ */
+
+/* Universal Dark Mode Variables - Complete System */
+html.dark {
+  /* Text Colors - Maximum Visibility */
+  --text-primary: #f1f5f9;        /* Light slate - excellent contrast */
+  --text-secondary: #cbd5e1;      /* Medium light slate - good readability */
+  --text-muted: #94a3b8;          /* Light slate gray - subtle but visible */
+  --text-inverse: #0f172a;        /* Dark text for light backgrounds */
+  --text-disabled: #64748b;        /* Disabled text color */
+  
+  /* Background Colors - Consistent Hierarchy */
+  --bg-primary: #0f172a;          /* Main background */
+  --bg-secondary: #1e293b;         /* Card backgrounds */
+  --bg-tertiary: #0f172a;          /* Hover states */
+  --bg-quaternary: #0f172a(44.554% -0.00824 -0.03658 / 0.511);        /* Active states */
+  --bg-input: #1e293b;             /* Input backgrounds */
+  --bg-hover: #334155;             /* Hover backgrounds */
+  
+  /* Border Colors - Consistent */
+  --border-primary: #334155;        /* Standard borders */
+  --border-secondary: #475569;      /* Secondary borders */
+  --border-focus: #3b82f6;         /* Focus borders */
+  --border-light: #334155;          /* Light borders */
+  --border-input: #475569;          /* Input borders */
+  
+  /* Accent Colors - High Visibility */
+  --accent: #3b82f6;               /* Primary blue */
+  --accent-hover: #2563eb;         /* Hover blue */
+  --accent-light: rgba(59, 130, 246, 0.1); /* Light accent */
+  --success: #10b981;             /* Success green */
+  --success-bg: rgba(16, 185, 129, 0.1); /* Success background */
+  --warning: #f59e0b;             /* Warning orange */
+  --warning-bg: rgba(245, 158, 11, 0.1); /* Warning background */
+  --danger: #ef4444;              /* Danger red */
+  --danger-bg: rgba(239, 68, 68, 0.1); /* Danger background */
+  --info: #06b6d4;               /* Info cyan */
+  --info-bg: rgba(6, 182, 212, 0.1); /* Info background */
+  
+  /* Shadow Colors - Dark Mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  
+  /* Glass Effects */
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Universal Dark Mode Text Styles */
+html.dark * {
+  /* Ensure all text uses proper colors */
+  color: inherit !important;
+}
+
+html.dark body,
+html.dark .dashboard-content,
+html.dark .main-content {
+  color: var(--text-primary) !important;
+}
+
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6 {
+  color: var(--text-primary) !important;
+}
+
+html.dark p,
+html.dark span,
+html.dark div:not([class*="status"]):not([class*="badge"]) {
+  color: var(--text-primary) !important;
+}
+
+html.dark .page-description,
+html.dark .subtitle,
+html.dark .text-secondary,
+html.dark label,
+html.dark .form-label {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .text-muted,
+html.dark .muted,
+html.dark small,
+html.dark .help-text {
+  color: var(--text-muted) !important;
+}
+
+/* Form Elements */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-light, #334155) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Table Elements */
+html.dark table {
+  color: var(--text-primary) !important;
+}
+
+html.dark th,
+html.dark td {
+  color: var(--text-primary) !important;
+  border-color: var(--border-light, #334155) !important;
+}
+
+html.dark thead th {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Card and Container Elements */
+html.dark .card,
+html.dark .card-header,
+html.dark .card-body,
+html.dark .panel,
+html.dark .widget {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-light, #334155) !important;
+}
+
+/* Navigation and Sidebar */
+html.dark .nav-link,
+html.dark .sidebar-link {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .nav-link:hover,
+html.dark .sidebar-link:hover {
+  color: var(--text-primary) !important;
+}
+
+/* Buttons with proper contrast */
+html.dark .btn-outline {
+  color: var(--text-primary) !important;
+  border-color: var(--border-light, #334155) !important;
+}
+
+html.dark .btn-outline:hover {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Links */
+html.dark a {
+  color: var(--accent) !important;
+}
+
+html.dark a:hover {
+  color: var(--accent-hover) !important;
+}
+
+/* Status and Badge Colors – kept as is (no overrides needed) */
+
+/* Chart and Graph Text */
+html.dark .chart-title,
+html.dark .chart-label,
+html.dark .legend-text {
+  color: var(--text-primary) !important;
+}
+
+/* Code and Pre Elements */
+html.dark code,
+html.dark pre {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Specific Page Fixes */
+html.dark .threats-table th,
+html.dark .threats-table td {
+  color: var(--text-primary) !important;
+}
+
+html.dark .filter-group label {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .chart-card h4 {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .report-controls.card {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   COMPREHENSIVE UNIVERSAL DARK MODE STYLES
+   Complete coverage for ALL elements
+   ============================================ */
+
+/* ALL FORM ELEMENTS - Universal Styling */
+html.dark form,
+html.dark .form-container,
+html.dark .form-card,
+html.dark .form-section {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .form-group,
+html.dark .field-group,
+html.dark .input-group {
+  color: var(--text-primary) !important;
+}
+
+html.dark .form-group label,
+html.dark .field-group label,
+html.dark .input-group label {
+  color: var(--text-secondary) !important;
+}
+
+html.dark input[type="text"],
+html.dark input[type="email"],
+html.dark input[type="password"],
+html.dark input[type="number"],
+html.dark input[type="date"],
+html.dark input[type="time"],
+html.dark input[type="search"],
+html.dark select,
+html.dark textarea {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-input) !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-focus) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--accent-light) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* ALL TABLES - Universal Styling */
+html.dark table,
+html.dark .table,
+html.dark .data-table,
+html.dark .grid-table {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark thead,
+html.dark .table-header {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+html.dark th,
+html.dark .table th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+  font-weight: 600 !important;
+}
+
+html.dark td,
+html.dark .table td {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark tbody tr:hover,
+html.dark .table tbody tr:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* ALL CARDS AND CONTAINERS - Universal Styling */
+html.dark .card,
+html.dark .card-header,
+html.dark .card-body,
+html.dark .card-footer,
+html.dark .panel,
+html.dark .widget,
+html.dark .container-card,
+html.dark .content-card,
+html.dark .info-card,
+html.dark .status-card {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .card-title,
+html.dark .panel-title,
+html.dark .widget-title,
+html.dark .card h1,
+html.dark .card h2,
+html.dark .card h3,
+html.dark .card h4,
+html.dark .card h5,
+html.dark .card h6 {
+  color: var(--text-primary) !important;
+}
+
+html.dark .card-subtitle,
+html.dark .panel-subtitle,
+html.dark .widget-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+/* ALL BUTTONS - Universal Styling */
+html.dark .btn,
+html.dark .button,
+html.dark button {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .btn-primary,
+html.dark .button-primary,
+html.dark button[type="submit"] {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+html.dark .btn-primary:hover,
+html.dark .button-primary:hover,
+html.dark button[type="submit"]:hover {
+  background-color: var(--accent-hover) !important;
+  color: white !important;
+}
+
+html.dark .btn-secondary,
+html.dark .button-secondary,
+html.dark .btn-outline {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .btn-secondary:hover,
+html.dark .button-secondary:hover,
+html.dark .btn-outline:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+/* ALL NAVIGATION - Universal Styling */
+html.dark .navbar,
+html.dark .header,
+html.dark .nav,
+html.dark .sidebar,
+html.dark .nav-sidebar {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .nav-link,
+html.dark .sidebar-link,
+html.dark .nav-item {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .nav-link:hover,
+html.dark .sidebar-link:hover,
+html.dark .nav-item:hover,
+html.dark .nav-link.active,
+html.dark .sidebar-link.active {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-hover) !important;
+}
+
+/* ALL STATUS ELEMENTS - Universal Styling */
+html.dark .status-badge,
+html.dark .badge,
+html.dark .tag,
+html.dark .label {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .status-badge.success,
+html.dark .badge.success,
+html.dark .status-badge.active {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+html.dark .status-badge.warning,
+html.dark .badge.warning {
+  background-color: var(--warning-bg) !important;
+  color: var(--warning) !important;
+  border-color: var(--warning) !important;
+}
+
+html.dark .status-badge.danger,
+html.dark .badge.danger,
+html.dark .badge.error {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+/* ALL ALERTS AND NOTIFICATIONS - Universal Styling */
+html.dark .alert,
+html.dark .notification,
+html.dark .message,
+html.dark .toast {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .alert.success,
+html.dark .notification.success,
+html.dark .message.success {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+html.dark .alert.warning,
+html.dark .notification.warning,
+html.dark .message.warning {
+  background-color: var(--warning-bg) !important;
+  color: var(--warning) !important;
+  border-color: var(--warning) !important;
+}
+
+html.dark .alert.danger,
+html.dark .alert.error,
+html.dark .notification.danger,
+html.dark .notification.error,
+html.dark .message.danger,
+html.dark .message.error {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+/* ALL MODALS AND OVERLAYS - Universal Styling */
+html.dark .modal,
+html.dark .dialog,
+html.dark .overlay,
+html.dark .popup,
+html.dark .dropdown {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .modal-header,
+html.dark .dialog-header,
+html.dark .modal-title,
+html.dark .dialog-title {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .modal-body,
+html.dark .dialog-body {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ALL CHARTS AND GRAPHS - Universal Styling */
+html.dark .chart-container,
+html.dark .graph-container,
+html.dark .chart-wrapper,
+html.dark .graph-wrapper {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .chart-title,
+html.dark .graph-title,
+html.dark .chart-header,
+html.dark .graph-header {
+  color: var(--text-primary) !important;
+}
+
+html.dark .chart-subtitle,
+html.dark .graph-subtitle,
+html.dark .chart-legend,
+html.dark .graph-legend {
+  color: var(--text-secondary) !important;
+}
+
+/* ALL LISTS AND MENU ITEMS - Universal Styling */
+html.dark ul,
+html.dark ol,
+html.dark li,
+html.dark .list,
+html.dark .list-item,
+html.dark .menu-item {
+  color: var(--text-primary) !important;
+}
+
+html.dark .list-item:hover,
+html.dark .menu-item:hover {
+  background-color: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ALL CODE AND PRE ELEMENTS - Universal Styling */
+html.dark code,
+html.dark pre,
+html.dark .code-block,
+html.dark .code-snippet {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ALL LOADING AND SPINNER ELEMENTS - Universal Styling */
+html.dark .loading,
+html.dark .spinner,
+html.dark .loader,
+html.dark .progress {
+  color: var(--text-primary) !important;
+}
+
+html.dark .loading-spinner,
+html.dark .spinner-border {
+  border-color: var(--border-primary) !important;
+  border-top-color: var(--accent) !important;
+}
+
+/* ALL FOOTER ELEMENTS - Universal Styling */
+html.dark footer,
+html.dark .footer,
+html.dark .footer-content {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .footer-link,
+html.dark .footer a {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .footer-link:hover,
+html.dark .footer a:hover {
+  color: var(--text-primary) !important;
+}
+
+/* OVERRIDE ANY HARDCODED STYLES - Universal Override */
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color: #033778"],
+html.dark [style*="color: #073571"],
+html.dark [style*="color: #1e293b"],
+html.dark [style*="color: #000000"],
+html.dark [style*="color: #000"],
+html.dark [style*="color: black"] {
+  color: var(--text-primary) !important;
+}
+
+html.dark [style*="background: white"],
+html.dark [style*="background: #fff"],
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background: #f8fafc"],
+html.dark [style*="background: #ffffff"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+html.dark [style*="border: 1px solid #e2e8f0"],
+html.dark [style*="border: 1px solid #ccc"],
+html.dark [style*="border: 1px solid #ddd"] {
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .filters-bar {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Additional Universal Overrides */
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color: #033778"],
+html.dark [style*="color: #073571"] {
+  color: var(--text-primary) !important;
+}

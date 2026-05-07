@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import {
@@ -31,6 +32,7 @@ ChartJS.register(
 );
 
 export default function Analytics() {
+  const { t } = useTranslation();
   // Mock data (same as before)
   const overview = {
     totalThreats: 127,
@@ -43,7 +45,7 @@ export default function Analytics() {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "Threats Detected",
+        label: t("threatsDetected"),
         data: [12, 19, 15, 22, 24, 18, 17],
         borderColor: "#2563eb",
         backgroundColor: "rgba(37, 99, 235, 0.1)",
@@ -57,7 +59,7 @@ export default function Analytics() {
     labels: ["DDoS", "Brute Force", "Malware", "Unauthorized Access"],
     datasets: [
       {
-        label: "Count",
+        label: t("count"),
         data: [34, 22, 41, 18],
         backgroundColor: ["#60a5fa", "#f59e0b", "#10b981", "#ef4444"],
       },
@@ -78,7 +80,7 @@ export default function Analytics() {
     labels: ["< 70%", "70-80%", "80-90%", "90-100%"],
     datasets: [
       {
-        label: "Threats",
+        label: t("threats"),
         data: [15, 35, 52, 25],
         backgroundColor: "#818cf8",
       },
@@ -89,7 +91,7 @@ export default function Analytics() {
     labels: ["Critical", "High", "Medium", "Low"],
     datasets: [
       {
-        label: "Alerts",
+        label: t("alerts"),
         data: [28, 64, 142, 108],
         backgroundColor: ["#ef4444", "#f59e0b", "#eab308", "#10b981"],
       },
@@ -97,7 +99,7 @@ export default function Analytics() {
   };
 
   const alertStatus = {
-    labels: ["Active", "Resolved"],
+    labels: [t("active"), t("resolved")],
     datasets: [
       {
         data: [142, 200],
@@ -110,7 +112,7 @@ export default function Analytics() {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
       {
-        label: "Alerts",
+        label: t("alerts"),
         data: [42, 38, 55, 49, 62, 47, 49],
         borderColor: "#8b5cf6",
         backgroundColor: "rgba(139, 92, 246, 0.1)",
@@ -158,9 +160,9 @@ export default function Analytics() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>Cybersecurity Analytics</h1>
+            <h1>{t("cybersecurityAnalytics")}</h1>
             <p className="page-description">
-              Real‑time and historical analytics for proactive threat management.
+              {t("analyticsDescription")}
             </p>
           </div>
 
@@ -169,28 +171,28 @@ export default function Analytics() {
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-shield"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Total Threats</span>
+                <span className="metric-label">{t("totalThreats")}</span>
                 <span className="metric-value">{overview.totalThreats}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-exclamation-triangle"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Active Threats</span>
+                <span className="metric-label">{t("activeThreats")}</span>
                 <span className="metric-value">{overview.activeThreats}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-shield-exclamation"></i></div>
               <div className="metric-content">
-                <span className="metric-label">High/Critical</span>
+                <span className="metric-label">{t("highCritical")}</span>
                 <span className="metric-value">{overview.highCritical}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-bell"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Total Alerts</span>
+                <span className="metric-label">{t("totalAlerts")}</span>
                 <span className="metric-value">{overview.totalAlerts}</span>
               </div>
             </div>
@@ -198,22 +200,22 @@ export default function Analytics() {
 
           {/* 2. Threat Analytics */}
           <section className="analytics-section">
-            <h2>Threat Analytics</h2>
+            <h2>{t("threatAnalytics")}</h2>
             <div className="charts-grid two-column">
               <div className="chart-card">
-                <h4>Threats Over Time</h4>
+                <h4>{t("threatsOverTime")}</h4>
                 <Line data={threatTimeData} />
               </div>
               <div className="chart-card">
-                <h4>Threats by Type</h4>
+                <h4>{t("threatsByType")}</h4>
                 <Bar data={threatByType} options={{ plugins: { legend: { display: false } } }} />
               </div>
               <div className="chart-card">
-                <h4>Severity Distribution</h4>
+                <h4>{t("severityDistribution")}</h4>
                 <Pie data={threatSeverity} options={{ plugins: { legend: { position: "bottom" } } }} />
               </div>
               <div className="chart-card">
-                <h4>Confidence Distribution</h4>
+                <h4>{t("confidenceDistribution")}</h4>
                 <Bar data={confidenceDistribution} options={{ plugins: { legend: { display: false } } }} />
               </div>
             </div>
@@ -221,18 +223,18 @@ export default function Analytics() {
 
           {/* 3. Alert Analytics */}
           <section className="analytics-section">
-            <h2>Alert Analytics</h2>
+            <h2>{t("alertAnalytics")}</h2>
             <div className="charts-grid three-column">
               <div className="chart-card">
-                <h4>Alerts by Severity</h4>
+                <h4>{t("alertsBySeverity")}</h4>
                 <Bar data={alertSeverity} options={{ plugins: { legend: { display: false } } }} />
               </div>
               <div className="chart-card">
-                <h4>Active vs Resolved</h4>
+                <h4>{t("activeVsResolved")}</h4>
                 <Pie data={alertStatus} options={{ plugins: { legend: { position: "bottom" } } }} />
               </div>
               <div className="chart-card">
-                <h4>Alert Trend</h4>
+                <h4>{t("alertTrend")}</h4>
                 <Line data={alertTrend} />
               </div>
             </div>
@@ -240,7 +242,7 @@ export default function Analytics() {
 
           {/* 4. Area‑Based Analytics */}
           <section className="analytics-section">
-            <h2>Campus Threat Distribution</h2>
+            <h2>{t("campusThreatDistribution")}</h2>
             <div className="area-grid">
               {campusZones.map((zone) => (
                 <div key={zone.name} className={`zone-card risk-${zone.risk}`}>
@@ -251,31 +253,31 @@ export default function Analytics() {
               ))}
             </div>
             <div className="heatmap-note">
-              <span className="heat-low"></span> Low
-              <span className="heat-medium"></span> Medium
-              <span className="heat-high"></span> High
-              <span className="heat-critical"></span> Critical
+              <span className="heat-low"></span> {t("low")}
+              <span className="heat-medium"></span> {t("medium")}
+              <span className="heat-high"></span> {t("high")}
+              <span className="heat-critical"></span> {t("critical")}
             </div>
           </section>
 
           {/* 5. System Health Analytics */}
           <section className="analytics-section">
-            <h2>System Health</h2>
+            <h2>{t("systemHealth")}</h2>
             <div className="health-grid">
               <div className="health-card">
-                <span className="health-label">ML Model Accuracy</span>
+                <span className="health-label">{t("mlModelAccuracy")}</span>
                 <span className="health-value">{systemHealth.modelAccuracy}%</span>
               </div>
               <div className="health-card">
-                <span className="health-label">False Positive Rate</span>
+                <span className="health-label">{t("falsePositiveRate")}</span>
                 <span className="health-value">{systemHealth.falsePositiveRate}%</span>
               </div>
               <div className="health-card">
-                <span className="health-label">Processed Logs</span>
+                <span className="health-label">{t("processedLogs")}</span>
                 <span className="health-value">{systemHealth.processedLogs.toLocaleString()}</span>
               </div>
               <div className="health-card">
-                <span className="health-label">ML Engine</span>
+                <span className="health-label">{t("mlEngine")}</span>
                 <span className={`health-value status-${systemHealth.mlStatus.toLowerCase()}`}>
                   {systemHealth.mlStatus}
                 </span>
@@ -285,22 +287,22 @@ export default function Analytics() {
 
           {/* 6. Report & Decision Support */}
           <section className="analytics-section">
-            <h2>Security Insights & Recommendations</h2>
+            <h2>{t("securityInsights")}</h2>
             <div className="insights-grid">
               <div className="insight-card">
-                <h4>Daily Summary</h4>
+                <h4>{t("dailySummary")}</h4>
                 <p>{insights.daily}</p>
               </div>
               <div className="insight-card">
-                <h4>Weekly Summary</h4>
+                <h4>{t("weeklySummary")}</h4>
                 <p>{insights.weekly}</p>
               </div>
               <div className="insight-card">
-                <h4>Monthly Summary</h4>
+                <h4>{t("monthlySummary")}</h4>
                 <p>{insights.monthly}</p>
               </div>
               <div className="insight-card recommendations">
-                <h4>Recommendations</h4>
+                <h4>{t("recommendations")}</h4>
                 <ul>
                   {insights.recommendations.map((rec, idx) => (
                     <li key={idx}>{rec}</li>

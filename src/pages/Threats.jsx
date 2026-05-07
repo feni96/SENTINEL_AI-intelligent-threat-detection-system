@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import {
@@ -31,6 +32,48 @@ ChartJS.register(
 );
 
 export default function Threats() {
+  const { t } = useTranslation();
+  
+  // Export functionality
+  const handleExport = () => {
+    // Create CSV content
+    const headers = [
+      'ID', 'Log ID', 'Threat Type', 'Severity', 'Confidence', 
+      'Status', 'Source IP', 'Destination IP', 'Area', 'Zone', 
+      'Detected At', 'Description', 'Classification'
+    ];
+    
+    const csvContent = [
+      headers.join(','),
+      ...threats.map(threat => [
+        threat._id,
+        threat.logId,
+        threat.threatType,
+        threat.severityLevel,
+        threat.confidenceScore,
+        threat.status,
+        threat.sourceIP,
+        threat.sourceDestIP?.src || '',
+        threat.areaName,
+        threat.zoneType,
+        threat.detectedAt,
+        threat.description,
+        threat.classification
+      ].map(field => `"${field || ''}"`).join(','))
+    ].join('\n');
+    
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `threats_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   // ---------- Mock Threat Data (Aligned with Schema) ----------
   const [threats, setThreats] = useState([
     {
@@ -291,7 +334,13 @@ export default function Threats() {
       Medium: "badge-medium",
       Low: "badge-low",
     };
-    return <span className={`badge ${classes[severityLevel]}`}>{severityLevel}</span>;
+    const severityKeys = {
+      Critical: "critical",
+      High: "high",
+      Medium: "medium",
+      Low: "low",
+    };
+    return <span className={`badge ${classes[severityLevel]}`}>{t(severityKeys[severityLevel] || severityLevel)}</span>;
   };
 
   const getStatusBadge = (status) => {
@@ -301,7 +350,13 @@ export default function Threats() {
       Resolved: "badge-resolved",
       "False Positive": "badge-falsepositive",
     };
-    return <span className={`badge ${classes[status] || "badge-default"}`}>{status}</span>;
+    const statusKeys = {
+      New: "new",
+      Investigating: "investigating",
+      Resolved: "resolved",
+      "False Positive": "falsePositiveStatus",
+    };
+    return <span className={`badge ${classes[status] || "badge-default"}`}>{t(statusKeys[status] || status)}</span>;
   };
 
   const handleInvestigate = (id) => {
@@ -336,12 +391,12 @@ export default function Threats() {
         <div className="dashboard-content">
           {/* Header */}
           <div className="content-header">
-            <h1>Threat Detection & Analysis</h1>
+            <h1>{t("threatDetection")}</h1>
             <div className="search-bar">
               <i className="bi bi-search"></i>
               <input
                 type="text"
-                placeholder="Search Threat ID, Source IP, Type..."
+                placeholder={t("searchThreatsPlaceholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -353,28 +408,28 @@ export default function Threats() {
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-shield"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Total Detected Threats</span>
+                <span className="metric-label">{t("totalDetectedThreats")}</span>
                 <span className="metric-value">{totalThreats}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-exclamation-triangle"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Active Threats</span>
+                <span className="metric-label">{t("activeThreats")}</span>
                 <span className="metric-value">{activeThreats}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-shield-exclamation"></i></div>
               <div className="metric-content">
-                <span className="metric-label">High / Critical</span>
+                <span className="metric-label">{t("highCritical")}</span>
                 <span className="metric-value">{criticalHigh}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-check-circle"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Resolved / False Pos.</span>
+                <span className="metric-label">{t("resolvedFalsePositive")}</span>
                 <span className="metric-value">{resolvedFP}</span>
               </div>
             </div>
@@ -383,44 +438,44 @@ export default function Threats() {
           {/* Filters Bar */}
           <div className="filters-bar">
             <div className="filter-group">
-              <label>Severity</label>
+              <label>{t("severity")}</label>
               <select value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)}>
-                {severityOptions.map(opt => <option key={opt}>{opt}</option>)}
+                {severityOptions.map(opt => <option key={opt} value={opt}>{opt === "All" ? t("all") : t(opt.toLowerCase())}</option>)}
               </select>
             </div>
             <div className="filter-group">
-              <label>Threat Type</label>
+              <label>{t("threatType")}</label>
               <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-                {typeOptions.map(opt => <option key={opt}>{opt}</option>)}
+                {typeOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
             </div>
             <div className="filter-group">
-              <label>Status</label>
+              <label>{t("status")}</label>
               <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                {statusOptions.map(opt => <option key={opt}>{opt}</option>)}
+                {statusOptions.map(opt => <option key={opt} value={opt}>{opt === "All" ? t("all") : opt === "False Positive" ? t("falsePositiveStatus") : t(opt.toLowerCase())}</option>)}
               </select>
             </div>
             <div className="filter-group">
-              <label>Min Confidence</label>
+              <label>{t("minConfidence")}</label>
               <select value={filterMinConfidence} onChange={(e) => setFilterMinConfidence(Number(e.target.value))}>
-                <option value={0}>Any</option>
+                <option value={0}>{t("any")}</option>
                 <option value={70}>≥70%</option>
                 <option value={80}>≥80%</option>
                 <option value={90}>≥90%</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>Campus Area</label>
+              <label>{t("campusArea")}</label>
               <select value={filterArea} onChange={(e) => setFilterArea(e.target.value)}>
-                {areaOptions.map(opt => <option key={opt}>{opt}</option>)}
+                {areaOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
               </select>
             </div>
             <div className="filter-group">
-              <label>Time Range</label>
+              <label>{t("timeRange")}</label>
               <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-                <option value="24h">Last 24h</option>
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
+                <option value="24h">{t("last24Hours")}</option>
+                <option value="7d">{t("last7Days")}</option>
+                <option value="30d">{t("last30Days")}</option>
               </select>
             </div>
           </div>
@@ -430,25 +485,25 @@ export default function Threats() {
             <div className={`threats-table-section ${showDetails ? "with-details" : ""}`}>
               <div className="card threats-card">
                 <div className="card-header">
-                  <h3>Threat List</h3>
+                  <h3>{t("threatList")}</h3>
                   <div className="card-actions">
-                    <button className="btn-outline">Export</button>
+                    <button className="btn-outline" onClick={handleExport}>{t("export")}</button>
                   </div>
                 </div>
                 <div className="table-responsive">
                   <table className="threats-table">
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>Detection Time</th>
-                        <th>Type</th>
-                        <th>Severity</th>
-                        <th>Confidence</th>
-                        <th>Source IP</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Related Log</th>
-                        <th>Actions</th>
+                        <th>{t("id")}</th>
+                        <th>{t("detectionTime")}</th>
+                        <th>{t("type")}</th>
+                        <th>{t("severity")}</th>
+                        <th>{t("confidence")}</th>
+                        <th>{t("sourceIP")}</th>
+                        <th>{t("location")}</th>
+                        <th>{t("status")}</th>
+                        <th>{t("relatedLog")}</th>
+                        <th>{t("actions")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -470,21 +525,20 @@ export default function Threats() {
                           <td onClick={(e) => e.stopPropagation()}>
                             <div className="threat-actions">
                               {threat.status === "New" && (
-                                <button className="btn-icon" title="Investigate" onClick={() => handleInvestigate(threat._id)}>
+                                <button className="btn-icon" title={t("investigate")} onClick={() => handleInvestigate(threat._id)}>
                                   <i className="bi bi-search"></i>
                                 </button>
                               )}
                               {threat.status !== "Resolved" && threat.status !== "False Positive" && (
                                 <>
-                                  <button className="btn-icon" title="Resolve" onClick={() => handleResolve(threat._id)}>
+                                  <button className="btn-icon" title={t("resolve")} onClick={() => handleResolve(threat._id)}>
                                     <i className="bi bi-check2-circle"></i>
                                   </button>
-                                  <button className="btn-icon" title="False Positive" onClick={() => handleFalsePositive(threat._id)}>
+                                  <button className="btn-icon" title={t("falsePositive")} onClick={() => handleFalsePositive(threat._id)}>
                                     <i className="bi bi-x-circle"></i>
                                   </button>
                                 </>
                               )}
-                              <button className="btn-icon"><i className="bi bi-three-dots-vertical"></i></button>
                             </div>
                           </td>
                         </tr>
@@ -499,31 +553,31 @@ export default function Threats() {
             {showDetails && selectedThreat && (
               <div className="details-panel">
                 <div className="details-header">
-                  <h4>Threat Details</h4>
+                  <h4>{t("threatDetails")}</h4>
                   <button className="btn-icon" onClick={() => setShowDetails(false)}><i className="bi bi-x-lg"></i></button>
                 </div>
                 <div className="details-content">
-                  <p><strong>ID:</strong> {selectedThreat._id}</p>
-                  <p><strong>Log ID:</strong> {selectedThreat.logId}</p>
-                  <p><strong>Classification:</strong> {selectedThreat.classification}</p>
-                  <p><strong>Description:</strong> {selectedThreat.description}</p>
-                  <p><strong>Confidence Explanation:</strong> {selectedThreat.confidenceExplanation}</p>
-                  <p><strong>Related Logs:</strong> {selectedThreat.logs?.join(", ")}</p>
-                  <p><strong>Timeline:</strong></p>
+                  <p><strong>{t("id")}:</strong> {selectedThreat._id}</p>
+                  <p><strong>{t("logId")}:</strong> {selectedThreat.logId}</p>
+                  <p><strong>{t("classification")}:</strong> {selectedThreat.classification}</p>
+                  <p><strong>{t("description")}:</strong> {selectedThreat.description}</p>
+                  <p><strong>{t("confidenceExplanation")}:</strong> {selectedThreat.confidenceExplanation}</p>
+                  <p><strong>{t("relatedLogs")}:</strong> {selectedThreat.logs?.join(", ")}</p>
+                  <p><strong>{t("timeline")}:</strong></p>
                   <ul className="timeline">
                     {selectedThreat.timeline?.map((item, idx) => (
                       <li key={idx}>{item.time} – {item.event}</li>
                     ))}
                   </ul>
-                  <p><strong>Source/Dest IP:</strong> {selectedThreat.sourceDestIP?.src} → {selectedThreat.sourceDestIP?.dst}</p>
-                  <p><strong>Attack Pattern:</strong> {selectedThreat.attackPattern}</p>
-                  <p><strong>Recommended Action:</strong> {selectedThreat.recommendedAction}</p>
-                  <p><strong>Campus Area:</strong> {selectedThreat.areaName}</p>
-                  <p><strong>Zone Type:</strong> {selectedThreat.zoneType}</p>
-                  <p><strong>Coordinates:</strong> {selectedThreat.latitude}, {selectedThreat.longitude}</p>
+                  <p><strong>{t("sourceDestIP")}:</strong> {selectedThreat.sourceDestIP?.src} → {selectedThreat.sourceDestIP?.dst}</p>
+                  <p><strong>{t("attackPattern")}:</strong> {selectedThreat.attackPattern}</p>
+                  <p><strong>{t("recommendedAction")}:</strong> {selectedThreat.recommendedAction}</p>
+                  <p><strong>{t("campusArea")}:</strong> {selectedThreat.areaName}</p>
+                  <p><strong>{t("zoneType")}:</strong> {selectedThreat.zoneType}</p>
+                  <p><strong>{t("coordinates")}:</strong> {selectedThreat.latitude}, {selectedThreat.longitude}</p>
                 </div>
                 <div className="details-actions">
-                  <button className="btn-primary">Take Action</button>
+                  <button className="btn-primary">{t("takeAction")}</button>
                 </div>
               </div>
             )}
@@ -531,41 +585,41 @@ export default function Threats() {
 
           {/* Area-Based Threat Visualization */}
           <div className="area-viz-section">
-            <h2>Threat Map / Campus Zones</h2>
+            <h2>{t("threatMapCampusZones")}</h2>
             <div className="campus-map">
               <div className="map-placeholder">
                 <div className="zones-grid">
                   {campusZones.map(zone => (
                     <div key={zone.name} className={`zone-card risk-${zone.risk}`}>
                       <h4>{zone.name}</h4>
-                      <p>{zone.threats} active threats</p>
-                      <span className={`risk-badge ${zone.risk}`}>{zone.risk} risk</span>
+                      <p>{zone.threats} {t("activeThreats")}</p>
+                      <span className={`risk-badge ${zone.risk}`}>{t("riskLevel", { risk: t(zone.risk) })}</span>
                     </div>
                   ))}
                 </div>
-                <p className="map-note">📍 Interactive map would be embedded here (Leaflet / Google Maps).</p>
+                <p className="map-note">📍 {t("mapNote")}</p>
               </div>
             </div>
           </div>
 
           {/* Analytics Charts */}
           <div className="stats-section">
-            <h2>Threat Analytics</h2>
+            <h2>{t("threatAnalytics")}</h2>
             <div className="charts-grid">
               <div className="chart-card">
-                <h4>Threats by Type</h4>
+                <h4>{t("threatsByType")}</h4>
                 <Bar data={typeChartData} options={{ plugins: { legend: { display: false } } }} />
               </div>
               <div className="chart-card">
-                <h4>Threats by Severity</h4>
+                <h4>{t("threatsBySeverity")}</h4>
                 <Pie data={severityPieData} options={{ plugins: { legend: { position: "bottom" } } }} />
               </div>
               <div className="chart-card">
-                <h4>Threat Trend (Today)</h4>
+                <h4>{t("threatTrendToday")}</h4>
                 <Line data={trendChartData} />
               </div>
               <div className="chart-card">
-                <h4>Confidence Distribution</h4>
+                <h4>{t("confidenceDistribution")}</h4>
                 <Bar data={confidenceChartData} options={{ plugins: { legend: { display: false } } }} />
               </div>
             </div>
@@ -573,22 +627,22 @@ export default function Threats() {
 
           {/* ML Model Insight */}
           <div className="ml-insight-card">
-            <h3>🤖 ML Model Status</h3>
+            <h3>🤖 {t("mlModelStatus")}</h3>
             <div className="ml-details">
               <div className="ml-item">
-                <span className="ml-label">Model:</span>
+                <span className="ml-label">{t("model")}:</span>
                 <span className="ml-value">{mlModel.name}</span>
               </div>
               <div className="ml-item">
-                <span className="ml-label">Accuracy:</span>
+                <span className="ml-label">{t("accuracy")}:</span>
                 <span className="ml-value">{mlModel.accuracy}%</span>
               </div>
               <div className="ml-item">
-                <span className="ml-label">False Positive Rate:</span>
+                <span className="ml-label">{t("falsePositiveRate")}:</span>
                 <span className="ml-value">{mlModel.falsePositiveRate}%</span>
               </div>
               <div className="ml-item">
-                <span className="ml-label">Last Trained:</span>
+                <span className="ml-label">{t("lastTrained")}:</span>
                 <span className="ml-value">{mlModel.lastTrained}</span>
               </div>
             </div>

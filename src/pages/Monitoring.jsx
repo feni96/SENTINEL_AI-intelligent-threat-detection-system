@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./Monitoring.css";
 
 export default function Monitoring() {
+  const { t } = useTranslation();
   // ---------- Mock Data ----------
   const [ingestion] = useState({
     status: "Active",
@@ -44,9 +46,9 @@ export default function Monitoring() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>System Monitoring</h1>
+            <h1>{t("systemMonitoring")}</h1>
             <p className="page-description">
-              Real‑time visibility of data ingestion, AI analysis, and system health.
+              {t("systemMonitoringDescription")}
             </p>
           </div>
 
@@ -55,28 +57,28 @@ export default function Monitoring() {
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-database"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Ingestion Status</span>
+                <span className="metric-label">{t("ingestionStatus")}</span>
                 <span className="metric-value">{getStatusBadge(ingestion.status)}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-cpu"></i></div>
               <div className="metric-content">
-                <span className="metric-label">ML Process</span>
+                <span className="metric-label">{t("mlProcess")}</span>
                 <span className="metric-value">{getStatusBadge(aiStatus.mlProcess)}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-graph-up"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Logs Analyzed</span>
+                <span className="metric-label">{t("logsAnalyzed")}</span>
                 <span className="metric-value">{aiStatus.logsAnalyzed.toLocaleString()}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-arrow-up-circle"></i></div>
               <div className="metric-content">
-                <span className="metric-label">System Uptime</span>
+                <span className="metric-label">{t("systemUptime")}</span>
                 <span className="metric-value">{systemHealth.uptime}</span>
               </div>
             </div>
@@ -86,24 +88,24 @@ export default function Monitoring() {
           <div className="monitoring-grid">
             {/* Data Ingestion Monitoring */}
             <div className="card">
-              <h3><i className="bi bi-hdd-stack"></i> Data Ingestion</h3>
+              <h3><i className="bi bi-hdd-stack"></i> {t("dataIngestion")}</h3>
               <div className="ingestion-summary">
                 <div className="summary-row">
-                  <span className="summary-label">Overall Status:</span>
+                  <span className="summary-label">{t("overallStatus")}:</span>
                   <span className="summary-value">{getStatusBadge(ingestion.status)}</span>
                 </div>
                 <div className="summary-row">
-                  <span className="summary-label">Last Log Received:</span>
+                  <span className="summary-label">{t("lastLogReceived")}:</span>
                   <span className="summary-value">{ingestion.lastReceived}</span>
                 </div>
               </div>
-              <h4>Log Sources</h4>
+              <h4>{t("logSources")}</h4>
               <table className="source-table">
                 <thead>
                   <tr>
-                    <th>Source</th>
-                    <th>Last Log</th>
-                    <th>Status</th>
+                    <th>{t("source")}</th>
+                    <th>{t("lastLog")}</th>
+                    <th>{t("status")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -120,34 +122,34 @@ export default function Monitoring() {
 
             {/* AI Analysis Status & System Health */}
             <div className="card">
-              <h3><i className="bi bi-robot"></i> AI Analysis</h3>
+              <h3><i className="bi bi-robot"></i> {t("aiAnalysis")}</h3>
               <div className="ai-details">
                 <div className="detail-row">
-                  <span className="detail-label">ML Process:</span>
+                  <span className="detail-label">{t("mlProcess")}:</span>
                   <span className="detail-value">{getStatusBadge(aiStatus.mlProcess)}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Logs Analyzed:</span>
+                  <span className="detail-label">{t("logsAnalyzed")}:</span>
                   <span className="detail-value">{aiStatus.logsAnalyzed.toLocaleString()}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Last Execution:</span>
+                  <span className="detail-label">{t("lastExecution")}:</span>
                   <span className="detail-value">{aiStatus.lastExecution}</span>
                 </div>
               </div>
 
-              <h3 style={{ marginTop: "2rem" }}><i className="bi bi-heart-pulse"></i> System Health</h3>
+              <h3 style={{ marginTop: "2rem" }}><i className="bi bi-heart-pulse"></i> {t("systemHealth")}</h3>
               <div className="health-details">
                 <div className="detail-row">
-                  <span className="detail-label">Uptime:</span>
+                  <span className="detail-label">{t("systemUptime")}:</span>
                   <span className="detail-value">{systemHealth.uptime}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Errors:</span>
+                  <span className="detail-label">{t("errors")}:</span>
                   <span className="detail-value">{systemHealth.errors}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Pipeline Status:</span>
+                  <span className="detail-label">{t("pipelineStatus")}:</span>
                   <span className="detail-value">{getStatusBadge(systemHealth.pipelineStatus)}</span>
                 </div>
               </div>
@@ -156,17 +158,17 @@ export default function Monitoring() {
               <div className="pipeline-diagram">
                 <div className="pipeline-step active">
                   <i className="bi bi-database"></i>
-                  <span>Logs</span>
+                  <span>{t("logs")}</span>
                 </div>
                 <i className="bi bi-arrow-right"></i>
                 <div className="pipeline-step active">
                   <i className="bi bi-cpu"></i>
-                  <span>ML</span>
+                  <span>{t("ml")}</span>
                 </div>
                 <i className="bi bi-arrow-right"></i>
                 <div className="pipeline-step active">
                   <i className="bi bi-graph-up"></i>
-                  <span>Analysis</span>
+                  <span>{t("analysis")}</span>
                 </div>
               </div>
             </div>

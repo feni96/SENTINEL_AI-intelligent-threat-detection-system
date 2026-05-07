@@ -2,10 +2,17 @@
 
 /* Root Variables (Fallbacks if not in main theme) */
 :root {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-hover: #f1f5f9;
   --border-light: #e2e8f0;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --accent: #2563eb;
+  --border-primary: #334155;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --transition: all 0.2s ease;
@@ -17,7 +24,7 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1.5rem;
-  background: white;
+  background: var(--bg-secondary);
   padding: 1rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border-light);
@@ -42,7 +49,7 @@
   padding: 0.4rem 2rem 0.4rem 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--border-light);
-  background: #f8fafc;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 0.85rem;
   cursor: pointer;
@@ -73,7 +80,7 @@
 
 .details-panel {
   flex: 0.35;
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1rem;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-md);
@@ -142,7 +149,7 @@
 }
 
 .alerts-table th {
-  background: #f8fafc;
+  background: var(--bg-tertiary);
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.75rem;
@@ -158,8 +165,18 @@
   cursor: pointer;
 }
 
+html.dark .alerts-table td {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 .alerts-table tr:hover td {
-  background-color: #f1f5f9;
+  background-color: var(--bg-hover);
+}
+
+html.dark .alerts-table tr:hover td {
+  background-color: var(--bg-hover);
 }
 
 .critical-row td {
@@ -178,7 +195,7 @@
 }
 
 .chart-card {
-  background: white;
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 1rem;
   border: 1px solid var(--border-light);
@@ -195,8 +212,8 @@
 .system-health {
   display: flex;
   justify-content: space-around;
-  background: #1e293b; /* Dark theme for footer */
-  color: white;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 1rem;
   border-radius: 0.75rem;
   margin-top: 2rem;
@@ -208,6 +225,29 @@
 
 .status-running {
   color: #4ade80;
+}
+
+.status-idle {
+  color: #f59e0b;
+}
+
+/* Dark mode for system health */
+html.dark .system-health {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+html.dark .health-item i {
+  color: #38bdf8;
+}
+
+html.dark .status-running {
+  color: #10b981;
+}
+
+html.dark .status-idle {
+  color: #f59e0b;
 }
 
 /* Responsive Adjustments */

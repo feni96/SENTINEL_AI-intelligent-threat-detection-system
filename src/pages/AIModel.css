@@ -5,18 +5,44 @@
   margin-bottom: 2rem;
 }
 
+/* Dark mode styles */
+html.dark .page-description {
+  color: var(--text-secondary);
+}
+
+html.dark .model-selector-card {
+  background: var(--bg-card);
+  border-color: var(--border-light);
+}
+
+html.dark .model-selector select {
+  background: var(--bg-secondary);
+  border-color: var(--border-light);
+  color: var(--text-primary);
+}
+
+html.dark .model-selector label {
+  color: var(--text-secondary);
+}
+
 /* Model Selector & Toggle */
 .model-selector-card {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
   margin-bottom: 2rem;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .model-selector-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .model-selector {
@@ -35,7 +61,7 @@
   padding: 0.5rem 2rem 0.5rem 1rem;
   border-radius: 30px;
   border: 1px solid var(--border-light);
-  background: white;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 0.9rem;
   cursor: pointer;
@@ -43,6 +69,12 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
+}
+
+html.dark .model-selector select {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .model-toggle {
@@ -79,7 +111,7 @@
   height: 0;
 }
 .slider {
-  position: absolute;
+  position: relative;
   cursor: pointer;
   top: 0;
   left: 0;
@@ -89,6 +121,11 @@
   transition: 0.4s;
   border-radius: 34px;
 }
+
+html.dark .slider {
+  background-color: var(--bg-tertiary);
+}
+
 .slider:before {
   position: absolute;
   content: "";
@@ -99,6 +136,10 @@
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
+}
+
+html.dark .slider:before {
+  background-color: var(--text-primary);
 }
 input:checked + .slider {
   background-color: var(--accent);
@@ -123,11 +164,17 @@ input:checked + .slider:before {
 
 /* Cards (reuse from Dashboard) */
 .card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .card h3 {
@@ -153,12 +200,21 @@ input:checked + .slider:before {
   gap: 1rem;
 }
 
+html.dark .stats-list {
+  color: var(--text-primary);
+}
+
 .stat-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   padding: 0.25rem 0;
   border-bottom: 1px dashed var(--border-light);
+}
+
+html.dark .stat-row {
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .stat-row:last-child {
@@ -189,10 +245,22 @@ input:checked + .slider:before {
   border-bottom: 2px solid var(--border-light);
 }
 
+html.dark .detection-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 .detection-table td {
   padding: 0.5rem 0.5rem;
   border-bottom: 1px solid var(--border-light);
   color: var(--text-primary);
+}
+
+html.dark .detection-table td {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .confidence-badge {
@@ -204,6 +272,12 @@ input:checked + .slider:before {
   font-weight: 600;
 }
 
+html.dark .confidence-badge {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 /* Info note */
 .info-note {
   background: #eef2ff;
@@ -212,6 +286,12 @@ input:checked + .slider:before {
   margin-top: 2rem;
   border-left: 4px solid var(--accent);
   color: var(--text-primary);
+}
+
+html.dark .info-note {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .info-note i {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import {
@@ -31,6 +32,7 @@ ChartJS.register(
 );
 
 export default function Reports() {
+  const { t } = useTranslation();
   // ---------- State for report generation ----------
   const [reportType, setReportType] = useState("Daily");
   const [timeRange, setTimeRange] = useState("Last 24 hours");
@@ -137,7 +139,175 @@ export default function Reports() {
   };
 
   const handleDownload = (format) => {
-    alert(`Downloading report as ${format}... (simulated)`);
+    console.log('Export clicked:', format);
+    console.log('Report data exists:', !!reportData);
+    
+    // If no report data exists, generate a default report first
+    if (!reportData) {
+      console.log('Generating report automatically...');
+      // Generate a default report automatically
+      handleGenerateReport();
+      // Wait a moment for data to be set, then proceed with export
+      setTimeout(() => {
+        console.log('Proceeding with export after report generation...');
+        performExport(format);
+      }, 500); // Increased timeout
+      return;
+    }
+    
+    console.log('Proceeding with export...');
+    performExport(format);
+  };
+
+  const performExport = (format) => {
+    console.log('Performing export:', format);
+    console.log('Report data:', reportData);
+
+    if (format === "CSV") {
+      console.log('Starting CSV export...');
+      // CSV Export
+      const csvContent = [
+        ['Security Report', ''],
+        ['Report Type', reportData.reportType],
+        ['Description', reportData.description],
+        ['Date Range', `${reportData.fromDate} to ${reportData.toDate}`],
+        ['Generated', new Date(reportData.createdAt).toLocaleString()],
+        [''],
+        ['Summary Statistics', ''],
+        ['Total Threats', reportData.totalThreats],
+        ['Critical', reportData.threatsBySeverity.Critical],
+        ['High', reportData.threatsBySeverity.High],
+        ['Medium', reportData.threatsBySeverity.Medium],
+        ['Low', reportData.threatsBySeverity.Low],
+        [''],
+        ['Threats by Type', ''],
+        ...Object.entries(reportData.threatsByType).map(([type, count]) => [type, count]),
+        [''],
+        ['Top Threat Sources', ''],
+        ...reportData.topSources.map((source, index) => [`${index + 1}`, source]),
+        [''],
+        ['Top Affected Areas', ''],
+        ...reportData.topAreas.map((area, index) => [`${index + 1}`, area])
+      ].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `security_report_${reportData.fromDate}_${format}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log('CSV export completed successfully!');
+      alert('CSV report exported successfully!');
+
+    } else if (format === "PDF") {
+      console.log('Starting PDF export...');
+      // PDF Export (HTML to PDF simulation)
+      const reportContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Security Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; }
+            .section { margin: 20px 0; }
+            .summary { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+            .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+            .stat-item { text-align: center; }
+            .severity-critical { color: #ef4444; font-weight: bold; }
+            .severity-high { color: #f59e0b; font-weight: bold; }
+            .severity-medium { color: #eab308; font-weight: bold; }
+            .severity-low { color: #10b981; font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Security Report</h1>
+            <p>Generated: ${new Date(reportData.createdAt).toLocaleString()}</p>
+          </div>
+          
+          <div class="section">
+            <h2>Report Information</h2>
+            <p><strong>Type:</strong> ${reportData.reportType}</p>
+            <p><strong>Description:</strong> ${reportData.description}</p>
+            <p><strong>Date Range:</strong> ${reportData.fromDate} to ${reportData.toDate}</p>
+          </div>
+
+          <div class="section summary">
+            <h2>Summary Statistics</h2>
+            <p><strong>Total Threats:</strong> ${reportData.totalThreats}</p>
+            <div class="stats">
+              <div class="stat-item">
+                <div class="severity-critical">${reportData.threatsBySeverity.Critical}</div>
+                <div>Critical</div>
+              </div>
+              <div class="stat-item">
+                <div class="severity-high">${reportData.threatsBySeverity.High}</div>
+                <div>High</div>
+              </div>
+              <div class="stat-item">
+                <div class="severity-medium">${reportData.threatsBySeverity.Medium}</div>
+                <div>Medium</div>
+              </div>
+              <div class="stat-item">
+                <div class="severity-low">${reportData.threatsBySeverity.Low}</div>
+                <div>Low</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Threats by Type</h2>
+            <table>
+              <tr><th>Threat Type</th><th>Count</th></tr>
+              ${Object.entries(reportData.threatsByType).map(([type, count]) => 
+                `<tr><td>${type}</td><td>${count}</td></tr>`
+              ).join('')}
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>Top Threat Sources</h2>
+            <table>
+              <tr><th>Rank</th><th>Source IP</th></tr>
+              ${reportData.topSources.map((source, index) => 
+                `<tr><td>${index + 1}</td><td>${source}</td></tr>`
+              ).join('')}
+            </table>
+          </div>
+
+          <div class="section">
+            <h2>Top Affected Areas</h2>
+            <table>
+              <tr><th>Rank</th><th>Area</th></tr>
+              ${reportData.topAreas.map((area, index) => 
+                `<tr><td>${index + 1}</td><td>${area}</td></tr>`
+              ).join('')}
+            </table>
+          </div>
+        </body>
+        </html>
+      `;
+
+      // Create blob and download HTML file (can be saved as PDF)
+      const blob = new Blob([reportContent], { type: 'text/html;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `security_report_${reportData.fromDate}.html`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log('PDF export completed successfully!');
+      alert('PDF report exported successfully! (HTML file - can be saved as PDF)');
+    }
   };
 
   // ---------- Chart Data (using reportData if available) ----------
@@ -202,33 +372,32 @@ export default function Reports() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>Reports & Analytics</h1>
+            <h1>{t("reportsAnalytics")}</h1>
             <p className="page-description">
-              Generate and view detailed security reports with threat summaries,
-              visual analytics, and actionable recommendations.
+              {t("reportsAnalyticsDescription")}
             </p>
           </div>
 
           {/* Report Generation Controls */}
           <div className="report-controls card">
-            <h3>Generate Report</h3>
+            <h3>{t("generateReport")}</h3>
             <div className="filters-grid">
               <div className="filter-group">
-                <label>Report Type</label>
+                <label>{t("reportType")}</label>
                 <select value={reportType} onChange={(e) => setReportType(e.target.value)}>
-                  <option>Daily</option>
-                  <option>Weekly</option>
-                  <option>Monthly</option>
-                  <option>On-Demand</option>
+                  <option>{t("daily")}</option>
+                  <option>{t("weekly")}</option>
+                  <option>{t("monthly")}</option>
+                  <option>{t("onDemand")}</option>
                 </select>
               </div>
               <div className="filter-group">
-                <label>Time Range</label>
+                <label>{t("timeRange")}</label>
                 <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-                  <option>Last 24 hours</option>
-                  <option>Last 7 days</option>
-                  <option>Last 30 days</option>
-                  <option>Custom</option>
+                  <option>{t("last24Hours")}</option>
+                  <option>{t("last7Days")}</option>
+                  <option>{t("last30Days")}</option>
+                  <option>{t("custom")}</option>
                 </select>
               </div>
               {showCustomInputs && (

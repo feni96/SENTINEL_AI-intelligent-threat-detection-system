@@ -1,5 +1,57 @@
 /* AuditLog.css */
 
+/* Universal Dark Mode Styles */
+html.dark .page-description {
+  color: var(--text-secondary);
+}
+
+html.dark .filters-bar {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .filter-group label {
+  color: var(--text-secondary);
+}
+
+html.dark .filter-group select,
+html.dark .filter-group input {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .audit-table {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .audit-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .audit-table td {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .audit-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
+html.dark .audit-entry {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 .page-description {
   color: var(--text-secondary);
   margin-bottom: 2rem;
@@ -11,7 +63,7 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 2rem;
-  background: white;
+  background: var(--bg-secondary);
   padding: 1rem 1.5rem;
   border-radius: 1rem;
   border: 1px solid var(--border-light);
@@ -36,7 +88,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--border-light);
-  background: white;
+  background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 0.9rem;
 }
@@ -52,7 +104,7 @@
 
 /* Audit Table */
 .audit-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.5rem;
 }
@@ -79,7 +131,7 @@
 }
 
 .audit-table tbody tr:hover {
-  background: #f1f5f9;
+  background: var(--bg-hover);
 }
 
 .status-badge {

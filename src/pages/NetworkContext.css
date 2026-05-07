@@ -14,12 +14,18 @@
 }
 
 .zone-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 1.25rem;
   padding: 1.25rem;
   border-left: 6px solid;
   box-shadow: var(--shadow-md);
   transition: transform 0.2s;
+}
+
+html.dark .zone-card {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .zone-card:hover {
@@ -75,6 +81,31 @@
 .risk-badge.risk-critical {
   background: #fee2e2;
   color: #b91c1c;
+}
+
+/* Dark mode risk badges */
+html.dark .risk-badge.risk-low {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+html.dark .risk-badge.risk-medium {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+html.dark .risk-badge.risk-high {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+html.dark .risk-badge.risk-critical {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .zone-details {
@@ -135,10 +166,22 @@
   border-bottom: 2px solid var(--border-light);
 }
 
+html.dark .traffic-table th {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
+}
+
 .traffic-table td {
   padding: 0.75rem 0.5rem;
   border-bottom: 1px solid var(--border-light);
   color: var(--text-primary);
+}
+
+html.dark .traffic-table td {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-primary);
 }
 
 .threat-badge {
@@ -161,16 +204,41 @@
   color: #b91c1c;
 }
 
+/* Dark mode threat badges */
+html.dark .threat-badge.low {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+html.dark .threat-badge.medium {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+html.dark .threat-badge.high {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
 /* Info Note */
 .info-note {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: #eef2ff;
+  background: var(--bg-secondary);
   border-radius: 1rem;
   padding: 1rem 1.5rem;
   margin-top: 2rem;
   border-left: 4px solid var(--accent);
+}
+
+html.dark .info-note {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .info-note i {

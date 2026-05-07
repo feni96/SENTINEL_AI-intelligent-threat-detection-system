@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./AuditLog.css";
 
 export default function AuditLog() {
+  const { t } = useTranslation();
   // ---------- Mock Audit Data ----------
   const [logs, setLogs] = useState([
     {
@@ -142,11 +144,38 @@ export default function AuditLog() {
 
   // ---------- Helper for Status Badge ----------
   const getStatusBadge = (status) => {
-    return (
-      <span className={`status-badge ${status.toLowerCase()}`}>
-        {status}
-      </span>
-    );
+    const classes = {
+      Success: "badge-success",
+      Failed: "badge-failed",
+      Pending: "badge-pending",
+    };
+    return <span className={`badge ${classes[status] || "badge-default"}`}>{status}</span>;
+  };
+
+  const handleExport = () => {
+    // Export filtered logs to CSV
+    const csvContent = [
+      [t("id"), t("timestamp"), t("administrator"), t("actionType"), t("targetEntity"), t("status"), t("description")],
+      ...filteredLogs.map(log => [
+        log.id,
+        log.timestamp,
+        log.admin,
+        log.actionType,
+        log.target,
+        log.status,
+        log.description
+      ])
+    ].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `audit_log_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -156,27 +185,25 @@ export default function AuditLog() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>Logs & Audit Trail</h1>
-            <p className="page-description">
-              Track administrator actions for accountability and security monitoring.
-            </p>
+            <h1>{t("auditTrail")}</h1>
+            <p className="page-description">{t("auditTrailDescription")}</p>
           </div>
 
           {/* Filters Bar */}
           <div className="filters-bar">
             <div className="filter-group">
-              <label>Date</label>
+              <label>{t("date")}</label>
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               >
-                <option value="all">All time</option>
-                <option value="today">Today</option>
-                <option value="7days">Last 7 days</option>
+                <option value="all">{t("allTime")}</option>
+                <option value="today">{t("today")}</option>
+                <option value="7days">{t("last7Days")}</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>Action Type</label>
+              <label>{t("actionType")}</label>
               <select
                 value={actionFilter}
                 onChange={(e) => setActionFilter(e.target.value)}
@@ -189,7 +216,7 @@ export default function AuditLog() {
               </select>
             </div>
             <div className="filter-group">
-              <label>Administrator</label>
+              <label>{t("administrator")}</label>
               <select
                 value={adminFilter}
                 onChange={(e) => setAdminFilter(e.target.value)}
@@ -202,10 +229,10 @@ export default function AuditLog() {
               </select>
             </div>
             <div className="filter-group search">
-              <label>Search</label>
+              <label>{t("search")}</label>
               <input
                 type="text"
-                placeholder="Admin, target, description..."
+                placeholder={t("searchAuditPlaceholder")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -215,21 +242,21 @@ export default function AuditLog() {
           {/* Audit Log Table */}
           <div className="card audit-card">
             <div className="card-header">
-              <h3>Audit Trail</h3>
+              <h3>{t("auditTrail")}</h3>
               <div className="card-actions">
-                <button className="btn-outline">Export CSV</button>
+                <button className="btn-outline" onClick={handleExport}>{t("exportCsv")}</button>
               </div>
             </div>
             <div className="table-responsive">
               <table className="audit-table">
                 <thead>
                   <tr>
-                    <th>Timestamp</th>
-                    <th>Administrator</th>
-                    <th>Action Type</th>
-                    <th>Target Entity</th>
-                    <th>Status</th>
-                    <th>Description</th>
+                    <th>{t("timestamp")}</th>
+                    <th>{t("administrator")}</th>
+                    <th>{t("actionType")}</th>
+                    <th>{t("targetEntity")}</th>
+                    <th>{t("status")}</th>
+                    <th>{t("description")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -247,7 +274,7 @@ export default function AuditLog() {
                   ) : (
                     <tr>
                       <td colSpan="6" className="no-data">
-                        No audit records match your filters.
+                        {t("noAuditRecordsMatch")}
                       </td>
                     </tr>
                   )}

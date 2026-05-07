@@ -1,28 +1,61 @@
+/* ============================================
+   Navbar – Solid Blue Gradient (Light & Dark Mode)
+   ============================================ */
+
+/* Light mode (default) – dark blue gradient */
 .navbar {
-  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  background: linear-gradient(135deg, #1e3a8a, #2563eb) !important;
+  backdrop-filter: none;
   padding: 0.75rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 100;
+  transition: all 0.3s ease;
 }
 
+/* Dark mode – even darker blue gradient */
+html.dark .navbar {
+  background: linear-gradient(135deg, #0f172a, #1e3a8a) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+/* Left side container (logo + brand) */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Logo image */
+.navbar-logo {
+  height: 40px;
+  width: auto;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Brand text and icon */
 .navbar-brand {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: white;
+  color: white !important;
   font-size: 1.5rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
-
 .navbar-brand i {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
+/* Right side menu */
 .navbar-menu {
   display: flex;
   align-items: center;
@@ -32,69 +65,175 @@
 /* Icon links */
 .navbar-icon {
   position: relative;
-  color: white;
+  color: white !important;
   font-size: 1.3rem;
   text-decoration: none;
   display: flex;
   align-items: center;
-  transition: opacity 0.2s;
+  padding: 0.4rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
 }
-
 .navbar-icon:hover {
-  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 /* Alert badge */
 .navbar-icon .badge {
   position: absolute;
   top: -5px;
-  right: -8px;
+  right: -5px;
   background: #ef4444;
   color: white;
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.2rem 0.4rem;
-  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.45rem;
+  border-radius: 30px;
   min-width: 18px;
   text-align: center;
-  line-height: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* Welcome text */
 .navbar-welcome {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.95rem;
-  margin-left: 0.5rem;
+  color: white !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.3rem 0.9rem;
+  border-radius: 40px;
+  white-space: nowrap;
 }
 
-.navbar-logout {
+/* Language selector wrapper */
+.language-selector-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 40px;
+  padding: 0.2rem 0.8rem;
+}
+.language-selector-wrapper:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.language-globe-icon {
+  color: white !important;
+  font-size: 1.1rem;
+}
+.language-selector {
+  background: transparent;
+  border: none;
+  color: white !important;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.3rem 0.2rem;
+  outline: none;
+}
+.language-selector option {
+  background: #1e293b;
   color: white;
-  padding: 0.4rem 1.2rem;
+}
+
+/* Dark mode toggle button */
+.dark-mode-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: white !important;
+  padding: 0.45rem;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+.dark-mode-toggle i {
+  font-size: 1.2rem;
+}
+
+/* Logout button */
+.navbar-logout {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white !important;
+  padding: 0.45rem 1.2rem;
   border-radius: 40px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: all 0.2s;
+  gap: 0.6rem;
+}
+.navbar-logout:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: white;
+  transform: translateY(-1px);
 }
 
-.navbar-logout:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: white;
+/* Dark mode adjustments */
+html.dark .navbar-icon,
+html.dark .navbar-welcome,
+html.dark .language-selector-wrapper,
+html.dark .dark-mode-toggle,
+html.dark .navbar-logout {
+  background: rgba(0, 0, 0, 0.3);
+}
+html.dark .language-selector {
+  color: #f1f5f9 !important;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .navbar {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.5rem;
   }
   .navbar-menu {
-    gap: 0.75rem;
+    gap: 1rem;
   }
   .navbar-welcome {
-    display: none; /* hide on small screens */
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.6rem 1rem;
+  }
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  .navbar-brand i {
+    font-size: 1.2rem;
+  }
+  .navbar-logo {
+    height: 32px;
+  }
+  .navbar-menu {
+    gap: 0.6rem;
+  }
+  .navbar-icon {
+    font-size: 1.1rem;
+    padding: 0.3rem;
+  }
+  .dark-mode-toggle {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (max-width: 480px) {
+  .navbar-brand span {
+    display: none;
+  }
+  .language-selector {
+    width: 70px;
   }
 }

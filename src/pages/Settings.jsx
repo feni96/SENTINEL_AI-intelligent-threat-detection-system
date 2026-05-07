@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./Settings.css";
 
 export default function Settings() {
+  const { t } = useTranslation();
   // ---------- Alert Settings ----------
   const [alertSeverityThreshold, setAlertSeverityThreshold] = useState("Medium");
   const [minConfidence, setMinConfidence] = useState(70);
@@ -87,19 +89,19 @@ export default function Settings() {
   const handleSavePassword = (e) => {
     e.preventDefault();
     if (passwordForm.new !== passwordForm.confirm) {
-      alert("New passwords do not match.");
+      alert(t("newPasswordsDoNotMatch"));
       return;
     }
     if (passwordForm.new.length < 8) {
-      alert("Password must be at least 8 characters.");
+      alert(t("passwordMustBeAtLeast8Characters"));
       return;
     }
-    alert("Password changed successfully (simulated).");
+    alert(t("passwordChangedSuccessfully"));
     setPasswordForm({ current: "", new: "", confirm: "" });
   };
 
   const handleSaveSettings = () => {
-    alert("Settings saved (simulated).");
+    alert(t("settingsSaved"));
   };
 
   return (
@@ -109,9 +111,9 @@ export default function Settings() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>System Settings</h1>
+            <h1>{t("systemSettings")}</h1>
             <p className="page-description">
-              Configure alerting, notifications, ML models, zone mapping, and security preferences.
+              {t("systemSettingsDescription")}
             </p>
           </div>
 
@@ -119,23 +121,23 @@ export default function Settings() {
             {/* Alert Settings */}
             <div className="settings-card">
               <h3>
-                <i className="bi bi-exclamation-triangle"></i> Alert Settings
+                <i className="bi bi-exclamation-triangle"></i> {t("alertSettings")}
               </h3>
               <div className="settings-section">
                 <div className="setting-row">
-                  <label>Severity Threshold</label>
+                  <label>{t("severityThreshold")}</label>
                   <select
                     value={alertSeverityThreshold}
                     onChange={(e) => setAlertSeverityThreshold(e.target.value)}
                   >
-                    <option>Low</option>
-                    <option>Medium</option>
-                    <option>High</option>
-                    <option>Critical</option>
+                    <option value="Low">{t("low")}</option>
+                    <option value="Medium">{t("medium")}</option>
+                    <option value="High">{t("high")}</option>
+                    <option value="Critical">{t("critical")}</option>
                   </select>
                 </div>
                 <div className="setting-row">
-                  <label>Min Confidence Score (%)</label>
+                  <label>{t("minConfidenceScore")}</label>
                   <input
                     type="number"
                     min="0"
@@ -145,7 +147,7 @@ export default function Settings() {
                   />
                 </div>
                 <div className="setting-row">
-                  <label>Enable Alert for Threat Types</label>
+                  <label>{t("enableAlertForThreatTypes")}</label>
                   <div className="checkbox-group">
                     {Object.entries(enabledThreatTypes).map(([type, enabled]) => (
                       <label key={type}>
@@ -165,11 +167,11 @@ export default function Settings() {
             {/* Notification Settings */}
             <div className="settings-card">
               <h3>
-                <i className="bi bi-bell"></i> Notification Settings
+                <i className="bi bi-bell"></i> {t("notificationSettings")}
               </h3>
               <div className="settings-section">
                 <div className="setting-row">
-                  <label>Channels</label>
+                  <label>{t("channels")}</label>
                   <div className="checkbox-group">
                     <label>
                       <input
@@ -177,7 +179,7 @@ export default function Settings() {
                         checked={notificationChannels.dashboard}
                         onChange={() => handleChannelToggle("dashboard")}
                       />
-                      Dashboard
+                      {t("dashboardChannel")}
                     </label>
                     <label>
                       <input
@@ -185,7 +187,7 @@ export default function Settings() {
                         checked={notificationChannels.email}
                         onChange={() => handleChannelToggle("email")}
                       />
-                      Email
+                      {t("emailChannel")}
                     </label>
                     <label>
                       <input
@@ -193,12 +195,12 @@ export default function Settings() {
                         checked={notificationChannels.sms}
                         onChange={() => handleChannelToggle("sms")}
                       />
-                      SMS
+                      {t("smsChannel")}
                     </label>
                   </div>
                 </div>
                 <div className="setting-row">
-                  <label>Notify for Severities</label>
+                  <label>{t("notifyForSeverities")}</label>
                   <div className="checkbox-group">
                     {Object.entries(notifySeverities).map(([sev, enabled]) => (
                       <label key={sev}>
@@ -207,7 +209,7 @@ export default function Settings() {
                           checked={enabled}
                           onChange={() => handleSeverityNotifyToggle(sev)}
                         />
-                        {sev}
+                        {t(sev.toLowerCase())}
                       </label>
                     ))}
                   </div>
@@ -219,7 +221,7 @@ export default function Settings() {
                       checked={priorityOnly}
                       onChange={(e) => setPriorityOnly(e.target.checked)}
                     />
-                    Priority notifications only (Critical/High)
+                    {t("priorityNotificationsOnly")}
                   </label>
                 </div>
               </div>
@@ -228,23 +230,23 @@ export default function Settings() {
             {/* ML Model Settings */}
             <div className="settings-card">
               <h3>
-                <i className="bi bi-cpu"></i> Machine Learning Model
+                <i className="bi bi-cpu"></i> {t("machineLearningModel")}
               </h3>
               <div className="settings-section">
                 <div className="setting-row read-only">
-                  <label>Active Model</label>
+                  <label>{t("activeModel")}</label>
                   <span>{mlModel.activeModel}</span>
                 </div>
                 <div className="setting-row read-only">
-                  <label>Accuracy</label>
+                  <label>{t("accuracy")}</label>
                   <span>{mlModel.accuracy}%</span>
                 </div>
                 <div className="setting-row read-only">
-                  <label>False Positive Rate</label>
+                  <label>{t("falsePositiveRate")}</label>
                   <span>{mlModel.falsePositiveRate}%</span>
                 </div>
                 <div className="setting-row read-only">
-                  <label>Last Trained</label>
+                  <label>{t("lastTrained")}</label>
                   <span>{mlModel.lastTrained}</span>
                 </div>
                 <div className="setting-row">
@@ -254,7 +256,7 @@ export default function Settings() {
                       checked={modelEnabled}
                       onChange={(e) => setModelEnabled(e.target.checked)}
                     />
-                    Enable ML Detection
+                    {t("enableMlDetection")}
                   </label>
                 </div>
               </div>
@@ -263,7 +265,7 @@ export default function Settings() {
             {/* Area / Zone Mapping */}
             <div className="settings-card">
               <h3>
-                <i className="bi bi-map"></i> Zone Mapping
+                <i className="bi bi-map"></i> {t("zoneMapping")}
               </h3>
               <div className="settings-section">
                 <div className="setting-row">
@@ -273,7 +275,7 @@ export default function Settings() {
                       checked={areaVizEnabled}
                       onChange={(e) => setAreaVizEnabled(e.target.checked)}
                     />
-                    Enable Area‑Based Visualization
+                    {t("enableAreaBasedVisualization")}
                   </label>
                 </div>
                 <div className="zone-list">
@@ -297,12 +299,12 @@ export default function Settings() {
             {/* Security & Account Settings */}
             <div className="settings-card">
               <h3>
-                <i className="bi bi-shield-lock"></i> Security & Account
+                <i className="bi bi-shield-lock"></i> {t("securityAndAccount")}
               </h3>
               <div className="settings-section">
                 <form onSubmit={handleSavePassword}>
                   <div className="setting-row">
-                    <label>Current Password</label>
+                    <label>{t("currentPassword")}</label>
                     <input
                       type="password"
                       name="current"
@@ -312,7 +314,7 @@ export default function Settings() {
                     />
                   </div>
                   <div className="setting-row">
-                    <label>New Password</label>
+                    <label>{t("newPassword")}</label>
                     <input
                       type="password"
                       name="new"
@@ -322,7 +324,7 @@ export default function Settings() {
                     />
                   </div>
                   <div className="setting-row">
-                    <label>Confirm New Password</label>
+                    <label>{t("confirmNewPassword")}</label>
                     <input
                       type="password"
                       name="confirm"
@@ -332,12 +334,12 @@ export default function Settings() {
                     />
                   </div>
                   <button type="submit" className="btn-primary">
-                    Change Password
+                    {t("changePassword")}
                   </button>
                 </form>
                 <hr />
                 <div className="setting-row">
-                  <label>Session Timeout (minutes)</label>
+                  <label>{t("sessionTimeoutMinutes")}</label>
                   <input
                     type="number"
                     min="5"
@@ -347,11 +349,11 @@ export default function Settings() {
                   />
                 </div>
                 <div className="setting-row read-only">
-                  <label>Last Login</label>
+                  <label>{t("lastLogin")}</label>
                   <span>{lastLogin}</span>
                 </div>
                 <div className="setting-row read-only">
-                  <label>Recent Activity</label>
+                  <label>{t("recentActivity")}</label>
                   <ul className="activity-list">
                     {recentActivity.map((act, idx) => (
                       <li key={idx}>{act}</li>
@@ -365,7 +367,7 @@ export default function Settings() {
           {/* Global Save Button */}
           <div className="settings-actions">
             <button className="btn-primary" onClick={handleSaveSettings}>
-              Save All Settings
+              {t("saveAllSettings")}
             </button>
           </div>
         </div>

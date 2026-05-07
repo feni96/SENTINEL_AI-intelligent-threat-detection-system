@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./AIModel.css";
 
 export default function AIModel() {
+  const { t } = useTranslation();
   // ---------- Mock Data ----------
   const [models] = useState([
     {
@@ -41,7 +43,7 @@ export default function AIModel() {
   const [modelEnabled, setModelEnabled] = useState(true);
   const handleToggle = () => {
     setModelEnabled(!modelEnabled);
-    alert(`Model ${modelEnabled ? "disabled" : "enabled"} (simulated).`);
+    alert(t("modelEnabled", { status: modelEnabled ? "disabled" : "enabled" }));
   };
 
   // ---------- Last Detections (mock) ----------
@@ -59,16 +61,16 @@ export default function AIModel() {
         <Sidebar />
         <div className="dashboard-content">
           <div className="content-header">
-            <h1>AI Model Monitoring</h1>
+            <h1>{t("aiModelMonitoring")}</h1>
             <p className="page-description">
-              Track model health, performance, and reliability for trustworthy threat detection.
+              {t("aiModelDescription")}
             </p>
           </div>
 
           {/* Model Selector & Status */}
           <div className="model-selector-card">
             <div className="model-selector">
-              <label htmlFor="modelSelect">Active Model</label>
+              <label htmlFor="modelSelect">{t("activeModel")}</label>
               <select
                 id="modelSelect"
                 value={activeModelId}
@@ -83,7 +85,7 @@ export default function AIModel() {
             </div>
             <div className="model-toggle">
               <span className={`status-badge ${modelEnabled ? "active" : "inactive"}`}>
-                {modelEnabled ? "Active" : "Inactive"}
+                {modelEnabled ? t("active") : t("inactive")}
               </span>
               <label className="switch">
                 <input
@@ -102,21 +104,21 @@ export default function AIModel() {
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-cpu"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Model Name</span>
+                <span className="metric-label">{t("modelName")}</span>
                 <span className="metric-value">{activeModel.name}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-tag"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Version</span>
+                <span className="metric-label">{t("version")}</span>
                 <span className="metric-value">{activeModel.version}</span>
               </div>
             </div>
             <div className="metric-card">
               <div className="metric-icon"><i className="bi bi-bar-chart"></i></div>
               <div className="metric-content">
-                <span className="metric-label">Type</span>
+                <span className="metric-label">{t("type")}</span>
                 <span className="metric-value">{activeModel.type}</span>
               </div>
             </div>
@@ -127,19 +129,19 @@ export default function AIModel() {
             {/* Performance Metrics */}
             <div className="card">
               <h3>
-                <i className="bi bi-graph-up"></i> Performance Metrics
+                <i className="bi bi-graph-up"></i> {t("performanceMetrics")}
               </h3>
               <div className="stats-list">
                 <div className="stat-row">
-                  <span className="stat-label">Detection Accuracy</span>
+                  <span className="stat-label">{t("detectionAccuracy")}</span>
                   <span className="stat-value">{activeModel.accuracy}%</span>
                 </div>
                 <div className="stat-row">
-                  <span className="stat-label">False Positive Rate</span>
+                  <span className="stat-label">{t("falsePositiveRate")}</span>
                   <span className="stat-value">{activeModel.falsePositiveRate}%</span>
                 </div>
                 <div className="stat-row">
-                  <span className="stat-label">Last Trained</span>
+                  <span className="stat-label">{t("lastTrainedDate")}</span>
                   <span className="stat-value">{activeModel.lastTrained}</span>
                 </div>
               </div>
@@ -148,19 +150,19 @@ export default function AIModel() {
             {/* Usage Statistics */}
             <div className="card">
               <h3>
-                <i className="bi bi-hdd-stack"></i> Usage Statistics
+                <i className="bi bi-hdd-stack"></i> {t("usageStatistics")}
               </h3>
               <div className="stats-list">
                 <div className="stat-row">
-                  <span className="stat-label">Logs Processed</span>
+                  <span className="stat-label">{t("logsProcessed")}</span>
                   <span className="stat-value">{activeModel.logsProcessed.toLocaleString()}</span>
                 </div>
                 <div className="stat-row">
-                  <span className="stat-label">Threats Detected</span>
+                  <span className="stat-label">{t("threatsDetected")}</span>
                   <span className="stat-value">{activeModel.threatsDetected}</span>
                 </div>
                 <div className="stat-row">
-                  <span className="stat-label">Avg Confidence</span>
+                  <span className="stat-label">{t("avgConfidence")}</span>
                   <span className="stat-value">{activeModel.avgConfidence}%</span>
                 </div>
               </div>
@@ -170,14 +172,14 @@ export default function AIModel() {
           {/* Recent Detections (optional, adds transparency) */}
           <div className="card">
             <h3>
-              <i className="bi bi-clock-history"></i> Recent Detections (Last 4)
+              <i className="bi bi-clock-history"></i> {t("recentDetections")}
             </h3>
             <table className="detection-table">
               <thead>
                 <tr>
-                  <th>Time</th>
-                  <th>Threat Type</th>
-                  <th>Confidence</th>
+                  <th>{t("time")}</th>
+                  <th>{t("threatType")}</th>
+                  <th>{t("confidence")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,7 +199,7 @@ export default function AIModel() {
           {/* One‑Line Viva Explanation */}
           <div className="info-note">
             <p>
-              <i className="bi bi-info-circle"></i> The AI Model provides visibility into model status, accuracy, and reliability to ensure trustworthy machine‑learning‑based threat detection without exposing complex model controls.
+              <i className="bi bi-info-circle"></i> {t("aiModelInfo")}
             </p>
           </div>
         </div>

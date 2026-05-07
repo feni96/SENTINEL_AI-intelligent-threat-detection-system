@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import "./AreaMap.css";
 
 export default function AreaMap() {
+  const { t } = useTranslation();
   // ---------- Mock Data ----------
   const campusZones = [
     { id: "zone1", name: "Data Center", ipRange: "10.0.0.0/24", lat: 9.3, lng: 42.1 },
@@ -101,38 +103,40 @@ export default function AreaMap() {
         <div className="dashboard-content">
           {/* Header */}
           <div className="content-header">
-            <h1>Area‑Based Threat Map</h1>
-            <p className="map-description">
-              Visualizing threat distribution across campus zones. Click any zone for details.
-            </p>
+            <h1>{t("threatMapCampusZones")}</h1>
+            <p className="map-description">{t("areaMapDescription")}</p>
           </div>
 
           {/* Filters */}
           <div className="filters-bar">
             <div className="filter-group">
-              <label>Time Range</label>
+              <label>{t("timeRange")}</label>
               <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-                <option value="1h">Last Hour</option>
-                <option value="24h">Last 24 Hours</option>
-                <option value="7d">Last 7 Days</option>
+                <option value="1h">{t("lastHour")}</option>
+                <option value="24h">{t("last24Hours")}</option>
+                <option value="7d">{t("last7Days")}</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>Severity</label>
+              <label>{t("severity")}</label>
               <select value={severityFilter} onChange={(e) => setSeverityFilter(e.target.value)}>
-                {severityLevels.map(s => <option key={s}>{s}</option>)}
+                {severityLevels.map((s) => (
+                  <option key={s}>{t(s.toLowerCase())}</option>
+                ))}
               </select>
             </div>
             <div className="filter-group">
-              <label>Threat Type</label>
+              <label>{t("threatType")}</label>
               <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-                {threatTypes.map(t => <option key={t}>{t}</option>)}
+                {threatTypes.map((type) => (
+                  <option key={type}>{type}</option>
+                ))}
               </select>
             </div>
             <div className="filter-group">
-              <label>Min Confidence</label>
+              <label>{t("minConfidence")}</label>
               <select value={confidenceThreshold} onChange={(e) => setConfidenceThreshold(Number(e.target.value))}>
-                <option value={0}>Any</option>
+                <option value={0}>{t("any")}</option>
                 <option value={70}>≥70%</option>
                 <option value={80}>≥80%</option>
                 <option value={90}>≥90%</option>
@@ -151,6 +155,7 @@ export default function AreaMap() {
                   <div
                     key={zone.id}
                     className={`zone-tile ${heatClass}`}
+                    data-zone={zone.id}
                     onClick={() => handleZoneClick(zone)}
                   >
                     <div className="zone-header">
@@ -180,27 +185,27 @@ export default function AreaMap() {
 
             {/* Legend */}
             <div className="map-legend">
-              <h4>Legend</h4>
+              <h4>{t("legend")}</h4>
               <div className="legend-item">
-                <span className="marker-sample critical"></span> Critical
+                <span className="marker-sample critical"></span> {t("critical")}
               </div>
               <div className="legend-item">
-                <span className="marker-sample high"></span> High
+                <span className="marker-sample high"></span> {t("high")}
               </div>
               <div className="legend-item">
-                <span className="marker-sample medium"></span> Medium
+                <span className="marker-sample medium"></span> {t("medium")}
               </div>
               <div className="legend-item">
-                <span className="marker-sample low"></span> Low
+                <span className="marker-sample low"></span> {t("low")}
               </div>
               <div className="legend-item heat">
-                <span className="heat-sample heat-low"></span> Low density
+                <span className="heat-sample heat-low"></span> {t("lowDensity")}
               </div>
               <div className="legend-item heat">
-                <span className="heat-sample heat-medium"></span> Medium density
+                <span className="heat-sample heat-medium"></span> {t("mediumDensity")}
               </div>
               <div className="legend-item heat">
-                <span className="heat-sample heat-high"></span> High density
+                <span className="heat-sample heat-high"></span> {t("highDensity")}
               </div>
             </div>
           </div>
@@ -213,23 +218,32 @@ export default function AreaMap() {
               <p><strong>IP Range:</strong> {selectedZone.ipRange}</p>
               <p><strong>Total Threats:</strong> {getThreatCount(selectedZone.id)}</p>
               <p><strong>Highest Severity:</strong> {getZoneHighestSeverity(selectedZone.id) || "None"}</p>
-              <p><strong>Last Detected:</strong> {
-                threats.filter(t => t.zoneId === selectedZone.id)
-                  .sort((a,b) => new Date(b.time) - new Date(a.time))[0]?.time || "N/A"
+              <p><strong>{t("lastDetected")}</strong> {
+                threats.filter((item) => item.zoneId === selectedZone.id)
+                  .sort((a, b) => new Date(b.time) - new Date(a.time))[0]?.time || t("notAvailable")
               }</p>
-              <h4>Threats in this zone:</h4>
+              <h4>{t("threatsInThisZone")}</h4>
               <ul className="threat-list">
-                {threats.filter(t => t.zoneId === selectedZone.id).map(t => (
-                  <li key={t.id}>
-                    <span className={`threat-type-badge ${t.severity.toLowerCase()}`}>{t.type}</span>
-                    <span>{t.severity}</span>
-                    <span>{t.confidence}%</span>
-                    <span>{t.time}</span>
+                {threats.filter((item) => item.zoneId === selectedZone.id).map((item) => (
+                  <li key={item.id}>
+                    <span className={`threat-type-badge ${item.severity.toLowerCase()}`}>{item.type}</span>
+                    <span>{item.severity}</span>
+                    <span>{item.confidence}%</span>
+                    <span>{item.time}</span>
                   </li>
                 ))}
               </ul>
-              <button className="btn-primary" onClick={() => { /* navigate to threats page filtered by zone */ }}>
-                View All Threats in Zone
+              <button className="btn-primary" onClick={() => {
+                // Navigate to threats page with zone filter
+                const zoneId = selectedZone?.id;
+                if (zoneId) {
+                  // Store zone filter in sessionStorage or state management
+                  sessionStorage.setItem('zoneFilter', zoneId);
+                  // Navigate to threats page
+                  window.location.href = '/threats';
+                }
+              }}>
+                {t("viewAllThreatsInZone")}
               </button>
             </div>
           )}
@@ -237,18 +251,18 @@ export default function AreaMap() {
           {/* Data Source Note (for examiners) */}
           <div className="data-source-note">
             <p>
-              <strong>📍 Data Source:</strong> Threat locations are derived from source IP addresses mapped to predefined campus zones. In a production system, this would use geographic coordinates and a library like Leaflet/Mapbox.
+              <strong>📍 {t("dataSource")}</strong> {t("areaMapDataSourceDescription")}
             </p>
           </div>
 
           {/* System Flow Explanation */}
           <div className="flow-explanation card">
-            <h4>How Area Map Fits the System Flow</h4>
+            <h4>{t("howAreaMapFitsSystemFlow")}</h4>
             <ol>
-              <li>Network Logs → ML Threat Detection</li>
-              <li>Threat Classification + Severity</li>
-              <li>Zone Mapping (IP → Area)</li>
-              <li>Area Map Visualization</li>
+              <li>{t("systemFlowStep1")}</li>
+              <li>{t("systemFlowStep2")}</li>
+              <li>{t("systemFlowStep3")}</li>
+              <li>{t("systemFlowStep4")}</li>
             </ol>
           </div>
         </div>

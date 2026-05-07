@@ -1,0 +1,197 @@
+/* ProfessionalFooter.css - Complete & Corrected Version */
+
+/* Footer-specific container utility - higher specificity */
+.professional-footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Footer main container */
+.professional-footer {
+  background: linear-gradient(135deg, #1a1a2a 0%, #2d3748 100%);
+  color: #ffffff;
+  padding: 3rem 0 1rem 0;
+  border-top: 3px solid #007bff;
+  margin-top: 4rem;
+  width: 100%;
+  position: relative;
+  clear: both;
+}
+
+/* Footer grid layout */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Each footer section */
+.footer-section h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-section p {
+  color: #b8c5d3;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+/* Contact info with icons */
+.footer-contact {
+  margin-top: 1rem;
+}
+
+.footer-contact p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer-contact i {
+  color: #007bff;
+  font-size: 1rem;
+  width: 1.25rem; /* ensures consistent icon width */
+}
+
+/* Links list */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+  color: #b8c5d3;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  padding: 0.25rem 0;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+  background: transparent; /* removes background on hover for cleaner look */
+}
+
+/* Services text */
+.footer-services {
+  color: #b8c5d3;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+  cursor: default;
+}
+
+.footer-services:hover {
+  color: #ffffff;
+}
+
+/* Social media icons */
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #b8c5d3;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: #007bff;
+  color: #ffffff;
+  transform: translateY(-3px);
+}
+
+.social-link i {
+  font-size: 1.1rem;
+}
+
+/* Footer bottom bar */
+.footer-bottom {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0.5rem;
+}
+
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  margin-bottom: 1rem;
+}
+
+.footer-bottom p {
+  color: #8a99b0;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .footer-contact p {
+    justify-content: center;
+  }
+  .footer-section h4 {
+    text-align: center;
+  }
+  .footer-links a {
+    display: block;
+    text-align: center;
+  }
+  .social-links {
+    justify-content: center;
+  }
+  .professional-footer {
+    padding: 2rem 0 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    gap: 1rem;
+  }
+  .footer-section h4 {
+    font-size: 1rem;
+  }
+  .social-link {
+    width: 35px;
+    height: 35px;
+  }
+  .social-link i {
+    font-size: 1rem;
+  }
+}
