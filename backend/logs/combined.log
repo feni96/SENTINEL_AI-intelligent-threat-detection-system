@@ -1,0 +1,44 @@
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:29:19.746Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:29:19.748Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:29:19.749Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:29:19.750Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:00.121Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:00.123Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:00.124Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:00.125Z"}
+{"ip":"::1","level":"info","message":"GET /health","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:21.749Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /favicon.ico","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:21.856Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:31:32.558Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /health","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:38:44.434Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:41:48.007Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:41:48.009Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:41:48.009Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-03-10T22:41:48.010Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-11T00:12:51.213Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-03-11T00:13:26.626Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /api/auth/profile","service":"sentinel-ai-backend","timestamp":"2026-03-11T00:22:34.284Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /api/auth/profile","service":"sentinel-ai-backend","timestamp":"2026-03-11T00:23:12.268Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"GET /api/auth/profile","service":"sentinel-ai-backend","timestamp":"2026-03-11T00:23:26.268Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"GET /api/auth/profile","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:21:26.158Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /api/logs","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:30:42.668Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /predict","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:30:42.999Z","userAgent":"axios/1.13.6"}
+{"ip":"::1","level":"info","message":"POST /api/logs","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:36:23.481Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"GET /api/logs","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:36:54.497Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /api/logs/bulk","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:38:39.570Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"POST /predict","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:38:39.631Z","userAgent":"axios/1.13.6"}
+{"ip":"::1","level":"info","message":"POST /predict","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:38:39.637Z","userAgent":"axios/1.13.6"}
+{"ip":"::1","level":"info","message":"POST /api/threats","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:42:14.699Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"GET /api/threats","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:42:21.588Z","userAgent":"PostmanRuntime/7.51.1"}
+{"ip":"::1","level":"info","message":"PUT /","service":"sentinel-ai-backend","timestamp":"2026-03-11T09:52:04.660Z","userAgent":"PostmanRuntime/7.51.1"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:13:45.333Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:13:45.336Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:13:45.338Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:13:45.339Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:13:50.496Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"GET /api/threats","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:19:12.097Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"GET /api/threats","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:19:50.153Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"GET /api/threats","service":"sentinel-ai-backend","timestamp":"2026-03-13T19:22:08.818Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:29:25.756Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:29:45.902Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:30:02.062Z","userAgent":"PostmanRuntime/7.52.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:30:12.543Z","userAgent":"PostmanRuntime/7.52.0"}
