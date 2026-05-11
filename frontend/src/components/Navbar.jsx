@@ -7,10 +7,17 @@ const Navbar = () => {
   const { t, i18n } = useTranslation();
   const adminName = localStorage.getItem("adminName") || "Admin";
   const [activeAlerts, setActiveAlerts] = useState(0);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
   useEffect(() => {
     setActiveAlerts(5);
-  }, []);
+    // Apply theme on mount - only add class for light mode
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  }, [theme]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -21,6 +28,19 @@ const Navbar = () => {
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("i18nextLng", lng);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    // Only add light class for light mode, remove for dark mode
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
   };
 
   return (
@@ -39,11 +59,6 @@ const Navbar = () => {
 
       {/* Right side: Icons, welcome, language, dark toggle, logout */}
       <div className="navbar-menu">
-        <Link to="/alerts" className="navbar-icon" title={t("alerts")}>
-          <i className="bi bi-bell"></i>
-          {activeAlerts > 0 && <span className="badge">{activeAlerts}</span>}
-        </Link>
-
         <span className="navbar-welcome">
           {t("welcome")}, {adminName}
         </span>
@@ -61,6 +76,11 @@ const Navbar = () => {
             <option value="om">Oromoo</option>
           </select>
         </div>
+
+        {/* Theme toggle button */}
+        <button className="dark-mode-toggle" onClick={toggleTheme} title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+          <i className={`bi ${theme === "dark" ? "bi-sun" : "bi-moon"}`}></i>
+        </button>
 
         <button className="navbar-logout" onClick={handleLogout}>
           <i className="bi bi-box-arrow-right"></i> {t("logout")}
