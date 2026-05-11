@@ -115,6 +115,50 @@ const threatSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  mlPrediction: {
+    prediction: {
+      type: String,
+      trim: true
+    },
+    confidence: {
+      type: Number,
+      min: 0,
+      max: 1
+    },
+    risk_score: {
+      type: Number,
+      min: 0,
+      max: 1
+    },
+    threat_level: {
+      type: String,
+      enum: ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+      uppercase: true
+    },
+    branch_used: {
+      type: String,
+      trim: true
+    },
+    model_used: {
+      type: String,
+      trim: true
+    },
+    routing: {
+      routing_confidence: {
+        type: Number,
+        min: 0,
+        max: 1
+      }
+    },
+    inference_time_ms: {
+      type: Number,
+      min: 0
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  },
   additionalData: {
     type: mongoose.Schema.Types.Mixed
   }
@@ -129,5 +173,11 @@ threatSchema.index({ severityLevel: 1, timestamp: -1 });
 threatSchema.index({ status: 1, timestamp: -1 });
 threatSchema.index({ sourceIP: 1, timestamp: -1 });
 threatSchema.index({ userId: 1, timestamp: -1 });
+
+// ML-specific indexes for real-time dashboard queries
+threatSchema.index({ 'mlPrediction.threat_level': 1, timestamp: -1 });
+threatSchema.index({ 'mlPrediction.prediction': 1, timestamp: -1 });
+threatSchema.index({ mlPredicted: 1, timestamp: -1 });
+threatSchema.index({ 'mlPrediction.confidence': -1, timestamp: -1 });
 
 module.exports = mongoose.model('Threat', threatSchema);

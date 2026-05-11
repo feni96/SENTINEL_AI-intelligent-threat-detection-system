@@ -4,7 +4,7 @@ const winston = require('winston');
 class MLProxyService {
   constructor() {
     this.fastAPIBaseURL = process.env.FASTAPI_URL || 'http://localhost:8000';
-    this.timeout = parseInt(process.env.ML_TIMEOUT) || 30000;
+    this.timeout = parseInt(process.env.ML_TIMEOUT) || 10000;
     
     this.logger = winston.createLogger({
       level: 'info',
@@ -17,22 +17,31 @@ class MLProxyService {
         new winston.transports.Console({ format: winston.format.simple() })
       ]
     });
+
+    // Create axios instance with default configuration
+    this.axiosInstance = axios.create({
+      baseURL: this.fastAPIBaseURL,
+      timeout: this.timeout,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
-  async predictIntrusion(inputData) {
+  async predictIntrusion(networkData) {
     try {
       this.logger.info('Sending prediction request to FastAPI', { 
-        featureCount: Object.keys(inputData).length 
+        featureCount: Object.keys(networkData).length 
       });
 
-      const response = await axios.post(`${this.fastAPIBaseURL}/predict`, inputData, {
-        timeout: this.timeout,
-        headers: { 'Content-Type': 'application/json' }
+      const response = await this.axiosInstance.post('/predict', {
+        data: networkData
       });
 
       this.logger.info('Received prediction from FastAPI', { 
-        attackType: response.data.attackType,
-        confidence: response.data.confidence 
+        prediction: response.data.prediction,
+        confidence: response.data.confidence,
+        threatLevel: response.data.threat_level
       });
 
       return response.data;
@@ -55,88 +64,16 @@ class MLProxyService {
     }
   }
 
-  async predictBatch(inputDataList) {
-    try {
-      this.logger.info('Sending batch prediction request to FastAPI', { 
-        batchSize: inputDataList.length 
-      });
-
-      const response = await axios.post(`${this.fastAPIBaseURL}/predict-batch`, {
-        inputs: inputDataList
-      }, {
-        timeout: this.timeout * 2, // Allow more time for batch
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      this.logger.info('Received batch predictions from FastAPI', { 
-        resultCount: response.data.predictions?.length || 0 
-      });
-
-      return response.data;
-    } catch (error) {
-      this.logger.error('FastAPI batch prediction request failed', { 
-        error: error.message,
-        batchSize: inputDataList.length 
-      });
-      
-      // Fallback to individual predictions if batch fails
-      this.logger.warn('Batch failed, falling back to individual predictions');
-      const predictions = [];
-      
-      for (const inputData of inputDataList) {
-        try {
-          const prediction = await this.predictIntrusion(inputData);
-          predictions.push(prediction);
-        } catch (individualError) {
-          this.logger.error('Individual prediction failed in batch fallback', {
-            error: individualError.message
-          });
-          predictions.push({
-            attackType: 'Unknown',
-            confidence: 0.0,
-            riskLevel: 'MEDIUM',
-            error: individualError.message
-          });
-        }
-      }
-      
-      return { predictions };
-    }
-  }
-
-  async getModelMetrics() {
-    try {
-      this.logger.info('Requesting model metrics from FastAPI');
-
-      const response = await axios.get(`${this.fastAPIBaseURL}/models`, {
-        timeout: 10000 // Shorter timeout for metrics
-      });
-
-      this.logger.info('Received model metrics from FastAPI');
-      return response.data;
-    } catch (error) {
-      this.logger.error('FastAPI metrics request failed', { 
-        error: error.message 
-      });
-      
-      throw new Error(`Failed to get model metrics: ${error.message}`);
-    }
-  }
-
-  async checkServiceHealth() {
+  async getHealth() {
     try {
       this.logger.info('Checking FastAPI service health');
 
-      const response = await axios.get(`${this.fastAPIBaseURL}/health`, {
-        timeout: 5000 // Short timeout for health check
-      });
+      const response = await this.axiosInstance.get('/health');
 
       const health = {
-        status: 'healthy',
+        status: response.data.status || 'healthy',
         fastapi_available: true,
-        models_loaded: response.data.models_loaded || false,
-        model_count: response.data.model_count || 0,
-        uptime: response.data.uptime || 0,
+        models: response.data.models || {},
         timestamp: new Date().toISOString()
       };
 
@@ -156,48 +93,57 @@ class MLProxyService {
     }
   }
 
-  async getFeatureExamples() {
+  async getModels() {
     try {
-      this.logger.info('Requesting feature examples from FastAPI');
+      this.logger.info('Requesting available models from FastAPI');
 
-      const response = await axios.get(`${this.fastAPIBaseURL}/features-example`, {
-        timeout: 10000
+      const response = await this.axiosInstance.get('/models');
+
+      this.logger.info('Received models from FastAPI', { 
+        modelCount: response.data.available_models?.length || 0 
       });
 
-      this.logger.info('Received feature examples from FastAPI');
       return response.data;
     } catch (error) {
-      this.logger.error('FastAPI feature examples request failed', { 
+      this.logger.error('FastAPI models request failed', { 
         error: error.message 
       });
       
-      throw new Error(`Failed to get feature examples: ${error.message}`);
+      throw new Error(`Failed to get models: ${error.message}`);
     }
   }
 
-  async toggleFallbackMode(enabled) {
+  async getSchemas() {
     try {
-      this.logger.info('Toggling fallback mode', { enabled });
+      this.logger.info('Requesting schemas from FastAPI');
 
-      const response = await axios.post(`${this.fastAPIBaseURL}/fallback`, 
-        { enabled }, 
-        {
-          timeout: 5000,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
+      const response = await this.axiosInstance.get('/schemas');
 
-      this.logger.info('Fallback mode toggled successfully', { 
-        enabled: response.data.fallback_enabled 
-      });
-
+      this.logger.info('Received schemas from FastAPI');
       return response.data;
     } catch (error) {
-      this.logger.error('FastAPI fallback toggle failed', { 
+      this.logger.error('FastAPI schemas request failed', { 
         error: error.message 
       });
       
-      throw new Error(`Failed to toggle fallback mode: ${error.message}`);
+      throw new Error(`Failed to get schemas: ${error.message}`);
+    }
+  }
+
+  async getVersion() {
+    try {
+      this.logger.info('Requesting version from FastAPI');
+
+      const response = await this.axiosInstance.get('/version');
+
+      this.logger.info('Received version from FastAPI');
+      return response.data;
+    } catch (error) {
+      this.logger.error('FastAPI version request failed', { 
+        error: error.message 
+      });
+      
+      throw new Error(`Failed to get version: ${error.message}`);
     }
   }
 

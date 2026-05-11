@@ -2,6 +2,9 @@ const { validationResult } = require('express-validator');
 const mlProxyService = require('../services/mlProxyService');
 const { catchAsync, AppError } = require('../middleware/errorHandler');
 const NetworkLog = require('../models/NetworkLog');
+const Threat = require('../models/Threat');
+const { transformNetworkLogToMLFormat, transformFeaturesToMLFormat, validateMLData } = require('../utils/mlDataTransform');
+const { emitNewThreat, emitThreatUpdate, emitMLServiceHealth } = require('../socket/socketHandlers');
 const winston = require('winston');
 
 // Predict threat for a single log
@@ -22,16 +25,57 @@ const predictThreat = catchAsync(async (req, res, next) => {
   }
 
   try {
-    // Validate input before sending to FastAPI
-    mlProxyService.validateInput(networkLog.toObject());
+    // Transform network log to ML format
+    const mlData = transformNetworkLogToMLFormat(networkLog.toObject());
+    
+    // Validate ML data
+    validateMLData(mlData);
     
     // Get ML prediction from FastAPI
-    const prediction = await mlProxyService.predictIntrusion(networkLog.toObject());
+    const prediction = await mlProxyService.predictIntrusion(mlData);
+
+    // Create threat record with ML prediction
+    const threat = new Threat({
+      threatType: prediction.prediction || 'Unknown',
+      sourceIP: networkLog.sourceIP,
+      severityLevel: mapThreatLevelToSeverity(prediction.threat_level),
+      confidenceScore: Math.round((prediction.confidence || 0) * 100),
+      status: 'Active',
+      networkLogId: networkLog._id,
+      userId: req.user._id,
+      mlPredicted: true,
+      ruleBased: false,
+      mlPrediction: {
+        prediction: prediction.prediction,
+        confidence: prediction.confidence,
+        risk_score: prediction.risk_score,
+        threat_level: prediction.threat_level,
+        branch_used: prediction.branch_used,
+        model_used: prediction.model_used,
+        routing: prediction.routing,
+        inference_time_ms: prediction.inference_time_ms,
+        timestamp: prediction.timestamp || new Date()
+      }
+    });
+
+    // Save threat to database
+    await threat.save();
+
+    // Emit real-time threat event
+    emitNewThreat(threat);
+
+    winston.info(`ML threat prediction completed and saved`, {
+      threatId: threat._id,
+      prediction: prediction.prediction,
+      confidence: prediction.confidence,
+      userId: req.user._id
+    });
 
     res.status(200).json({
       success: true,
       message: 'ML prediction completed',
       data: {
+        threat,
         prediction,
         logId: networkLog._id
       }
@@ -45,10 +89,10 @@ const predictThreat = catchAsync(async (req, res, next) => {
         error: 'SERVICE_UNAVAILABLE',
         data: {
           prediction: {
-            attackType: 'Unknown',
+            prediction: 'Unknown',
             confidence: 0.0,
-            riskLevel: 'MEDIUM',
-            modelUsed: 'fallback',
+            threat_level: 'MEDIUM',
+            model_used: 'fallback',
             error: 'Service unavailable - please try again later'
           },
           logId: networkLog._id
@@ -144,16 +188,56 @@ const predictFromFeatures = catchAsync(async (req, res, next) => {
   }
 
   try {
-    // Validate input before sending to FastAPI
-    mlProxyService.validateInput(features);
+    // Transform features to ML format
+    const mlData = transformFeaturesToMLFormat(features);
+    
+    // Validate ML data
+    validateMLData(mlData);
     
     // Get prediction from FastAPI
-    const prediction = await mlProxyService.predictIntrusion(features);
+    const prediction = await mlProxyService.predictIntrusion(mlData);
+
+    // Create threat record with ML prediction
+    const threat = new Threat({
+      threatType: prediction.prediction || 'Unknown',
+      sourceIP: features.sourceIP || 'Unknown',
+      severityLevel: mapThreatLevelToSeverity(prediction.threat_level),
+      confidenceScore: Math.round((prediction.confidence || 0) * 100),
+      status: 'Active',
+      userId: req.user._id,
+      mlPredicted: true,
+      ruleBased: false,
+      mlPrediction: {
+        prediction: prediction.prediction,
+        confidence: prediction.confidence,
+        risk_score: prediction.risk_score,
+        threat_level: prediction.threat_level,
+        branch_used: prediction.branch_used,
+        model_used: prediction.model_used,
+        routing: prediction.routing,
+        inference_time_ms: prediction.inference_time_ms,
+        timestamp: prediction.timestamp || new Date()
+      }
+    });
+
+    // Save threat to database
+    await threat.save();
+
+    // Emit real-time threat event
+    emitNewThreat(threat);
+
+    winston.info(`Feature-based ML prediction completed and saved`, {
+      threatId: threat._id,
+      prediction: prediction.prediction,
+      confidence: prediction.confidence,
+      userId: req.user._id
+    });
 
     res.status(200).json({
       success: true,
       message: 'Feature-based prediction completed',
       data: {
+        threat,
         prediction,
         features
       }
@@ -167,10 +251,10 @@ const predictFromFeatures = catchAsync(async (req, res, next) => {
         error: 'SERVICE_UNAVAILABLE',
         data: {
           prediction: {
-            attackType: 'Unknown',
+            prediction: 'Unknown',
             confidence: 0.0,
-            riskLevel: 'MEDIUM',
-            modelUsed: 'fallback',
+            threat_level: 'MEDIUM',
+            model_used: 'fallback',
             error: 'Service unavailable - please try again later'
           },
           features
@@ -210,12 +294,12 @@ const trainModel = catchAsync(async (req, res, next) => {
 // Get ML model metrics
 const getModelMetrics = catchAsync(async (req, res, next) => {
   try {
-    const metrics = await mlProxyService.getModelMetrics();
+    const models = await mlProxyService.getModels();
 
     res.status(200).json({
       success: true,
       data: {
-        metrics
+        models
       }
     });
   } catch (error) {
@@ -225,11 +309,9 @@ const getModelMetrics = catchAsync(async (req, res, next) => {
         message: 'ML service temporarily unavailable',
         error: 'SERVICE_UNAVAILABLE',
         data: {
-          metrics: {
-            models: {},
-            health: { status: 'unhealthy' },
-            registryLoaded: false,
-            timestamp: new Date().toISOString()
+          models: {
+            available_models: [],
+            status: 'unhealthy'
           }
         }
       });
@@ -240,7 +322,10 @@ const getModelMetrics = catchAsync(async (req, res, next) => {
 
 // Check ML service health
 const checkServiceHealth = catchAsync(async (req, res, next) => {
-  const health = await mlProxyService.checkServiceHealth();
+  const health = await mlProxyService.getHealth();
+
+  // Emit health status to admin users
+  emitMLServiceHealth(health);
 
   res.status(200).json({
     success: true,
@@ -286,51 +371,148 @@ const toggleFallbackMode = catchAsync(async (req, res, next) => {
   }
 });
 
-// Get feature extraction example
-const getFeatureExample = catchAsync(async (req, res, next) => {
+// Get model schemas
+const getModelSchemas = catchAsync(async (req, res, next) => {
   try {
-    const examples = await mlProxyService.getFeatureExamples();
+    const schemas = await mlProxyService.getSchemas();
 
     res.status(200).json({
       success: true,
-      message: 'Feature examples retrieved',
-      data: examples
+      message: 'Model schemas retrieved',
+      data: schemas
     });
   } catch (error) {
     if (error.message.includes('ML service')) {
-      // Return basic example when service is unavailable
-      const basicExample = {
-        simulation: {
-          duration: 120,
-          protocol: 0,
-          packet_count: 200,
-          connection_count: 10,
-          failed_logins: 0,
-          traffic_rate: 1.67,
-          src_bytes: 16000,
-          dst_bytes: 12000,
-          avg_packet_size: 80,
-          bytes_ratio: 1.33,
-          error_rate: 0.0,
-          connection_rate: 0.083,
-          packet_variance: 10,
-          burst_intensity: 0.139,
-          label: 'Normal'
-        }
-      };
-      
-      return res.status(200).json({
-        success: true,
-        message: 'Basic feature examples (service unavailable)',
+      return res.status(503).json({
+        success: false,
+        message: 'ML service temporarily unavailable',
+        error: 'SERVICE_UNAVAILABLE',
         data: {
-          schemaExamples: basicExample,
-          note: 'Service unavailable - showing basic examples'
+          schemas: {},
+          note: 'Service unavailable - cannot retrieve schemas'
         }
       });
     }
     throw error;
   }
 });
+
+// Get service version
+const getServiceVersion = catchAsync(async (req, res, next) => {
+  try {
+    const version = await mlProxyService.getVersion();
+
+    res.status(200).json({
+      success: true,
+      message: 'Service version retrieved',
+      data: version
+    });
+  } catch (error) {
+    if (error.message.includes('ML service')) {
+      return res.status(503).json({
+        success: false,
+        message: 'ML service temporarily unavailable',
+        error: 'SERVICE_UNAVAILABLE',
+        data: {
+          version: 'unknown',
+          note: 'Service unavailable - cannot retrieve version'
+        }
+      });
+    }
+    throw error;
+  }
+});
+
+// Get recent threats for dashboard
+const getRecentThreats = catchAsync(async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const threats = await Threat.find({ userId: req.user._id })
+      .sort({ timestamp: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select('threatType sourceIP severityLevel confidenceScore status timestamp mlPrediction');
+
+    const total = await Threat.countDocuments({ userId: req.user._id });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        threats,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
+});
+
+// Get threat statistics for dashboard
+const getThreatStats = catchAsync(async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const now = new Date();
+    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const [
+      totalThreats,
+      recentThreats,
+      threatsByLevel,
+      threatsByType,
+      mlPredictedCount
+    ] = await Promise.all([
+      Threat.countDocuments({ userId }),
+      Threat.countDocuments({ userId, timestamp: { $gte: last24Hours } }),
+      Threat.aggregate([
+        { $match: { userId } },
+        { $group: { _id: '$severityLevel', count: { $sum: 1 } } }
+      ]),
+      Threat.aggregate([
+        { $match: { userId, timestamp: { $gte: last24Hours } } },
+        { $group: { _id: '$threatType', count: { $sum: 1 } }, $sort: { count: -1 }, $limit: 10 }
+      ]),
+      Threat.countDocuments({ userId, mlPredicted: true })
+    ]);
+
+    const stats = {
+      totalThreats,
+      recentThreats,
+      mlPredictedCount,
+      threatsByLevel: threatsByLevel.reduce((acc, item) => {
+        acc[item._id] = item.count;
+        return acc;
+      }, {}),
+      topThreatTypes: threatsByType,
+      timestamp: now.toISOString()
+    };
+
+    res.status(200).json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    throw error;
+  }
+});
+
+// Utility function to map threat levels
+const mapThreatLevelToSeverity = (threatLevel) => {
+  const mapping = {
+    'LOW': 'Low',
+    'MEDIUM': 'Medium', 
+    'HIGH': 'High',
+    'CRITICAL': 'Critical'
+  };
+  return mapping[threatLevel] || 'Medium';
+};
 
 module.exports = {
   predictThreat,
@@ -340,5 +522,8 @@ module.exports = {
   getModelMetrics,
   checkServiceHealth,
   toggleFallbackMode,
-  getFeatureExample
+  getModelSchemas,
+  getServiceVersion,
+  getRecentThreats,
+  getThreatStats
 };

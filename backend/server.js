@@ -3,6 +3,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const winston = require('winston');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const { initializeSocket } = require('./socket/socketServer');
 require('dotenv').config();
 
 // Import routes and middleware
@@ -118,6 +121,55 @@ app.use('/api/auth/register', authLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Sentinel AI - Intelligent Threat Detection System API',
+      version: '1.0.0',
+      description: 'RESTful API for Sentinel AI intrusion detection system with real-time ML predictions',
+      contact: {
+        name: 'Sentinel AI Team',
+        email: 'support@sentinel-ai.com'
+      }
+    },
+    servers: [
+      {
+        url: process.env.NODE_ENV === 'production' 
+          ? 'https://your-domain.com' 
+          : `http://localhost:${process.env.PORT || 5000}`,
+        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT authentication token'
+        }
+      }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
+  },
+  apis: ['./routes/*.js', './controllers/*.js'], // Path to the API docs
+};
+
+const specs = swaggerJsdoc(swaggerOptions);
+
+// Swagger UI route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'Sentinel AI API Documentation'
+}));
+
 // Request logging middleware
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.path}`, {
@@ -159,9 +211,11 @@ app.get('/api', (req, res) => {
       alerts: '/api/alerts',
       reports: '/api/reports',
       machineLearning: '/api/ml',
-      health: '/health'
+      health: '/health',
+      swaggerDocs: '/api-docs'
     },
-    documentation: 'https://github.com/your-repo/sentinel-ai/docs'
+    documentation: '/api-docs',
+    swagger: 'http://localhost:5000/api-docs'
   });
 });
 
@@ -230,12 +284,16 @@ const server = app.listen(PORT, async () => {
     // Connect to database
     await connectDB();
     
+    // Initialize Socket.IO
+    initializeSocket(server);
+    
     // Start background tasks
     startBackgroundTasks();
     
     logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
     logger.info(`Health check available at http://localhost:${PORT}/health`);
     logger.info(`API documentation available at http://localhost:${PORT}/api`);
+    logger.info(`Socket.IO initialized for real-time communication`);
     
   } catch (error) {
     logger.error('Failed to start server:', error);
