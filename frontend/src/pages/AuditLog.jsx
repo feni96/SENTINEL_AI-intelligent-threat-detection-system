@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "./AuditLog.css";
 
 export default function AuditLog() {
   const { t } = useTranslation();
@@ -184,10 +183,7 @@ export default function AuditLog() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          <div className="content-header">
-            <h1>{t("auditTrail")}</h1>
-            <p className="page-description">{t("auditTrailDescription")}</p>
-          </div>
+          {/* Header removed as requested */}
 
           {/* Filters Bar */}
           <div className="filters-bar">

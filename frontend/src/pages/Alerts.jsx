@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import {
@@ -16,7 +15,6 @@ import {
   Filler,
 } from "chart.js";
 import { Bar, Pie, Line } from "react-chartjs-2";
-import "./Alerts.css";
 
 ChartJS.register(
   CategoryScale,
@@ -32,19 +30,15 @@ ChartJS.register(
 );
 
 export default function Alerts() {
-  const { t } = useTranslation();
   // ---------- Mock Data (Aligned with Schema) ----------
   const [alerts, setAlerts] = useState([
     {
-      // --- Schema fields ---
-      threatId: "THR-001",                     // reference to Threat document
+      threatId: "THR-001",
       message: "Large-scale DDoS attack targeting admin network.",
-      priority: "Critical",                     // enum: Low, Medium, High, Critical
-      status: "Active",                          // enum: Active, Acknowledged, Resolved (default Active)
-      createdAt: "2025-03-20T10:45:23Z",        // ISO string
-
-      // --- Extra UI fields (not in schema) ---
-      id: "ALT-001",                             // for display
+      priority: "Critical",
+      status: "Active",
+      createdAt: "2025-03-20T10:45:23Z",
+      id: "ALT-001",
       threatType: "DDoS Attack",
       severity: "Critical",
       confidence: 98,
@@ -84,7 +78,7 @@ export default function Alerts() {
       threatId: "THR-003",
       message: "Repeated failed login attempts from lab machine.",
       priority: "Medium",
-      status: "Acknowledged",                    // was "Investigating", now using schema enum
+      status: "Acknowledged",
       createdAt: "2025-03-19T15:15:02Z",
       id: "ALT-003",
       threatType: "Unauthorized Access",
@@ -151,17 +145,10 @@ export default function Alerts() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [filterConfidenceMin, setFilterConfidenceMin] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [timeRange, setTimeRange] = useState("24h"); // '24h', '7d', '30d'
+  const [timeRange, setTimeRange] = useState("24h");
 
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [showDetailsPanel, setShowDetailsPanel] = useState(false);
-
-  // ---------- Derived Stats for Summary Cards ----------
-  // Using createdAt to filter "today" (simplified for mock)
-  const totalToday = alerts.filter(a => a.createdAt.startsWith("2025-03-20")).length;
-  const activeAlerts = alerts.filter(a => a.status === "Active").length;
-  const criticalHigh = alerts.filter(a => a.priority === "Critical" || a.priority === "High").length;
-  const resolved = alerts.filter(a => a.status === "Resolved").length;
 
   // ---------- Filtered Alerts ----------
   const filteredAlerts = alerts.filter(alert => {
@@ -174,11 +161,10 @@ export default function Alerts() {
       alert.sourceIP.includes(searchTerm) ||
       alert.threatType.toLowerCase().includes(searchTerm.toLowerCase()) ||
       alert.message.toLowerCase().includes(searchTerm.toLowerCase());
-    // Time range filter would be more complex in real app
     return matchesPriority && matchesSeverity && matchesStatus && matchesConfidence && matchesSearch;
   });
 
-  // ---------- Chart Data (unchanged, based on extra fields) ----------
+  // ---------- Chart Data ----------
   const severityCounts = {
     Critical: alerts.filter(a => a.severity === "Critical").length,
     High: alerts.filter(a => a.severity === "High").length,
@@ -246,38 +232,22 @@ export default function Alerts() {
       Medium: "badge-medium",
       Low: "badge-low",
     };
-    const labelKeys = {
-      Critical: "critical",
-      High: "high",
-      Medium: "medium",
-      Low: "low",
-    };
-    return <span className={`badge ${classes[priority]}`}>{t(labelKeys[priority] || priority)}</span>;
+    return <span className={`badge ${classes[priority]}`}>{priority}</span>;
   };
 
   const getStatusBadge = (status) => {
     const classes = {
       Active: "badge-active",
-      Acknowledged: "badge-acknowledged",      // added for schema enum
+      Acknowledged: "badge-acknowledged",
       Resolved: "badge-resolved",
     };
-    const statusKeys = {
-      Active: "active",
-      Acknowledged: "acknowledged",
-      Resolved: "resolved",
-    };
-    return <span className={`badge ${classes[status] || "badge-default"}`}>{t(statusKeys[status] || status)}</span>;
+    return <span className={`badge ${classes[status] || "badge-default"}`}>{status}</span>;
   };
 
   const getDeliveryBadge = (status) => {
-    const deliveryKeys = {
-      Delivered: "delivered",
-      Sent: "sent",
-      Failed: "failed",
-    };
     return (
       <span className={`delivery-badge ${status.toLowerCase()}`}>
-        {t(deliveryKeys[status] || status)}
+        {status}
       </span>
     );
   };
@@ -286,52 +256,13 @@ export default function Alerts() {
     setAlerts(alerts.map(a => a.id === id ? { ...a, status: "Acknowledged" } : a));
   };
   const handleInvestigate = (id) => {
-    // In schema we don't have "Investigating", so we set to "Active" (or could keep as Acknowledged)
-    // For UI consistency, we might map "Investigate" to "Acknowledged"
     setAlerts(alerts.map(a => a.id === id ? { ...a, status: "Acknowledged" } : a));
   };
   const handleResolve = (id) => {
     setAlerts(alerts.map(a => a.id === id ? { ...a, status: "Resolved" } : a));
   };
   const handleFalsePositive = (id) => {
-    // Could set status to "Resolved" or keep as is; for mock we'll just log
     console.log("False positive", id);
-  };
-
-  const handleExport = () => {
-    // Export filtered alerts to CSV
-    const csvContent = [
-      [t("id"), t("timestamp"), t("priority"), t("threatType"), t("severity"), t("confidence"), t("sourceIP"), t("location"), t("status"), t("delivery")],
-      ...filteredAlerts.map(alert => [
-        alert.id,
-        new Date(alert.createdAt).toLocaleString(),
-        alert.priority,
-        alert.threatType,
-        alert.severity,
-        `${alert.confidence}%`,
-        alert.sourceIP,
-        alert.location,
-        alert.status,
-        `${alert.deliveryMethod} via ${alert.channel}`
-      ])
-    ].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `alerts_${new Date().toISOString().split('T')[0]}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleAcknowledgeAll = () => {
-    // Acknowledge all active alerts
-    setAlerts(alerts.map(alert => 
-      alert.status === "Active" ? { ...alert, status: "Acknowledged" } : alert
-    ));
   };
 
   const handleRowClick = (alert) => {
@@ -339,7 +270,6 @@ export default function Alerts() {
     setShowDetailsPanel(true);
   };
 
-  // ---------- System Health Mock ----------
   const mlStatus = "Running";
   const lastAlertReceived = alerts.length > 0 ? new Date(alerts[0].createdAt).toLocaleString() : "None";
   const systemUptime = "99.97%";
@@ -350,98 +280,65 @@ export default function Alerts() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          {/* Header */}
-          <div className="content-header">
-            <h1>{t("alertDashboard")}</h1>
+          {/* Header with search only */}
+          <div className="content-header" style={{ justifyContent: "flex-end" }}>
             <div className="search-bar">
               <i className="bi bi-search"></i>
               <input
                 type="text"
-                placeholder={t("searchAlertsPlaceholder")}
+                placeholder="Search by IP, threat, message..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
 
-          {/* Summary Cards */}
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-calendar-day"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("totalAlertsToday")}</span>
-                <span className="metric-value">{totalToday}</span>
-              </div>
-            </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-exclamation-triangle"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("activeAlerts")}</span>
-                <span className="metric-value">{activeAlerts}</span>
-              </div>
-            </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-shield-exclamation"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("highCritical")}</span>
-                <span className="metric-value">{criticalHigh}</span>
-              </div>
-            </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-check-circle"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("resolved")}</span>
-                <span className="metric-value">{resolved}</span>
-              </div>
-            </div>
-          </div>
-
           {/* Filters Bar */}
           <div className="filters-bar">
             <div className="filter-group">
-              <label>{t("priority")}</label>
+              <label>Priority</label>
               <select value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
-                <option value="All">{t("all")}</option>
-                <option value="Critical">{t("critical")}</option>
-                <option value="High">{t("high")}</option>
-                <option value="Medium">{t("medium")}</option>
-                <option value="Low">{t("low")}</option>
+                <option>All</option>
+                <option>Critical</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>{t("severity")}</label>
+              <label>Severity</label>
               <select value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)}>
-                <option value="All">{t("all")}</option>
-                <option value="Critical">{t("critical")}</option>
-                <option value="High">{t("high")}</option>
-                <option value="Medium">{t("medium")}</option>
-                <option value="Low">{t("low")}</option>
+                <option>All</option>
+                <option>Critical</option>
+                <option>High</option>
+                <option>Medium</option>
+                <option>Low</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>{t("status")}</label>
+              <label>Status</label>
               <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
-                <option value="All">{t("all")}</option>
-                <option value="Active">{t("active")}</option>
-                <option value="Acknowledged">{t("acknowledged")}</option>
-                <option value="Resolved">{t("resolved")}</option>
+                <option>All</option>
+                <option>Active</option>
+                <option>Acknowledged</option>
+                <option>Resolved</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>{t("minConfidence")}</label>
+              <label>Min Confidence</label>
               <select value={filterConfidenceMin} onChange={(e) => setFilterConfidenceMin(Number(e.target.value))}>
-                <option value={0}>{t("any")}</option>
+                <option value={0}>Any</option>
                 <option value={70}>≥70%</option>
                 <option value={80}>≥80%</option>
                 <option value={90}>≥90%</option>
               </select>
             </div>
             <div className="filter-group">
-              <label>{t("timeRange")}</label>
+              <label>Time Range</label>
               <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
-                <option value="24h">{t("last24Hours")}</option>
-                <option value="7d">{t("last7Days")}</option>
-                <option value="30d">{t("last30Days")}</option>
+                <option value="24h">Last 24h</option>
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
               </select>
             </div>
           </div>
@@ -452,27 +349,27 @@ export default function Alerts() {
             <div className={`alerts-table-section ${showDetailsPanel ? "with-details" : ""}`}>
               <div className="card alerts-card">
                 <div className="card-header">
-                  <h3>{t("realTimeAlerts")}</h3>
+                  <h3>Real-Time Alerts</h3>
                   <div className="card-actions">
-                    <button className="btn-outline" onClick={handleExport}>{t("export")}</button>
-                    <button className="btn-primary" onClick={handleAcknowledgeAll}>{t("acknowledgeAll")}</button>
+                    <button className="btn-outline">Export</button>
+                    <button className="btn-primary">Acknowledge All</button>
                   </div>
                 </div>
                 <div className="table-responsive">
                   <table className="alerts-table">
                     <thead>
                       <tr>
-                        <th>{t("id")}</th>
-                        <th>{t("timestamp")}</th>
-                        <th>{t("priority")}</th>
-                        <th>{t("threatType")}</th>
-                        <th>{t("severity")}</th>
-                        <th>{t("confidence")}</th>
-                        <th>{t("sourceIP")}</th>
-                        <th>{t("location")}</th>
-                        <th>{t("status")}</th>
-                        <th>{t("delivery")}</th>
-                        <th>{t("actions")}</th>
+                        <th>ID</th>
+                        <th>Timestamp</th>
+                        <th>Priority</th>
+                        <th>Threat Type</th>
+                        <th>Severity</th>
+                        <th>Confidence</th>
+                        <th>Source IP</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Delivery</th>
+                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -496,19 +393,20 @@ export default function Alerts() {
                             <small className="delivery-detail">
                               {getDeliveryBadge(alert.deliveryStatus)} via {alert.channel}
                             </small>
-                          </td>
+                           </td>
                           <td onClick={(e) => e.stopPropagation()}>
                             <div className="alert-actions">
                               {alert.status === "Active" && (
                                 <>
-                                  <button className="btn-icon" title={t("acknowledge")} onClick={() => handleAcknowledge(alert.id)}><i className="bi bi-check-lg"></i></button>
-                                  <button className="btn-icon" title={t("investigate")} onClick={() => handleInvestigate(alert.id)}><i className="bi bi-search"></i></button>
+                                  <button className="btn-icon" title="Acknowledge" onClick={() => handleAcknowledge(alert.id)}><i className="bi bi-check-lg"></i></button>
+                                  <button className="btn-icon" title="Investigate" onClick={() => handleInvestigate(alert.id)}><i className="bi bi-search"></i></button>
                                 </>
                               )}
                               {alert.status !== "Resolved" && (
-                                <button className="btn-icon" title={t("resolve")} onClick={() => handleResolve(alert.id)}><i className="bi bi-check2-circle"></i></button>
+                                <button className="btn-icon" title="Resolve" onClick={() => handleResolve(alert.id)}><i className="bi bi-check2-circle"></i></button>
                               )}
-                              <button className="btn-icon" title={t("falsePositive")} onClick={() => handleFalsePositive(alert.id)}><i className="bi bi-x-circle"></i></button>
+                              <button className="btn-icon" title="False Positive" onClick={() => handleFalsePositive(alert.id)}><i className="bi bi-x-circle"></i></button>
+                              {/* three-dot button removed */}
                             </div>
                           </td>
                         </tr>
@@ -523,26 +421,26 @@ export default function Alerts() {
             {showDetailsPanel && selectedAlert && (
               <div className="details-panel">
                 <div className="details-header">
-                  <h4>{t("alertDetails")}</h4>
+                  <h4>Alert Details</h4>
                   <button className="btn-icon" onClick={() => setShowDetailsPanel(false)}><i className="bi bi-x-lg"></i></button>
                 </div>
                 <div className="details-content">
-                  <p><strong>{t("id")}:</strong> {selectedAlert.id}</p>
-                  <p><strong>{t("threatId")}:</strong> {selectedAlert.threatId}</p>
-                  <p><strong>{t("message")}:</strong> {selectedAlert.message}</p>
-                  <p><strong>{t("priority")}:</strong> {selectedAlert.priority}</p>
-                  <p><strong>{t("status")}:</strong> {selectedAlert.status}</p>
-                  <p><strong>{t("createdAt")}:</strong> {new Date(selectedAlert.createdAt).toLocaleString()}</p>
-                  <p><strong>{t("classification")}:</strong> {selectedAlert.classification}</p>
-                  <p><strong>{t("severityExplanation")}:</strong> {selectedAlert.severityExplanation}</p>
-                  <p><strong>{t("confidenceMeaning")}:</strong> {selectedAlert.confidenceMeaning}</p>
-                  <p><strong>{t("logId")}:</strong> {selectedAlert.logId}</p>
-                  <p><strong>{t("recommendedAction")}:</strong> {selectedAlert.recommendedAction}</p>
-                  <p><strong>{t("campusLocation")}:</strong> {selectedAlert.location}</p>
-                  <p><strong>{t("deliveryStatus")}:</strong> {selectedAlert.deliveryStatus} {t("via")} {selectedAlert.channel}</p>
+                  <p><strong>ID:</strong> {selectedAlert.id}</p>
+                  <p><strong>Threat ID:</strong> {selectedAlert.threatId}</p>
+                  <p><strong>Message:</strong> {selectedAlert.message}</p>
+                  <p><strong>Priority:</strong> {selectedAlert.priority}</p>
+                  <p><strong>Status:</strong> {selectedAlert.status}</p>
+                  <p><strong>Created At:</strong> {new Date(selectedAlert.createdAt).toLocaleString()}</p>
+                  <p><strong>Classification:</strong> {selectedAlert.classification}</p>
+                  <p><strong>Severity Explanation:</strong> {selectedAlert.severityExplanation}</p>
+                  <p><strong>Confidence Meaning:</strong> {selectedAlert.confidenceMeaning}</p>
+                  <p><strong>Log ID:</strong> {selectedAlert.logId}</p>
+                  <p><strong>Recommended Action:</strong> {selectedAlert.recommendedAction}</p>
+                  <p><strong>Campus Location:</strong> {selectedAlert.location}</p>
+                  <p><strong>Delivery Status:</strong> {selectedAlert.deliveryStatus} via {selectedAlert.channel}</p>
                 </div>
                 <div className="details-actions">
-                  <button className="btn-primary">{t("takeAction")}</button>
+                  <button className="btn-primary">Take Action</button>
                 </div>
               </div>
             )}
@@ -550,25 +448,25 @@ export default function Alerts() {
 
           {/* Statistics & Charts Section */}
           <div className="stats-section">
-            <h2>{t("alertAnalytics")}</h2>
+            <h2>Alert Analytics</h2>
             <div className="charts-grid">
               <div className="chart-card">
-                <h4>{t("alertsBySeverity")}</h4>
+                <h4>Alerts by Severity</h4>
                 <Pie data={pieData} options={{ plugins: { legend: { position: "bottom" } } }} />
               </div>
               <div className="chart-card">
-                <h4>{t("alertsOverTimeToday")}</h4>
+                <h4>Alerts Over Time (Today)</h4>
                 <Line data={lineData} options={{ scales: { y: { beginAtZero: true } } }} />
               </div>
               <div className="chart-card">
-                <h4>{t("topThreatTypes")}</h4>
+                <h4>Top Threat Types</h4>
                 <Bar data={barData} options={{ indexAxis: "y", plugins: { legend: { display: false } } }} />
               </div>
               <div className="chart-card">
-                <h4>{t("highRiskIPSources")}</h4>
+                <h4>High-Risk IP Sources</h4>
                 <ul className="ip-list">
                   {topIPs.map(([ip, count]) => (
-                    <li key={ip}><span>{ip}</span> <span className="badge">{count} {t("alerts")}</span></li>
+                    <li key={ip}><span>{ip}</span> <span className="badge">{count} alerts</span></li>
                   ))}
                 </ul>
               </div>
@@ -579,15 +477,15 @@ export default function Alerts() {
           <div className="system-health">
             <div className="health-item">
               <i className="bi bi-cpu"></i>
-              <span>{t("mlEngine")} <strong className="status-running">{mlStatus}</strong></span>
+              <span>ML Engine: <strong className="status-running">{mlStatus}</strong></span>
             </div>
             <div className="health-item">
               <i className="bi bi-clock"></i>
-              <span>{t("lastAlert")}: {lastAlertReceived}</span>
+              <span>Last Alert: {lastAlertReceived}</span>
             </div>
             <div className="health-item">
               <i className="bi bi-arrow-up-circle"></i>
-              <span>{t("systemUptime")} {systemUptime}</span>
+              <span>System Uptime: {systemUptime}</span>
             </div>
           </div>
         </div>

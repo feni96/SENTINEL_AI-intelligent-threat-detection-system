@@ -91,7 +91,7 @@ export const getTranslationCompletion = async (language) => {
  * @returns {Promise<object>} Translation status for all languages
  */
 export const getTranslationStatus = async () => {
-  const languages = ['en', 'am', 'om', 'so'];
+  const languages = ['en', 'am', 'om'];
   const status = {};
   
   for (const lang of languages) {
@@ -139,7 +139,7 @@ export const validateTranslationStructure = async (language) => {
  * @returns {Promise<object>} Complete translation report
  */
 export const generateTranslationReport = async () => {
-  const languages = ['en', 'am', 'om', 'so'];
+  const languages = ['en', 'am', 'om'];
   const report = {
     timestamp: new Date().toISOString(),
     languages: {},
@@ -194,8 +194,7 @@ export const logMissingTranslations = () => {
 export const getSupportedLanguages = () => [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
   { code: 'am', name: 'Amharic', nativeName: 'አማርኛ', flag: '🇪🇹' },
-  { code: 'om', name: 'Oromo', nativeName: 'Afaan Oromoo', flag: '🇪🇹' },
-  { code: 'so', name: 'Somali', nativeName: 'Soomaali', flag: '🇸🇴' }
+  { code: 'om', name: 'Oromo', nativeName: 'Afaan Oromoo', flag: '🇪🇹' }
 ];
 
 /**

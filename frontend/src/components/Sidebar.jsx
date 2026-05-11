@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
-import "./Sidebar.css";
 
 const Sidebar = () => {
   const { t } = useTranslation();
@@ -18,10 +17,9 @@ const Sidebar = () => {
     { path: "/map", label: t("areaMap"), icon: "bi-map" },
     { path: "/threats", label: t("threats"), icon: "bi-shield-exclamation" },
     { path: "/reports", label: t("reports"), icon: "bi-file-earmark-text" },
-    { path: "/analytics", label: t("analytics"), icon: "bi-graph-up" },
-    { path: "/ai-model", label: t("aiModel"), icon: "bi-cpu" },
     { path: "/audit-log", label: t("auditLog"), icon: "bi-journal-text" },
     { path: "/settings", label: t("settings"), icon: "bi-gear" },
+    { path: "/monitoring", label: t("systemMonitoring"), icon: "bi-activity" },
   ];
 
   const toggleMobileMenu = () => {

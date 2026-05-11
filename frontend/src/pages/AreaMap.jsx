@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "./AreaMap.css";
 
 export default function AreaMap() {
   const { t } = useTranslation();
@@ -47,7 +46,6 @@ export default function AreaMap() {
     const matchesSeverity = severityFilter === "All" || t.severity === severityFilter;
     const matchesType = typeFilter === "All" || t.type === typeFilter;
     const matchesConfidence = t.confidence >= confidenceThreshold;
-    // Time range filter would be more complex in real app – simplified here
     return matchesSeverity && matchesType && matchesConfidence;
   });
 
@@ -101,11 +99,7 @@ export default function AreaMap() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          {/* Header */}
-          <div className="content-header">
-            <h1>{t("threatMapCampusZones")}</h1>
-            <p className="map-description">{t("areaMapDescription")}</p>
-          </div>
+          {/* Header removed as requested */}
 
           {/* Filters */}
           <div className="filters-bar">
@@ -146,7 +140,7 @@ export default function AreaMap() {
 
           {/* Map Area */}
           <div className="map-container">
-            <div className="campus-grid">
+            <div className="realtime-grid">
               {campusZones.map(zone => {
                 const threatCount = getThreatCount(zone.id);
                 const highestSeverity = getZoneHighestSeverity(zone.id);
@@ -154,30 +148,24 @@ export default function AreaMap() {
                 return (
                   <div
                     key={zone.id}
-                    className={`zone-tile ${heatClass}`}
+                    className="realtime-metric-card"
                     data-zone={zone.id}
                     onClick={() => handleZoneClick(zone)}
                   >
-                    <div className="zone-header">
-                      <span className="zone-name">{zone.name}</span>
-                      {threatCount > 0 && (
-                        <span
-                          className="threat-marker"
-                          style={{
-                            backgroundColor: getMarkerColor(highestSeverity),
-                            width: `${20 + threatCount * 5}px`,
-                            height: `${20 + threatCount * 5}px`,
-                          }}
-                          title={`${threatCount} threat(s), highest severity: ${highestSeverity}`}
-                        ></span>
-                      )}
+                    <div className="realtime-content">
+                      <span className="realtime-label">{zone.name}</span>
+                      <span className="realtime-value">{threatCount}</span>
+                      <span className="realtime-unit">threats</span>
                     </div>
-                    <div className="zone-details">
-                      <span className="ip-range">{zone.ipRange}</span>
-                      <span className="threat-count">{threatCount} threats</span>
-                    </div>
-                    {/* Heatmap overlay (simulated with background opacity) */}
-                    <div className={`heat-overlay ${heatClass}`}></div>
+                    {threatCount > 0 && (
+                      <div
+                        className="threat-indicator"
+                        style={{
+                          backgroundColor: getMarkerColor(highestSeverity),
+                        }}
+                        title={`${threatCount} threat(s), highest severity: ${highestSeverity}`}
+                      ></div>
+                    )}
                   </div>
                 );
               })}
@@ -234,12 +222,9 @@ export default function AreaMap() {
                 ))}
               </ul>
               <button className="btn-primary" onClick={() => {
-                // Navigate to threats page with zone filter
                 const zoneId = selectedZone?.id;
                 if (zoneId) {
-                  // Store zone filter in sessionStorage or state management
                   sessionStorage.setItem('zoneFilter', zoneId);
-                  // Navigate to threats page
                   window.location.href = '/threats';
                 }
               }}>

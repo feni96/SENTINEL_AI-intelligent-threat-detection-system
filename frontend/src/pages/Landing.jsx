@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "./Landing.css";
-import "./ProfessionalFooter.css";
 
 export default function Landing() {
   const { t, i18n } = useTranslation();
@@ -27,22 +25,34 @@ export default function Landing() {
             <span className="logo-text">{t("appName")}</span>
           </div>
           <nav className="nav-links">
-            <a href="#hero" className="nav-link">{t("home")}</a>
+            <Link to="/" className="nav-link">{t("home")}</Link>
             <Link to="/about" className="nav-link">{t("about")}</Link>
             <Link to="/contact" className="nav-link">{t("contact")}</Link>
-            <Link to="/login" className="login-btn">{t("adminLogin")}</Link>
-            {/* Bootstrap Language Selector */}
-            <select
-              value={i18n.language}
-              onChange={(e) => changeLanguage(e.target.value)}
-              className="form-select bg-dark text-white border-primary w-auto"
-              style={{ width: "auto", cursor: "pointer", marginLeft: "1rem" }}
-            >
-              <option value="en">English</option>
-              <option value="am">አማርኛ</option>
-              <option value="om">Oromoo</option>
-              <option value="so">Soomaali</option>
-            </select>
+            <Link to="/login" className="login-btn">
+              <i className="bi bi-box-arrow-in-right"></i>
+              {t("login")}
+            </Link>
+            {/* Language selector with globe icon - same as dashboard */}
+            <div className="language-selector-wrapper">
+              <i className="bi bi-globe language-globe-icon"></i>
+              <select
+                value={i18n.language}
+                onChange={(e) => {
+                  localStorage.setItem("i18nextLng", e.target.value);
+                  window.location.reload();
+                }}
+                className="language-selector"
+              >
+                <option value="en">English</option>
+                <option value="am">አማርኛ</option>
+                <option value="om">Oromoo</option>
+              </select>
+            </div>
+            {/* Guest Alert Icon */}
+            <Link to="/guest-alerts" className="navbar-icon guest-alert-icon active">
+              <i className="bi bi-bell"></i>
+              <span className="badge">3</span>
+            </Link>
           </nav>
         </div>
       </header>

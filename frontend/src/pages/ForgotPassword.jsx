@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import './Auth.css';
 
 export default function ForgotPassword() {
   const { t } = useTranslation();

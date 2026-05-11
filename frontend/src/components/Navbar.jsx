@@ -1,33 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const adminName = localStorage.getItem("adminName") || "Admin";
   const [activeAlerts, setActiveAlerts] = useState(0);
-  const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    return saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  });
 
   useEffect(() => {
     setActiveAlerts(5);
   }, []);
-
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDark]);
-
-  const toggleDarkMode = () => setIsDark(!isDark);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -56,18 +39,9 @@ const Navbar = () => {
 
       {/* Right side: Icons, welcome, language, dark toggle, logout */}
       <div className="navbar-menu">
-        <Link to="/network" className="navbar-icon" title={t("network")}>
-          <i className="bi bi-diagram-3"></i>
-        </Link>
-        <Link to="/monitoring" className="navbar-icon" title={t("monitoring")}>
-          <i className="bi bi-activity"></i>
-        </Link>
         <Link to="/alerts" className="navbar-icon" title={t("alerts")}>
           <i className="bi bi-bell"></i>
           {activeAlerts > 0 && <span className="badge">{activeAlerts}</span>}
-        </Link>
-        <Link to="/profile" className="navbar-icon" title={t("profile")}>
-          <i className="bi bi-person-circle"></i>
         </Link>
 
         <span className="navbar-welcome">
@@ -85,14 +59,8 @@ const Navbar = () => {
             <option value="en">English</option>
             <option value="am">አማርኛ</option>
             <option value="om">Oromoo</option>
-            <option value="so">Soomaali</option>
           </select>
         </div>
-
-        {/* Dark/Light mode toggle */}
-        <button className="dark-mode-toggle" onClick={toggleDarkMode} aria-label="Toggle dark mode">
-          {isDark ? <i className="bi bi-sun-fill"></i> : <i className="bi bi-moon-fill"></i>}
-        </button>
 
         <button className="navbar-logout" onClick={handleLogout}>
           <i className="bi bi-box-arrow-right"></i> {t("logout")}

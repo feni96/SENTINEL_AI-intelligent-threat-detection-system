@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "./Settings.css";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -110,12 +109,7 @@ export default function Settings() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          <div className="content-header">
-            <h1>{t("systemSettings")}</h1>
-            <p className="page-description">
-              {t("systemSettingsDescription")}
-            </p>
-          </div>
+          {/* Header removed as requested */}
 
           <div className="settings-grid">
             {/* Alert Settings */}

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "./Login.css";
 
 function Login() {
   const { t } = useTranslation();
@@ -68,27 +67,24 @@ function Login() {
                 required
               />
             </div>
-            <div className="checkbox-group">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                {t("rememberMe")}
-              </label>
+            <div className="remember-me">
+              <input
+                type="checkbox"
+                id="remember"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              {t("rememberMe")}
+            </div>
+            <div className="forgot-password-container">
               <a href="#" onClick={handleForgotPassword} className="forgot-link">
                 {t("forgotPassword")}
               </a>
             </div>
             <button type="submit" className="login-btn">
-              {t("signInToDashboard")}
+              {t("signin")}
             </button>
           </form>
-
-          <div className="security-note">
-            {t("secureConnectionNotice")}
-          </div>
         </div>
       </div>
     </div>

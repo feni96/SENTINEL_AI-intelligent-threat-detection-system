@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import "./AboutUs.css";
-import "./ProfessionalFooter.css";   // ← ADD THIS LINE
 
 const AboutUs = () => {
   const { t, i18n } = useTranslation();
@@ -15,10 +13,9 @@ const AboutUs = () => {
   return (
     <div className="about-us">
       {/* Header */}
-      <header className="about-header">
+      <header className="landing-header">
         <div className="container">
           <div className="logo">
-            {/* Haramaya University Logo Image */}
             <img
               src="/images/picture1.jpg"
               alt="Haramaya University Logo"
@@ -30,35 +27,43 @@ const AboutUs = () => {
             <Link to="/" className="nav-link">{t("home")}</Link>
             <Link to="/about" className="nav-link active">{t("about")}</Link>
             <Link to="/contact" className="nav-link">{t("contact")}</Link>
-            <Link to="/login" className="login-btn">{t("adminLogin")}</Link>
-            {/* Bootstrap Language Selector */}
-            <select
-              value={i18n.language}
-              onChange={(e) => changeLanguage(e.target.value)}
-              className="form-select bg-dark text-white border-primary w-auto"
-              style={{ width: "auto", cursor: "pointer", marginLeft: "1rem" }}
-            >
-              <option value="en">English</option>
-              <option value="am">አማርኛ</option>
-              <option value="om">Oromoo</option>
-              <option value="so">Soomaali</option>
-            </select>
+            <Link to="/login" className="login-btn">
+              <i className="bi bi-box-arrow-in-right"></i>
+              {t("login")}
+            </Link>
+            <div className="language-selector-wrapper">
+              <i className="bi bi-globe language-globe-icon"></i>
+              <select
+                value={i18n.language}
+                onChange={(e) => {
+                  localStorage.setItem("i18nextLng", e.target.value);
+                  window.location.reload();
+                }}
+                className="language-selector"
+              >
+                <option value="en">English</option>
+                <option value="am">አማርኛ</option>
+                <option value="om">Oromoo</option>
+              </select>
+            </div>
+            <Link to="/guest-alerts" className="navbar-icon guest-alert-icon active">
+              <i className="bi bi-bell"></i>
+              <span className="badge">3</span>
+            </Link>
           </nav>
         </div>
       </header>
 
       <div className="about-us-container">
         <div className="about-us-card">
-          {/* System Identity */}
+          {/* System Identity - updated title and description */}
           <section className="about-section">
             <h1 className="section-title">{t("aboutTitle")}</h1>
             <div className="system-identity">
               <p className="identity-text">
-                <strong>{t("appName")}</strong> {t("aboutPara1")}
+                {t("aboutPara1")}
               </p>
-              <blockquote className="quote">
-                "{t("proactiveProtectionQuote")}"
-              </blockquote>
+              {/* Quote removed as requested */}
             </div>
           </section>
 
@@ -73,20 +78,6 @@ const AboutUs = () => {
               <li>{t("problemZeroDayExploits")}</li>
               <li>{t("problemDelayedIncidentResponse")}</li>
               <li>{t("problemRiskToSensitiveData")}</li>
-            </ul>
-          </section>
-
-          {/* Our Solution */}
-          <section className="about-section">
-            <h2 className="section-subtitle">{t("ourSolution")}</h2>
-            <p className="section-text">
-              {t("solutionDescription")}
-            </p>
-            <ul className="solution-list">
-              <li>{t("solutionCollectsPreprocesses")}</li>
-              <li>{t("solutionUsesMachineLearning")}</li>
-              <li>{t("solutionProvidesDashboard")}</li>
-              <li>{t("solutionSendsAlerts")}</li>
             </ul>
           </section>
 
@@ -116,9 +107,7 @@ const AboutUs = () => {
           {/* The Team Behind Sentinel AI */}
           <section className="about-section">
             <h2 className="section-subtitle">{t("teamBehindSentinel")}</h2>
-            <p className="section-text">
-              {t("teamDescription")}
-            </p>
+            <p className="section-text">{t("teamDescription")}</p>
             <div className="team-list">
               <div>Husniya Mahdi</div>
               <div>Lensa Tesfaye</div>
@@ -134,17 +123,6 @@ const AboutUs = () => {
               <li><strong>{t("intendedUsers")}:</strong> {t("intendedUsersDescription")}</li>
               <li><strong>{t("scope")}:</strong> {t("scopeDescription")}</li>
               <li><strong>{t("environment")}:</strong> {t("environmentDescription")}</li>
-            </ul>
-          </section>
-
-          {/* Reliability & Limitations */}
-          <section className="about-section">
-            <h2 className="section-subtitle">{t("reliabilityLimitations")}</h2>
-            <ul className="limitations-list">
-              <li><strong>{t("detectionAccuracy")}:</strong> {t("detectionAccuracyDescription")}</li>
-              <li><strong>{t("encryptedTraffic")}:</strong> {t("encryptedTrafficDescription")}</li>
-              <li><strong>{t("latency")}:</strong> {t("latencyDescription")}</li>
-              <li><strong>{t("areaMappingAccuracy")}:</strong> {t("areaMappingAccuracyDescription")}</li>
             </ul>
           </section>
 
@@ -176,34 +154,18 @@ const AboutUs = () => {
             
             <div className="footer-section">
               <h4>{t("systemFeatures")}</h4>
-              <p className="footer-services">
-                {t("realTimeMonitoring")}
-              </p>
-              <p className="footer-services">
-                {t("threatIntelligence")}
-              </p>
-              <p className="footer-services">
-                {t("automatedResponse")}
-              </p>
-              <p className="footer-services">
-                {t("campusNetworkProtection")}
-              </p>
+              <p className="footer-services">{t("realTimeMonitoring")}</p>
+              <p className="footer-services">{t("threatIntelligence")}</p>
+              <p className="footer-services">{t("automatedResponse")}</p>
+              <p className="footer-services">{t("campusNetworkProtection")}</p>
             </div>
             
             <div className="footer-section">
               <h4>{t("services")}</h4>
-              <p className="footer-services">
-                {t("aiAnomalyDetection")}
-              </p>
-              <p className="footer-services">
-                {t("realTimeCampusThreatMap")}
-              </p>
-              <p className="footer-services">
-                {t("automatedAlertingReporting")}
-              </p>
-              <p className="footer-services">
-                {t("advancedSecurityAnalytics")}
-              </p>
+              <p className="footer-services">{t("aiAnomalyDetection")}</p>
+              <p className="footer-services">{t("realTimeCampusThreatMap")}</p>
+              <p className="footer-services">{t("automatedAlertingReporting")}</p>
+              <p className="footer-services">{t("advancedSecurityAnalytics")}</p>
             </div>
             
             <div className="footer-section">

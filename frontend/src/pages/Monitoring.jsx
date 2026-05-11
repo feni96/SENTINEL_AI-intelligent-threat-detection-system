@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "./Monitoring.css";
 
 export default function Monitoring() {
   const { t } = useTranslation();
@@ -45,41 +44,36 @@ export default function Monitoring() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          <div className="content-header">
-            <h1>{t("systemMonitoring")}</h1>
-            <p className="page-description">
-              {t("systemMonitoringDescription")}
-            </p>
-          </div>
+          {/* Header removed as requested */}
 
           {/* Top Metrics Cards */}
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-database"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("ingestionStatus")}</span>
-                <span className="metric-value">{getStatusBadge(ingestion.status)}</span>
+          <div className="realtime-grid">
+            <div className="realtime-metric-card">
+              <div className="realtime-icon database"></div>
+              <div className="realtime-content">
+                <span className="realtime-label">{t("ingestionStatus")}</span>
+                <span className="realtime-value">{getStatusBadge(ingestion.status)}</span>
               </div>
             </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-cpu"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("mlProcess")}</span>
-                <span className="metric-value">{getStatusBadge(aiStatus.mlProcess)}</span>
+            <div className="realtime-metric-card">
+              <div className="realtime-icon cpu"></div>
+              <div className="realtime-content">
+                <span className="realtime-label">{t("mlProcess")}</span>
+                <span className="realtime-value">{getStatusBadge(aiStatus.mlProcess)}</span>
               </div>
             </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-graph-up"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("logsAnalyzed")}</span>
-                <span className="metric-value">{aiStatus.logsAnalyzed.toLocaleString()}</span>
+            <div className="realtime-metric-card">
+              <div className="realtime-icon graph"></div>
+              <div className="realtime-content">
+                <span className="realtime-label">{t("logsAnalyzed")}</span>
+                <span className="realtime-value">{aiStatus.logsAnalyzed.toLocaleString()}</span>
               </div>
             </div>
-            <div className="metric-card">
-              <div className="metric-icon"><i className="bi bi-arrow-up-circle"></i></div>
-              <div className="metric-content">
-                <span className="metric-label">{t("systemUptime")}</span>
-                <span className="metric-value">{systemHealth.uptime}</span>
+            <div className="realtime-metric-card">
+              <div className="realtime-icon system"></div>
+              <div className="realtime-content">
+                <span className="realtime-label">{t("systemUptime")}</span>
+                <span className="realtime-value">{systemHealth.uptime}</span>
               </div>
             </div>
           </div>

@@ -16,7 +16,6 @@ import {
   Filler,
 } from "chart.js";
 import { Bar, Pie, Line } from "react-chartjs-2";
-import "./Reports.css";
 
 ChartJS.register(
   CategoryScale,
@@ -371,12 +370,7 @@ export default function Reports() {
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          <div className="content-header">
-            <h1>{t("reportsAnalytics")}</h1>
-            <p className="page-description">
-              {t("reportsAnalyticsDescription")}
-            </p>
-          </div>
+          {/* Header removed as requested */}
 
           {/* Report Generation Controls */}
           <div className="report-controls card">

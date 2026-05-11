@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import "./Dashboard.css";
 
 import {
   Chart as ChartJS,
@@ -30,34 +29,6 @@ ChartJS.register(
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [isDark, setIsDark] = useState(() => {
-    // Check localStorage or system preference
-    const saved = localStorage.getItem('theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  // Toggle dark mode and update DOM + localStorage
-  const toggleDarkMode = () => {
-    const newDark = !isDark;
-    setIsDark(newDark);
-    if (newDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
-
-  // Apply initial dark mode class on mount
-  useEffect(() => {
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDark]);
 
   // Traffic history data
   const trafficLabels = [
@@ -176,11 +147,8 @@ export default function Dashboard() {
           {/* Header */}
           <div className="content-header">
             <div className="header-left">
-              <h1>{t("threatDetection")}</h1>
-              <div className="search-bar">
-                <i className="bi bi-search"></i>
-                <input type="text" placeholder={t("searchPlaceholder")} />
-              </div>
+              
+            
             </div>
             
                
@@ -188,46 +156,35 @@ export default function Dashboard() {
 
           {/* Overview Section */}
           <section className="dashboard-section">
-            <h2 className="section-title">{t("overview")}</h2>
-            <p className="section-subtitle">{t("keyMetrics")}</p>
-            <div className="metrics-grid">
-              <div className="metric-card">
-                <div className="metric-icon">
-                  <i className="bi bi-shield-shaded"></i>
-                </div>
-                <div className="metric-content">
-                  <span className="metric-label">{t("activeThreats")}</span>
-                  <span className="metric-value">16</span>
-                  <span className="metric-change positive">↑ +1 in last hour</span>
+            <h2 className="section-title">{t("keyMetrics")}</h2>
+          
+            <div className="realtime-grid">
+              <div className="realtime-metric-card">
+                <div className="realtime-icon threats"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">{t("activeThreats")}</span>
+                  <span className="realtime-value">16</span>
                 </div>
               </div>
-              <div className="metric-card">
-                <div className="metric-icon">
-                  <i className="bi bi-exclamation-triangle"></i>
-                </div>
-                <div className="metric-content">
-                  <span className="metric-label">{t("anomaliesDetected")}</span>
-                  <span className="metric-value">47</span>
-                  <span className="metric-change negative">↓ 12% decrease</span>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon anomalies"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">{t("anomaliesDetected")}</span>
+                  <span className="realtime-value">47</span>
                 </div>
               </div>
-              <div className="metric-card">
-                <div className="metric-icon">
-                  <i className="bi bi-check-circle"></i>
-                </div>
-                <div className="metric-content">
-                  <span className="metric-label">{t("protectedSystems")}</span>
-                  <span className="metric-value">98%</span>
-                  <span className="metric-change positive">↑ 2% improvement</span>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon protected"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">{t("protectedSystems")}</span>
+                  <span className="realtime-value">98<span className="realtime-unit">%</span></span>
                 </div>
               </div>
-              <div className="metric-card">
-                <div className="metric-icon">
-                  <i className="bi bi-clock-history"></i>
-                </div>
-                <div className="metric-content">
-                  <span className="metric-label">{t("systemUptime")}</span>
-                  <span className="metric-value">99.7%</span>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon uptime"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">{t("systemUptime")}</span>
+                  <span className="realtime-value">99.7<span className="realtime-unit">%</span></span>
                 </div>
               </div>
             </div>
@@ -250,100 +207,55 @@ export default function Dashboard() {
             </div>
           </section>
 
-          {/* Recent Threats Section */}
-          <section className="dashboard-section">
-            <h2 className="section-title">{t("recentThreatDetections")}</h2>
-            <p className="section-subtitle">{t("recentThreatsSubtitle")}</p>
-            <div className="card threats-card">
-              <div className="card-header">
-                <h3>{t("threatLog")}</h3>
-                <div className="card-actions">
-                  <button className="btn-outline" onClick={handleFilter}>{t("filter")}</button>
+          
+          {/* Real-time Monitoring Section */}
+          <div className="realtime-section">
+            <h2>Real-time Monitoring</h2>
+            <div className="realtime-grid">
+              <div className="realtime-metric-card">
+                <div className="realtime-icon speed"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">New Connections per Second</span>
+                  <span className="realtime-value">960</span>
                 </div>
               </div>
-              <div className="table-responsive">
-                <table className="threats-table">
-                  <thead>
-                    <tr>
-                      <th>{t("threatId")}</th>
-                      <th>{t("type")}</th>
-                      <th>{t("severity")}</th>
-                      <th>{t("sourceIP")}</th>
-                      <th>{t("location")}</th>
-                      <th>{t("timeDetected")}</th>
-                      <th>{t("confidence")}</th>
-                      <th>{t("actions")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentThreats.map((threat) => (
-                      <tr key={threat.id}>
-                        <td>
-                          <span className="threat-id">{threat.id}</span>
-                        </td>
-                        <td>{threat.type}</td>
-                        <td>{getSeverityBadge(threat.severity)}</td>
-                        <td>{threat.sourceIP}</td>
-                        <td>{threat.location}</td>
-                        <td>{threat.time}</td>
-                        <td>
-                          <span className="confidence">{threat.confidence}</span>
-                        </td>
-                        <td onClick={(e) => e.stopPropagation()}>
-                          <div className="threat-actions">
-                            <button className="btn-icon" title={t("investigate")} onClick={() => handleInvestigate(threat.id)}>
-                              <i className="bi bi-search"></i>
-                            </button>
-                            <button className="btn-icon" title={t("resolve")} onClick={() => handleResolve(threat.id)}>
-                              <i className="bi bi-check2-circle"></i>
-                            </button>
-                            <button className="btn-icon" title={t("falsePositive")} onClick={() => handleFalsePositive(threat.id)}>
-                              <i className="bi bi-x-circle"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon connections"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">Concurrent Connections</span>
+                  <span className="realtime-value">127.654<span className="realtime-unit">K</span></span>
+                </div>
               </div>
-            </div>
-          </section>
-
-          {/* System Status Section */}
-          <section className="dashboard-section">
-            <h2 className="section-title">{t("systemStatus")}</h2>
-            <p className="section-subtitle">{t("systemStatusSubtitle")}</p>
-            <div className="card monitoring-card">
-              <h3>{t("realTimeMonitoring")}</h3>
-              <div className="stats-grid">
-                <div className="stat-item">
-                  <span className="stat-value">960</span>
-                  <span className="stat-label">{t("newConnectionsPerSecond")}</span>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon udp"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">Concurrent UDP Connections</span>
+                  <span className="realtime-value">29.837<span className="realtime-unit">K</span></span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-value">127.654K</span>
-                  <span className="stat-label">{t("concurrentConnections")}</span>
+              </div>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon tcp"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">Concurrent TCP Connections</span>
+                  <span className="realtime-value">97.350<span className="realtime-unit">K</span></span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-value">29.837K</span>
-                  <span className="stat-label">{t("concurrentUDPConnections")}</span>
+              </div>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon ip"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">Online IP Addresses</span>
+                  <span className="realtime-value">4.612<span className="realtime-unit">K</span></span>
                 </div>
-                <div className="stat-item">
-                  <span className="stat-value">97.350K</span>
-                  <span className="stat-label">{t("concurrentTCPConnections")}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">4.612K</span>
-                  <span className="stat-label">{t("onlineIPAddresses")}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">0</span>
-                  <span className="stat-label">{t("onlineUsers")}</span>
+              </div>
+              <div className="realtime-metric-card">
+                <div className="realtime-icon users"></div>
+                <div className="realtime-content">
+                  <span className="realtime-label">Online Users</span>
+                  <span className="realtime-value">0</span>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </>
