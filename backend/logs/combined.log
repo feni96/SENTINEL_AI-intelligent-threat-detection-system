@@ -42,3 +42,7 @@
 {"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:29:45.902Z","userAgent":"PostmanRuntime/7.52.0"}
 {"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:30:02.062Z","userAgent":"PostmanRuntime/7.52.0"}
 {"ip":"::1","level":"info","message":"POST /api/auth/register","service":"sentinel-ai-backend","timestamp":"2026-03-13T20:30:12.543Z","userAgent":"PostmanRuntime/7.52.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-11T19:25:27.827Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-11T19:25:27.832Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-11T19:25:27.833Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-11T19:25:27.834Z"}
