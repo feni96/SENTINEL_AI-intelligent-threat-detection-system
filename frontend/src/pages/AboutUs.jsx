@@ -1,13 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const AboutUs = () => {
   const { t, i18n } = useTranslation();
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    // Apply theme on mount - only add class for light mode
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  }, [theme]);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("i18nextLng", lng);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    // Only add light class for light mode, remove for dark mode
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
   };
 
   return (
@@ -27,10 +50,14 @@ const AboutUs = () => {
             <Link to="/" className="nav-link">{t("home")}</Link>
             <Link to="/about" className="nav-link active">{t("about")}</Link>
             <Link to="/contact" className="nav-link">{t("contact")}</Link>
-            <Link to="/login" className="login-btn">
-              <i className="bi bi-box-arrow-in-right"></i>
-              {t("login")}
+            {/* Guest Alert Icon - without wrapper */}
+            <Link to="/guest-alerts" className="nav-link">
+              <i className="bi bi-bell"></i>
             </Link>
+            {/* Theme toggle button */}
+            <button className="dark-mode-toggle" onClick={toggleTheme} title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+              <i className={`bi ${theme === "dark" ? "bi-sun" : "bi-moon"}`}></i>
+            </button>
             <div className="language-selector-wrapper">
               <i className="bi bi-globe language-globe-icon"></i>
               <select
@@ -46,9 +73,9 @@ const AboutUs = () => {
                 <option value="om">Oromoo</option>
               </select>
             </div>
-            <Link to="/guest-alerts" className="navbar-icon guest-alert-icon active">
-              <i className="bi bi-bell"></i>
-              <span className="badge">3</span>
+            <Link to="/login" className="login-btn">
+              <i className="bi bi-box-arrow-in-right"></i>
+              {t("login")}
             </Link>
           </nav>
         </div>

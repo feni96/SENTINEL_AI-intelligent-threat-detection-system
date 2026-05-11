@@ -15,7 +15,7 @@ const Sidebar = () => {
   const navItems = [
     { path: "/dashboard", label: t("dashboard"), icon: "bi-speedometer2", end: true },
     { path: "/map", label: t("areaMap"), icon: "bi-map" },
-    { path: "/threats", label: t("threats"), icon: "bi-shield-exclamation" },
+    { path: "/alerts", label: t("alerts"), icon: "bi-bell" },
     { path: "/reports", label: t("reports"), icon: "bi-file-earmark-text" },
     { path: "/audit-log", label: t("auditLog"), icon: "bi-journal-text" },
     { path: "/settings", label: t("settings"), icon: "bi-gear" },

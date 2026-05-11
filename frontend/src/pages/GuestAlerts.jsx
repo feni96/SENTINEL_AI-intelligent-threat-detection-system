@@ -1,9 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function GuestAlerts() {
   const { t } = useTranslation();
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    // Apply theme on mount - only add class for light mode
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    // Only add light class for light mode, remove for dark mode
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  };
   
   // Sample guest alert data (basic info only)
   const guestAlerts = [
@@ -61,10 +84,14 @@ export default function GuestAlerts() {
             <Link to="/" className="nav-link">{t("home")}</Link>
             <Link to="/about" className="nav-link">{t("about")}</Link>
             <Link to="/contact" className="nav-link">{t("contact")}</Link>
-            <Link to="/login" className="login-btn">
-              <i className="bi bi-box-arrow-in-right"></i>
-              {t("login")}
+            {/* Guest Alert Icon - without wrapper */}
+            <Link to="/guest-alerts" className="nav-link">
+              <i className="bi bi-bell"></i>
             </Link>
+            {/* Theme toggle button */}
+            <button className="dark-mode-toggle" onClick={toggleTheme} title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+              <i className={`bi ${theme === "dark" ? "bi-sun" : "bi-moon"}`}></i>
+            </button>
             {/* Language selector with globe icon - same as dashboard */}
             <div className="language-selector-wrapper">
               <i className="bi bi-globe language-globe-icon"></i>
@@ -81,11 +108,10 @@ export default function GuestAlerts() {
                 <option value="om">Oromoo</option>
               </select>
             </div>
-            {/* Guest Alert Icon */}
-            <div className="navbar-icon guest-alert-icon active">
-              <i className="bi bi-bell"></i>
-              <span className="badge">{guestAlerts.length}</span>
-            </div>
+            <Link to="/login" className="login-btn">
+              <i className="bi bi-box-arrow-in-right"></i>
+              {t("login")}
+            </Link>
           </nav>
         </div>
       </header>
