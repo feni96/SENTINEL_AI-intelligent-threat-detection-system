@@ -2,7 +2,7 @@ const NetworkLog = require('../models/NetworkLog');
 const Threat = require('../models/Threat');
 const Alert = require('../models/Alert');
 const alertService = require('./alertService');
-const mlService = require('./mlService');
+const mlProxyService = require('./mlProxyService');
 const { calculateSeverity } = require('../utils/severityCalculator');
 const winston = require('winston');
 
@@ -134,8 +134,8 @@ class ThreatDetectionService {
 
       // Apply ML-based detection if available
       try {
-        const mlPrediction = await mlService.predictThreat(networkLog);
-        if (mlPrediction && mlPrediction.confidenceScore > 70) {
+        const mlPrediction = await mlProxyService.predictIntrusion(networkLog.toObject());
+        if (mlPrediction && mlPrediction.confidence > 70) {
           const mlThreat = await this.createThreatFromML(networkLog, mlPrediction);
           if (mlThreat) {
             detectedThreats.push(mlThreat);
