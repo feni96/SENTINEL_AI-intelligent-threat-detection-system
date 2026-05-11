@@ -106,3 +106,8 @@
 {"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-11T14:26:30.513Z"}
 {"ip":"::1","level":"info","message":"GET /health","service":"sentinel-ai-backend","timestamp":"2026-05-11T14:27:30.916Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"sentinel-ai-backend","timestamp":"2026-05-11T14:28:01.635Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.839Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.843Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.844Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.845Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.846Z"}
