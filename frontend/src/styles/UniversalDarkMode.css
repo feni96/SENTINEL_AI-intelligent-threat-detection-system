@@ -1,0 +1,495 @@
+/* ============================================
+   UNIVERSAL DARK MODE STYLES
+   Consistent colors across ALL pages, tables, forms, and elements
+   ============================================ */
+
+/* Universal Dark Mode Variables */
+html.dark {
+  /* Text Colors - High Contrast */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-inverse: #0f172a;
+  
+  /* Background Colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --bg-quaternary: #475569;
+  
+  /* Border Colors */
+  --border-primary: #334155;
+  --border-secondary: #475569;
+  --border-light: #334155;
+  --border-focus: #3b82f6;
+  
+  /* Accent Colors */
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-light: rgba(59, 130, 246, 0.1);
+  
+  /* Status Colors */
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --info: #06b6d4;
+  --info-bg: rgba(6, 182, 212, 0.1);
+  
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  
+  /* Glass Effects */
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   UNIVERSAL ELEMENT STYLES
+   ============================================ */
+
+/* Base Elements */
+html.dark body,
+html.dark .dashboard-content,
+html.dark .main-content {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Typography */
+html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6 {
+  color: var(--text-primary) !important;
+}
+
+html.dark p, html.dark span, html.dark div {
+  color: var(--text-primary) !important;
+}
+
+html.dark .page-description,
+html.dark .subtitle,
+html.dark .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .text-muted,
+html.dark small,
+html.dark .help-text {
+  color: var(--text-muted) !important;
+}
+
+/* ============================================
+   UNIVERSAL TABLE STYLES
+   ============================================ */
+
+html.dark table {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark thead {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html.dark th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+  font-weight: 600 !important;
+}
+
+html.dark td {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark tbody tr:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html.dark .table-responsive {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Specific Table Classes */
+html.dark .threats-table,
+html.dark .analytics-table,
+html.dark .reports-table,
+html.dark .audit-table,
+html.dark .monitoring-table {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .threats-table th,
+html.dark .analytics-table th,
+html.dark .reports-table th,
+html.dark .audit-table th,
+html.dark .monitoring-table th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .threats-table td,
+html.dark .analytics-table td,
+html.dark .reports-table td,
+html.dark .audit-table td,
+html.dark .monitoring-table td {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ============================================
+   UNIVERSAL FORM STYLES
+   ============================================ */
+
+/* Form Containers */
+html.dark form,
+html.dark .form-container,
+html.dark .form-card {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* Form Labels */
+html.dark label,
+html.dark .form-label,
+html.dark .field-label {
+  color: var(--text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* Form Inputs */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-focus) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--accent-light) !important;
+}
+
+/* Placeholders */
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Form Groups */
+html.dark .form-group,
+html.dark .filter-group,
+html.dark .field-group {
+  color: var(--text-primary) !important;
+}
+
+html.dark .form-group label,
+html.dark .filter-group label,
+html.dark .field-group label {
+  color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   UNIVERSAL CARD AND CONTAINER STYLES
+   ============================================ */
+
+/* Cards */
+html.dark .card,
+html.dark .card-header,
+html.dark .card-body,
+html.dark .card-footer,
+html.dark .panel,
+html.dark .widget,
+html.dark .chart-card {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .card-title,
+html.dark .panel-title,
+html.dark .widget-title {
+  color: var(--text-primary) !important;
+}
+
+html.dark .card-subtitle,
+html.dark .panel-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+/* Containers */
+html.dark .container,
+html.dark .wrapper,
+html.dark .section {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+html.dark .content-area,
+html.dark .main-area {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   UNIVERSAL BUTTON STYLES
+   ============================================ */
+
+/* Primary Buttons */
+html.dark .btn-primary,
+html.dark .btn-primary:hover {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+html.dark .btn-primary:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+/* Secondary Buttons */
+html.dark .btn-secondary,
+html.dark .btn-outline {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .btn-secondary:hover,
+html.dark .btn-outline:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+/* Icon Buttons */
+html.dark .btn-icon {
+  background-color: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
+}
+
+/* ============================================
+   UNIVERSAL NAVIGATION STYLES
+   ============================================ */
+
+/* Sidebar */
+html.dark .sidebar,
+html.dark .nav-sidebar {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .sidebar-link,
+html.dark .nav-link {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .sidebar-link:hover,
+html.dark .nav-link:hover,
+html.dark .sidebar-link.active,
+html.dark .nav-link.active {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Navbar */
+html.dark .navbar,
+html.dark .header {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* ============================================
+   UNIVERSAL STATUS AND BADGE STYLES
+   ============================================ */
+
+/* Status Badges */
+html.dark .status-badge,
+html.dark .badge {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* Status Specific Colors */
+html.dark .status-badge.active,
+html.dark .badge.success {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+html.dark .status-badge.warning,
+html.dark .badge.warning {
+  background-color: var(--warning-bg) !important;
+  color: var(--warning) !important;
+  border-color: var(--warning) !important;
+}
+
+html.dark .status-badge.danger,
+html.dark .badge.danger,
+html.dark .badge.error {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+/* Alerts */
+html.dark .alert,
+html.dark .notification {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .alert.success {
+  background-color: var(--success-bg) !important;
+  color: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+html.dark .alert.warning {
+  background-color: var(--warning-bg) !important;
+  color: var(--warning) !important;
+  border-color: var(--warning) !important;
+}
+
+html.dark .alert.danger,
+html.dark .alert.error {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+/* ============================================
+   UNIVERSAL CHART AND GRAPH STYLES
+   ============================================ */
+
+html.dark .chart-container,
+html.dark .graph-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .chart-title,
+html.dark .graph-title {
+  color: var(--text-primary) !important;
+}
+
+html.dark .chart-subtitle,
+html.dark .graph-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .chart-legend,
+html.dark .graph-legend {
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   UNIVERSAL MODAL AND OVERLAY STYLES
+   ============================================ */
+
+html.dark .modal,
+html.dark .dialog,
+html.dark .overlay {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .modal-header,
+html.dark .dialog-header {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .modal-body,
+html.dark .dialog-body {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   UNIVERSAL LOADING AND SPINNER STYLES
+   ============================================ */
+
+html.dark .loading,
+html.dark .spinner,
+html.dark .loader {
+  color: var(--text-primary) !important;
+}
+
+html.dark .loading-spinner {
+  border-color: var(--border-primary) !important;
+  border-top-color: var(--accent) !important;
+}
+
+/* ============================================
+   UNIVERSAL FOOTER STYLES
+   ============================================ */
+
+html.dark footer,
+html.dark .footer {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+html.dark .footer-link {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .footer-link:hover {
+  color: var(--text-primary) !important;
+}
+
+/* ============================================
+   OVERRIDE HARDCODED STYLES
+   ============================================ */
+
+/* Override any hardcoded colors */
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color: #033778"],
+html.dark [style*="color: #073571"],
+html.dark [style*="color: #1e293b"],
+html.dark [style*="background: white"],
+html.dark [style*="background: #ffffff"] {
+  color: var(--text-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Override hardcoded backgrounds */
+html.dark [style*="background: white"],
+html.dark [style*="background: #fff"],
+html.dark [style*="background: #ffffff"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Override hardcoded borders */
+html.dark [style*="border: 1px solid #e2e8f0"],
+html.dark [style*="border: 1px solid #ccc"] {
+  border-color: var(--border-primary) !important;
+}
