@@ -4,7 +4,7 @@ const { catchAsync, AppError } = require('../middleware/errorHandler');
 const NetworkLog = require('../models/NetworkLog');
 const Threat = require('../models/Threat');
 const { transformNetworkLogToMLFormat, transformFeaturesToMLFormat, validateMLData } = require('../utils/mlDataTransform');
-const { emitNewThreat, emitThreatUpdate, emitMLServiceHealth } = require('../socket/socketHandlers');
+const { emitNewThreat, emitMLServiceHealth } = require('../socket/socketHandlers');
 const winston = require('winston');
 
 // Predict threat for a single log
@@ -36,7 +36,7 @@ const predictThreat = catchAsync(async (req, res, next) => {
 
     // Create threat record with ML prediction
     const threat = new Threat({
-      threatType: prediction.prediction || 'Unknown',
+      threatType: normalizeThreatType(prediction.prediction),
       sourceIP: networkLog.sourceIP,
       severityLevel: mapThreatLevelToSeverity(prediction.threat_level),
       confidenceScore: Math.round((prediction.confidence || 0) * 100),
@@ -199,7 +199,7 @@ const predictFromFeatures = catchAsync(async (req, res, next) => {
 
     // Create threat record with ML prediction
     const threat = new Threat({
-      threatType: prediction.prediction || 'Unknown',
+      threatType: normalizeThreatType(prediction.prediction),
       sourceIP: features.sourceIP || 'Unknown',
       severityLevel: mapThreatLevelToSeverity(prediction.threat_level),
       confidenceScore: Math.round((prediction.confidence || 0) * 100),
@@ -279,8 +279,8 @@ const trainModel = catchAsync(async (req, res, next) => {
     return next(new AppError('Training data array is required and cannot be empty', 400));
   }
 
-  // Train model
-  const result = await mlService.trainModel(trainingData);
+  // Train model via FastAPI proxy
+  const result = await mlProxyService.trainModel(trainingData, modelType);
 
   winston.info(`ML model trained by ${req.user.username}: ${result.modelId}`);
 
@@ -512,6 +512,32 @@ const mapThreatLevelToSeverity = (threatLevel) => {
     'CRITICAL': 'Critical'
   };
   return mapping[threatLevel] || 'Medium';
+};
+
+const normalizeThreatType = (prediction) => {
+  const normalized = String(prediction || '').toLowerCase();
+  const mapping = {
+    dos: 'DDoS',
+    ddos: 'DDoS',
+    bruteforce: 'Brute Force',
+    'brute force': 'Brute Force',
+    sqlinjection: 'SQL Injection',
+    'sql injection': 'SQL Injection',
+    xss: 'XSS',
+    portscan: 'Port Scan',
+    'port scan': 'Port Scan',
+    malware: 'Malware',
+    phishing: 'Phishing',
+    mitm: 'Man-in-the-Middle',
+    'man-in-the-middle': 'Man-in-the-Middle',
+    dnsspoofing: 'DNS Spoofing',
+    'dns spoofing': 'DNS Spoofing',
+    'zero-day exploit': 'Zero-Day Exploit',
+    reconnaissance: 'Reconnaissance',
+    'data exfiltration': 'Data Exfiltration',
+    anomaly: 'Anomaly'
+  };
+  return mapping[normalized] || 'Suspicious Activity';
 };
 
 module.exports = {

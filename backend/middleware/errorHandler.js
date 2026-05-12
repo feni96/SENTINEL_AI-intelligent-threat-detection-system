@@ -44,10 +44,16 @@ const sendErrorDev = (err, req, res) => {
   // A) API
   if (req.originalUrl.startsWith('/api')) {
     return res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack
+      success: false,
+      error: {
+        code: err.statusCode,
+        message: err.message,
+        details: err.errors || null
+      },
+      debug: {
+        status: err.status,
+        stack: err.stack
+      }
     });
   }
 
@@ -66,8 +72,11 @@ const sendErrorProd = (err, req, res) => {
     // A) Operational, trusted error: send message to client
     if (err.isOperational) {
       return res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message
+        success: false,
+        error: {
+          code: err.statusCode,
+          message: err.message
+        }
       });
     }
 
@@ -77,8 +86,11 @@ const sendErrorProd = (err, req, res) => {
 
     // 2) Send generic message
     return res.status(500).json({
-      status: 'error',
-      message: 'Something went wrong!'
+      success: false,
+      error: {
+        code: 500,
+        message: 'Something went wrong!'
+      }
     });
   }
 

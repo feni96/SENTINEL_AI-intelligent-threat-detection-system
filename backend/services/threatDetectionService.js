@@ -216,9 +216,14 @@ class ThreatDetectionService {
   async createThreatFromML(networkLog, mlPrediction) {
     try {
       // Check if threat already exists for this log
+      const predictedThreatType = mlPrediction.prediction || mlPrediction.threatType || 'Suspicious Activity';
+      const predictedConfidence = typeof mlPrediction.confidenceScore === 'number'
+        ? mlPrediction.confidenceScore
+        : Math.round((mlPrediction.confidence || 0) * 100);
+
       const existingThreat = await Threat.findOne({
         networkLogId: networkLog._id,
-        threatType: mlPrediction.threatType,
+        threatType: predictedThreatType,
         sourceIP: networkLog.sourceIP
       });
 
@@ -227,18 +232,18 @@ class ThreatDetectionService {
       }
 
       const severity = calculateSeverity(
-        mlPrediction.severityLevel || 'Medium',
-        mlPrediction.confidenceScore,
+        mapThreatLevelToSeverity(mlPrediction.threat_level) || mlPrediction.severityLevel || 'Medium',
+        predictedConfidence,
         networkLog
       );
 
       const threat = new Threat({
-        threatType: mlPrediction.threatType,
+        threatType: predictedThreatType,
         sourceIP: networkLog.sourceIP,
         timestamp: networkLog.timestamp,
         severityLevel: severity,
-        confidenceScore: mlPrediction.confidenceScore,
-        description: mlPrediction.description || `ML detected ${mlPrediction.threatType}`,
+        confidenceScore: predictedConfidence,
+        description: mlPrediction.description || `ML detected ${predictedThreatType}`,
         networkLogId: networkLog._id,
         userId: networkLog.userId,
         ruleBased: false,
@@ -354,6 +359,16 @@ class ThreatDetectionService {
     return this.rules;
   }
 }
+
+const mapThreatLevelToSeverity = (threatLevel) => {
+  const mapping = {
+    LOW: 'Low',
+    MEDIUM: 'Medium',
+    HIGH: 'High',
+    CRITICAL: 'Critical'
+  };
+  return mapping[threatLevel];
+};
 
 // Create singleton instance
 const threatDetectionService = new ThreatDetectionService();

@@ -11,7 +11,7 @@ const authenticateToken = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Access token is required'
+        error: { code: 401, message: 'Access token is required' }
       });
     }
 
@@ -21,14 +21,14 @@ const authenticateToken = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token - user not found'
+        error: { code: 401, message: 'Invalid token - user not found' }
       });
     }
 
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Account is deactivated'
+        error: { code: 401, message: 'Account is deactivated' }
       });
     }
 
@@ -40,20 +40,20 @@ const authenticateToken = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
-        message: 'Token expired'
+        error: { code: 401, message: 'Token expired' }
       });
     }
     
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token'
+        error: { code: 401, message: 'Invalid token' }
       });
     }
 
     return res.status(500).json({
       success: false,
-      message: 'Internal server error during authentication'
+      error: { code: 500, message: 'Internal server error during authentication' }
     });
   }
 };
@@ -64,14 +64,14 @@ const requireRole = (roles) => {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        message: 'Authentication required'
+        error: { code: 401, message: 'Authentication required' }
       });
     }
 
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: 'Insufficient permissions'
+        error: { code: 403, message: 'Insufficient permissions' }
       });
     }
 

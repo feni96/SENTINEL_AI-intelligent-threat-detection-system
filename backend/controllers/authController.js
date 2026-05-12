@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const { catchAsync, AppError } = require('../middleware/errorHandler');
@@ -211,6 +212,75 @@ const refreshToken = catchAsync(async (req, res, next) => {
   });
 });
 
+// Request password reset token
+const forgotPassword = catchAsync(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
+  }
+
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  // Do not leak account existence
+  if (!user) {
+    return res.status(200).json({
+      success: true,
+      message: 'If an account exists with this email, a reset link has been generated',
+      data: {}
+    });
+  }
+
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  user.passwordResetToken = hashedToken;
+  user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+  await user.save();
+
+  // Dev-friendly fallback until email sender is wired
+  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${rawToken}`;
+
+  res.status(200).json({
+    success: true,
+    message: 'Password reset token generated',
+    data: {
+      resetUrl: process.env.NODE_ENV === 'production' ? undefined : resetUrl
+    }
+  });
+});
+
+// Reset password using token
+const resetPassword = catchAsync(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
+  }
+
+  const { token, newPassword } = req.body;
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: new Date() }
+  }).select('+password');
+
+  if (!user) {
+    return next(new AppError('Reset token is invalid or expired', 400));
+  }
+
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Password has been reset successfully',
+    data: {}
+  });
+});
+
 module.exports = {
   register,
   login,
@@ -218,5 +288,7 @@ module.exports = {
   updateProfile,
   changePassword,
   logout,
-  refreshToken
+  refreshToken,
+  forgotPassword,
+  resetPassword
 };

@@ -64,6 +64,50 @@ class MLProxyService {
     }
   }
 
+  async predictBatch(networkDataList) {
+    try {
+      if (!Array.isArray(networkDataList) || networkDataList.length === 0) {
+        throw new Error('Batch input must be a non-empty array');
+      }
+      const response = await this.axiosInstance.post('/predict-batch', {
+        data: networkDataList
+      });
+      return response.data;
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        throw new Error('ML service is not available');
+      }
+      throw new Error(`ML service error: ${error.response?.data?.message || error.message}`);
+    }
+  }
+
+  async trainModel(trainingData, modelType = 'threat_detection') {
+    try {
+      const response = await this.axiosInstance.post('/train', {
+        training_data: trainingData,
+        model_type: modelType
+      });
+      return response.data;
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        throw new Error('ML service is not available');
+      }
+      throw new Error(`ML service error: ${error.response?.data?.message || error.message}`);
+    }
+  }
+
+  async toggleFallbackMode(enabled) {
+    try {
+      const response = await this.axiosInstance.post('/fallback', { enabled });
+      return response.data;
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        throw new Error('ML service is not available');
+      }
+      throw new Error(`ML service error: ${error.response?.data?.message || error.message}`);
+    }
+  }
+
   async getHealth() {
     try {
       this.logger.info('Checking FastAPI service health');

@@ -85,7 +85,7 @@ const threatSchema = new mongoose.Schema({
   networkLogId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'NetworkLog',
-    required: true
+    required: false
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
