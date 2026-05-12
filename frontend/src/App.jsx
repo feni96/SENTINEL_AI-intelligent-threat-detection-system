@@ -8,6 +8,8 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";      // new public landing page
 import GuestAlerts from "./pages/GuestAlerts";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Threats from "./pages/Threats";
 import Alerts from "./pages/Alerts";
@@ -16,6 +18,7 @@ import Reports from "./pages/Reports";
 import AuditLog from "./pages/AuditLog";
 import Settings from "./pages/Settings";
 import Monitoring from "./pages/Monitoring";
+import ProtectedRoute from "./components/ProtectedRoute";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 function App() {
@@ -30,14 +33,16 @@ function App() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/guest-alerts" element={<GuestAlerts />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/threats" element={<Threats />} />
-            <Route path="/alerts" element={<Alerts />} />
-            <Route path="/map" element={<AreaMap />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/audit-log" element={<AuditLog />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/monitoring" element={<Monitoring />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/threats" element={<ProtectedRoute><Threats /></ProtectedRoute>} />
+            <Route path="/alerts" element={<ProtectedRoute><Alerts /></ProtectedRoute>} />
+            <Route path="/map" element={<ProtectedRoute><AreaMap /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+            <Route path="/audit-log" element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/monitoring" element={<ProtectedRoute><Monitoring /></ProtectedRoute>} />
           </Routes>
           </DashboardNavProvider>
         </BrowserRouter>

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDashboardNav } from "../context/DashboardNavContext";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, i18n } = useTranslation();
+  const { logout } = useAuth();
   const dashboardNav = useDashboardNav();
   const adminName = localStorage.getItem("adminName") || "Admin";
   const [activeAlerts, setActiveAlerts] = useState(0);
@@ -22,10 +25,20 @@ const Navbar = () => {
   }, [theme]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminName");
+    logout();
     navigate("/login");
   };
+
+  const isDashboardRoute = [
+    "/dashboard",
+    "/threats",
+    "/alerts",
+    "/map",
+    "/reports",
+    "/audit-log",
+    "/settings",
+    "/monitoring",
+  ].includes(location.pathname);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -89,7 +102,7 @@ const Navbar = () => {
           <span className="navbar-logout-text">{t("logout")}</span>
         </button>
 
-        {dashboardNav && (
+        {dashboardNav && isDashboardRoute && (
           <button
             type="button"
             className="navbar-drawer-toggle"

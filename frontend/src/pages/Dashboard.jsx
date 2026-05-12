@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import api from "../services/api";
+import { createDashboardSocket } from "../services/socket";
 
 import {
   Chart as ChartJS,
@@ -29,6 +31,13 @@ ChartJS.register(
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const [threatStats, setThreatStats] = useState({
+    totalThreats: 0,
+    recentThreats: 0,
+    mlPredictedCount: 0,
+    threatsByLevel: {},
+  });
+  const [recentThreats, setRecentThreats] = useState([]);
 
   // Traffic history data
   const trafficLabels = [
@@ -68,55 +77,60 @@ export default function Dashboard() {
     },
   };
 
-  // Sample threat data
-  const recentThreats = [
-    {
-      id: "THR-2023-0012",
-      type: "DDoS Attack",
-      severity: "Critical",
-      sourceIP: "192.168.1.105",
-      location: "Admin Building",
-      time: "10:45 AM",
-      confidence: "98%",
-    },
-    {
-      id: "THR-2023-0011",
-      type: "Malware",
-      severity: "High",
-      sourceIP: "10.0.0.23",
-      location: "Library",
-      time: "09:22 AM",
-      confidence: "87%",
-    },
-    {
-      id: "THR-2023-0010",
-      type: "Unauthorized Access",
-      severity: "Medium",
-      sourceIP: "172.16.0.45",
-      location: "Computer Lab 3",
-      time: "Yesterday, 3:15 PM",
-      confidence: "76%",
-    },
-    {
-      id: "THR-2023-0009",
-      type: "Port Scanning",
-      severity: "Low",
-      sourceIP: "192.168.2.101",
-      location: "Student Dorm A",
-      time: "Yesterday, 11:30 AM",
-      confidence: "65%",
-    },
-  ];
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const [statsRes, threatsRes] = await Promise.all([
+          api.get("/ml/threats/stats"),
+          api.get("/ml/threats/recent?limit=5"),
+        ]);
 
-  const getSeverityBadge = (severity) => {
-    const classes = {
-      Critical: "badge-critical",
-      High: "badge-high",
-      Medium: "badge-medium",
-      Low: "badge-low",
+        const stats = statsRes.data?.data || {};
+        const recent = threatsRes.data?.data?.threats || [];
+        setThreatStats({
+          totalThreats: stats.totalThreats || 0,
+          recentThreats: stats.recentThreats || 0,
+          mlPredictedCount: stats.mlPredictedCount || 0,
+          threatsByLevel: stats.threatsByLevel || {},
+        });
+        setRecentThreats(recent);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+      }
     };
-    return <span className={`badge ${classes[severity]}`}>{severity}</span>;
-  };
+
+    fetchDashboardData();
+
+    const token = localStorage.getItem("token");
+    const socket = createDashboardSocket(token);
+    if (!socket) return undefined;
+
+    socket.on("connect", () => {
+      socket.emit("subscribeThreats");
+    });
+
+    socket.on("newThreat", (event) => {
+      const incoming = {
+        _id: event.id,
+        threatType: event.threatType,
+        sourceIP: event.sourceIP,
+        severityLevel: event.severityLevel || "Medium",
+        confidenceScore: Math.round((event.confidence || 0) * 100),
+        timestamp: event.timestamp || new Date().toISOString(),
+      };
+      setRecentThreats((prev) => [incoming, ...prev].slice(0, 5));
+      setThreatStats((prev) => ({
+        ...prev,
+        totalThreats: (prev.totalThreats || 0) + 1,
+        recentThreats: (prev.recentThreats || 0) + 1,
+      }));
+    });
+
+    return () => {
+      socket.emit("unsubscribeThreats");
+      socket.disconnect();
+    };
+  }, []);
 
   // Action handlers for threat table
   const handleFilter = () => {
@@ -164,21 +178,23 @@ export default function Dashboard() {
                 <div className="realtime-icon threats"></div>
                 <div className="realtime-content">
                   <span className="realtime-label">{t("activeThreats")}</span>
-                  <span className="realtime-value">16</span>
+                  <span className="realtime-value">{threatStats.totalThreats}</span>
                 </div>
               </div>
               <div className="realtime-metric-card">
                 <div className="realtime-icon anomalies"></div>
                 <div className="realtime-content">
                   <span className="realtime-label">{t("anomaliesDetected")}</span>
-                  <span className="realtime-value">47</span>
+                  <span className="realtime-value">{threatStats.recentThreats}</span>
                 </div>
               </div>
               <div className="realtime-metric-card">
                 <div className="realtime-icon protected"></div>
                 <div className="realtime-content">
                   <span className="realtime-label">{t("protectedSystems")}</span>
-                  <span className="realtime-value">98<span className="realtime-unit">%</span></span>
+                  <span className="realtime-value">
+                    {threatStats.mlPredictedCount}
+                  </span>
                 </div>
               </div>
               <div className="realtime-metric-card">
@@ -204,6 +220,34 @@ export default function Dashboard() {
               </div>
               <div className="chart-wrapper">
                 <Line data={trafficData} options={chartOptions} />
+              </div>
+            </div>
+          </section>
+
+          <section className="dashboard-section">
+            <h2 className="section-title">{t("recentThreats")}</h2>
+            <div className="card">
+              <div className="table-responsive">
+                <table className="threat-table">
+                  <thead>
+                    <tr>
+                      <th>{t("threatType")}</th>
+                      <th>{t("sourceIP")}</th>
+                      <th>{t("severity")}</th>
+                      <th>{t("confidence")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentThreats.map((threat) => (
+                      <tr key={threat._id}>
+                        <td>{threat.threatType}</td>
+                        <td>{threat.sourceIP}</td>
+                        <td>{threat.severityLevel}</td>
+                        <td>{threat.confidenceScore || 0}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>

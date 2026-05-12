@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import api from '../services/api';
 
 export default function ResetPassword() {
   const { t } = useTranslation();
@@ -39,11 +39,11 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const response = await axios.post('/api/auth/reset-password', { token, newPassword });
-      setMessage(response.data.message);
+      const response = await api.post('/auth/reset-password', { token, newPassword });
+      setMessage(response.data?.message || t('passwordResetSuccess'));
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
-      setError(err.response?.data?.message || t('resetFailed'));
+      setError(err.response?.data?.error?.message || err.response?.data?.message || t('resetFailed'));
     } finally {
       setLoading(false);
     }

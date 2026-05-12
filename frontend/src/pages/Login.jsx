@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 import { useTranslation } from "react-i18next";
 
@@ -13,6 +14,7 @@ function Login() {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
 
@@ -24,21 +26,16 @@ function Login() {
 
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
 
     e.preventDefault();
 
-    // Demo authentication – replace with real API call
-
-    if (email === "admin@sentinel.com" && password === "123456") {
-
+    const result = await login(email, password);
+    if (result.success) {
       navigate("/dashboard");
-
-    } else {
-
-      setError(t("invalidCredentials"));
-
+      return;
     }
+    setError(result.message || t("invalidCredentials"));
 
   };
 

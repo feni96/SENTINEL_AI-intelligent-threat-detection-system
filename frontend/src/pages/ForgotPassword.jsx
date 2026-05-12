@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import api from '../services/api';
 
 export default function ForgotPassword() {
   const { t } = useTranslation();
@@ -17,10 +17,10 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/forgot-password', { email });
-      setMessage(response.data.message);
+      const response = await api.post('/auth/forgot-password', { email });
+      setMessage(response.data?.message || 'Reset link sent');
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong.');
+      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }
