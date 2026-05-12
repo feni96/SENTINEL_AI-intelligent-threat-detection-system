@@ -148,10 +148,10 @@ const ContactUs = () => {
             <div className="footer-section">
               <h4>{t("followUs")}</h4>
               <div className="social-links">
-                <a href="#" className="social-link"><i className="bi bi-twitter"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-linkedin"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-facebook"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-github"></i></a>
+                <a href="https://twitter.com/HaramayaUni" className="social-link"><i className="bi bi-twitter"></i></a>
+                <a href="https://et.linkedin.com/company/haramaya-university" className="social-link"><i className="bi bi-linkedin"></i></a>
+                <a href="https://www.facebook.com/HRMUNIV" className="social-link"><i className="bi bi-facebook"></i></a>
+                <a href="https://www.youtube.com/@haramayauniversity" className="social-link"><i className="bi bi-youtube"></i></a>
               </div>
             </div>
           </div>

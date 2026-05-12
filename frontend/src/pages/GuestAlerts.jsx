@@ -133,7 +133,7 @@ export default function GuestAlerts() {
               <div className="footer-contact">
                 <p><i className="bi bi-geo-alt"></i> Haramaya University, Ethiopia</p>
                 <p><i className="bi bi-envelope"></i> security@haramaya.edu.et</p>
-                <p><i className="bi bi-telephone"></i> +251 123 456 789</p>
+                <p><i className="bi bi-telephone"></i> +251 255 530 319</p>
               </div>
             </div>
             
@@ -172,10 +172,10 @@ export default function GuestAlerts() {
             <div className="footer-section">
               <h4>{t("followUs")}</h4>
               <div className="social-links">
-                <a href="#" className="social-link"><i className="bi bi-twitter"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-linkedin"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-facebook"></i></a>
-                <a href="#" className="social-link"><i className="bi bi-github"></i></a>
+                <a href="https://twitter.com/HaramayaUni" className="social-link"><i className="bi bi-twitter"></i></a>
+                <a href="https://et.linkedin.com/company/haramaya-university" className="social-link"><i className="bi bi-linkedin"></i></a>
+                <a href="https://www.facebook.com/HRMUNIV" className="social-link"><i className="bi bi-facebook"></i></a>
+                <a href="https://www.youtube.com/@haramayauniversity" className="social-link"><i className="bi bi-youtube"></i></a>
               </div>
             </div>
           </div>
