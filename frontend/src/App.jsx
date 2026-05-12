@@ -8,8 +8,9 @@ import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";      // new public landing page
 import GuestAlerts from "./pages/GuestAlerts";
 import Login from "./pages/Login";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+// Registration disabled for single admin system
+// import ForgotPassword from "./pages/ForgotPassword";
+// import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Threats from "./pages/Threats";
 import Alerts from "./pages/Alerts";
@@ -33,8 +34,9 @@ function App() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/guest-alerts" element={<GuestAlerts />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            {/* Password reset disabled for single admin system */}
+            {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
+            {/* <Route path="/reset-password" element={<ResetPassword />} /> */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/threats" element={<ProtectedRoute><Threats /></ProtectedRoute>} />
             <Route path="/alerts" element={<ProtectedRoute><Alerts /></ProtectedRoute>} />

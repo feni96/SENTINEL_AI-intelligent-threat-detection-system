@@ -12,6 +12,8 @@ import {
 
 const TranslationContext = createContext();
 
+const isDevelopment = import.meta.env.MODE === 'development' || import.meta.env.DEV;
+
 export const useTranslationContext = () => {
   const context = useContext(TranslationContext);
   if (!context) {
@@ -27,9 +29,7 @@ export const TranslationProvider = ({ children }) => {
   const [translationStatus, setTranslationStatus] = useState({});
   const [missingKeys, setMissingKeys] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showMissingKeyAlerts, setShowMissingKeyAlerts] = useState(
-    process.env.NODE_ENV === 'development'
-  );
+  const [showMissingKeyAlerts, setShowMissingKeyAlerts] = useState(isDevelopment);
 
   // Load translation status on mount
   useEffect(() => {
@@ -51,7 +51,7 @@ export const TranslationProvider = ({ children }) => {
 
   // Log missing translations in development
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       const interval = setInterval(() => {
         logMissingTranslations();
         const missing = getMissingKeys();
@@ -153,7 +153,7 @@ export const TranslationProvider = ({ children }) => {
       {children}
       
       {/* Missing Keys Alert for Development */}
-      {process.env.NODE_ENV === 'development' && showMissingKeyAlerts && missingKeys.length > 0 && (
+      {isDevelopment && showMissingKeyAlerts && missingKeys.length > 0 && (
         <div className="fixed bottom-4 right-4 max-w-md bg-yellow-50 border border-yellow-200 rounded-lg shadow-lg p-4 z-50">
           <div className="flex items-start">
             <div className="flex-shrink-0">

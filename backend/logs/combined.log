@@ -111,3 +111,107 @@
 {"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.844Z"}
 {"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.845Z"}
 {"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-11T20:22:48.846Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:26:50.093Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:26:50.096Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:26:50.096Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:26:50.097Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:26:50.098Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:32:06.043Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:32:06.047Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:32:06.049Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:32:06.050Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T14:32:06.051Z"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:13.988Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:25.010Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:25.016Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:25.017Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:25.018Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T18:58:25.020Z"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"sentinel-ai-backend","timestamp":"2026-05-12T19:22:32.365Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:00:57.874Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:00:57.879Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:00:57.881Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:00:57.882Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:00:57.883Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:07:35.246Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:09:34.936Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:12:17.960Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:12:38.405Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:12:41.628Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:17:52.017Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:17:52.019Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:17:52.020Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:17:52.021Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:17:52.021Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:18:06.458Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:19:03.288Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:19:05.788Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:25:14.135Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:25:44.275Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:28:09.758Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:28:09.761Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:28:09.762Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:28:09.763Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:28:09.764Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:29:32.640Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:29:34.494Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:29:47.347Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:30:08.903Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:30:10.305Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:04.177Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:04.180Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:04.181Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:04.181Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:04.182Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:08.569Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:12.229Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:33:30.567Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:39.889Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:58.931Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:58.936Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:58.937Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:58.938Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:34:58.939Z"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:41:44.246Z"}
+{"level":"info","message":"HTTP server closed","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:41:44.250Z"}
+{"level":"error","message":"Unhandled Rejection at:","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:41:44.258Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:51:43.587Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:51:43.594Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:51:43.596Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:51:43.597Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:51:43.598Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:55:24.815Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:58:32.505Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:58:32.507Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:58:32.507Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:58:32.508Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T20:58:32.509Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:01:09.513Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:01:11.488Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:01:13.125Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:01:30.351Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:01:38.213Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:02:02.786Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:02:02.792Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:02:02.794Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:02:02.796Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:02:02.808Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:05.308Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8115"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:22.046Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:22.055Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:22.067Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:22.074Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:07:22.077Z"}
+{"level":"info","message":"Background tasks started","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:23.982Z"}
+{"level":"info","message":"Server running on port 5000 in development mode","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:23.987Z"}
+{"level":"info","message":"Health check available at http://localhost:5000/health","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:23.989Z"}
+{"level":"info","message":"API documentation available at http://localhost:5000/api","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:23.990Z"}
+{"level":"info","message":"Socket.IO initialized for real-time communication","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:23.991Z"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:09:37.637Z","userAgent":"Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.8115"}
+{"ip":"::1","level":"info","message":"POST /api/auth/login","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:28.903Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/ml/threats/stats","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:31.550Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/ml/threats/recent","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:31.768Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/ml/threats/stats","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:32.106Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/ml/threats/recent","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:32.421Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/alerts","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:52.943Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}
+{"ip":"::1","level":"info","message":"GET /api/alerts","service":"sentinel-ai-backend","timestamp":"2026-05-12T21:13:52.994Z","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"}

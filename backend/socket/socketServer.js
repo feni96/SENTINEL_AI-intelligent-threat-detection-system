@@ -5,9 +5,14 @@ const User = require('../models/User');
 let io;
 
 const initializeSocket = (server) => {
+  // Parse CORS origins from environment variable
+  const corsOrigins = process.env.SOCKET_CORS_ORIGIN 
+    ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
+    : ["http://localhost:3000"];
+
   io = new Server(server, {
     cors: {
-      origin: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",
+      origin: corsOrigins,
       methods: ["GET", "POST"],
       credentials: true
     }

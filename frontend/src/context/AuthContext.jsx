@@ -1,6 +1,7 @@
 // context/AuthContext.jsx
 import { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api'; // your API service (see step 4)
+import { initializeSocket, disconnectSocket } from '../services/socket';
 
 const AuthContext = createContext();
 
@@ -18,6 +19,8 @@ export const AuthProvider = ({ children }) => {
       api.get('/auth/profile')
         .then(response => {
           setUser(response.data?.data?.user || null);
+          // Initialize Socket.IO connection
+          initializeSocket(token);
         })
         .catch(() => {
           localStorage.removeItem('token');
@@ -39,6 +42,10 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token);
       localStorage.setItem('adminName', user.username || user.email || 'Admin');
       setUser(user);
+      
+      // Initialize Socket.IO connection after successful login
+      initializeSocket(token);
+      
       return { success: true };
     } catch (error) {
       return {
@@ -55,6 +62,9 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('adminName');
     setUser(null);
+    
+    // Disconnect Socket.IO on logout
+    disconnectSocket();
   };
 
   return (

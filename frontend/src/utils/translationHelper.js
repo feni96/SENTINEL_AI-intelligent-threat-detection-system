@@ -5,6 +5,8 @@ import i18n from '../i18n';
  * Provides missing key detection, fallback mechanisms, and translation validation
  */
 
+const isDevelopment = import.meta.env.MODE === 'development' || import.meta.env.DEV;
+
 // Store missing keys for reporting
 const missingKeys = new Set();
 const fallbackKeys = new Map();
@@ -169,7 +171,7 @@ export const generateTranslationReport = async () => {
  * Should be called in development mode
  */
 export const logMissingTranslations = () => {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment) {
     const missing = getMissingKeys();
     const fallbacks = getFallbackKeys();
     

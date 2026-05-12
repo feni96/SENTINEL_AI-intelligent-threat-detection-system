@@ -14,52 +14,12 @@ const generateToken = (userId) => {
   );
 };
 
-// Register new user
-const register = catchAsync(async (req, res, next) => {
-  // Validate input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
-  }
+// Registration disabled for single admin system
+// const register = catchAsync(async (req, res, next) => {
+//   return next(new AppError('User registration is disabled. Please contact administrator.', 403));
+// });
 
-  const { username, email, password, role, department } = req.body;
-
-  // Check if user already exists
-  const existingUser = await User.findOne({
-    $or: [{ email }, { username }]
-  });
-
-  if (existingUser) {
-    return next(new AppError('User with this email or username already exists', 400));
-  }
-
-  // Create new user
-  const user = new User({
-    username,
-    email,
-    password,
-    role: role || 'security',
-    department
-  });
-
-  await user.save();
-
-  // Generate token
-  const token = generateToken(user._id);
-
-  winston.info(`New user registered: ${username} (${email})`);
-
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully',
-    data: {
-      user,
-      token
-    }
-  });
-});
-
-// Login user
+// Login user - Single Admin System
 const login = catchAsync(async (req, res, next) => {
   // Validate input
   const errors = validationResult(req);
@@ -69,16 +29,25 @@ const login = catchAsync(async (req, res, next) => {
 
   const { email, password } = req.body;
 
-  // Find user by email
-  const user = await User.findOne({ email }).select('+password');
+  // Hardcoded admin credentials for single-admin system
+  const ADMIN_EMAIL = 'admin@sentinel-ai.local';
+  const ADMIN_USERNAME = 'admin';
 
-  if (!user) {
+  // Validate against hardcoded admin credentials
+  if (email !== ADMIN_EMAIL) {
     return next(new AppError('Invalid email or password', 401));
   }
 
-  // Check if user is active
+  // Find admin user by email
+  const user = await User.findOne({ email: ADMIN_EMAIL }).select('+password');
+
+  if (!user) {
+    return next(new AppError('Admin account not found. Please contact system administrator.', 401));
+  }
+
+  // Check if User is active
   if (!user.isActive) {
-    return next(new AppError('Account is deactivated. Please contact administrator.', 401));
+    return next(new AppError('Admin account is deactivated. Please contact system administrator.', 401));
   }
 
   // Verify password
@@ -95,11 +64,11 @@ const login = catchAsync(async (req, res, next) => {
   // Generate token
   const token = generateToken(user._id);
 
-  winston.info(`User logged in: ${user.username} (${email})`);
+  winston.info(`Admin logged in: ${user.username} (${ADMIN_EMAIL})`);
 
   res.status(200).json({
     success: true,
-    message: 'Login successful',
+    message: 'Admin login successful',
     data: {
       user,
       token
@@ -212,83 +181,24 @@ const refreshToken = catchAsync(async (req, res, next) => {
   });
 });
 
-// Request password reset token
-const forgotPassword = catchAsync(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
-  }
+// Password reset disabled for single admin system
+// const forgotPassword = catchAsync(async (req, res, next) => {
+//   return next(new AppError('Password reset is disabled. Please contact administrator.', 403));
+// });
 
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-
-  // Do not leak account existence
-  if (!user) {
-    return res.status(200).json({
-      success: true,
-      message: 'If an account exists with this email, a reset link has been generated',
-      data: {}
-    });
-  }
-
-  const rawToken = crypto.randomBytes(32).toString('hex');
-  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
-
-  user.passwordResetToken = hashedToken;
-  user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
-  await user.save();
-
-  // Dev-friendly fallback until email sender is wired
-  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${rawToken}`;
-
-  res.status(200).json({
-    success: true,
-    message: 'Password reset token generated',
-    data: {
-      resetUrl: process.env.NODE_ENV === 'production' ? undefined : resetUrl
-    }
-  });
-});
-
-// Reset password using token
-const resetPassword = catchAsync(async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
-  }
-
-  const { token, newPassword } = req.body;
-  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: new Date() }
-  }).select('+password');
-
-  if (!user) {
-    return next(new AppError('Reset token is invalid or expired', 400));
-  }
-
-  user.password = newPassword;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    message: 'Password has been reset successfully',
-    data: {}
-  });
-});
+// Password reset disabled for single admin system
+// const resetPassword = catchAsync(async (req, res, next) => {
+//   return next(new AppError('Password reset is disabled. Please contact administrator.', 403));
+// });
 
 module.exports = {
-  register,
+  // register: disabled for single admin system,
   login,
   getProfile,
   updateProfile,
   changePassword,
   logout,
   refreshToken,
-  forgotPassword,
-  resetPassword
+  // forgotPassword: disabled for single admin system,
+  // resetPassword: disabled for single admin system
 };
