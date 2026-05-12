@@ -47,7 +47,7 @@ export default function Landing() {
               <div className="footer-contact">
                 <p><i className="bi bi-geo-alt"></i> Haramaya University, Ethiopia</p>
                 <p><i className="bi bi-envelope"></i> security@haramaya.edu.et</p>
-                <p><i className="bi bi-telephone"></i> +251 123 456 789</p>
+                <p><i className="bi bi-telephone"></i> +251 255 530 319</p>
               </div>
             </div>
             
