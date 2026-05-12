@@ -55,6 +55,7 @@ export default function Dashboard() {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: { mode: "index", intersect: false },

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useDashboardNav } from "../context/DashboardNavContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const dashboardNav = useDashboardNav();
   const adminName = localStorage.getItem("adminName") || "Admin";
   const [activeAlerts, setActiveAlerts] = useState(0);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
@@ -83,8 +85,25 @@ const Navbar = () => {
         </button>
 
         <button className="navbar-logout" onClick={handleLogout}>
-          <i className="bi bi-box-arrow-right"></i> {t("logout")}
+          <i className="bi bi-box-arrow-right"></i>{" "}
+          <span className="navbar-logout-text">{t("logout")}</span>
         </button>
+
+        {dashboardNav && (
+          <button
+            type="button"
+            className="navbar-drawer-toggle"
+            onClick={dashboardNav.toggleDrawer}
+            aria-label={
+              dashboardNav.drawerOpen ? "Close navigation menu" : "Open navigation menu"
+            }
+            aria-expanded={dashboardNav.drawerOpen}
+          >
+            <i
+              className={`bi ${dashboardNav.drawerOpen ? "bi-x-lg" : "bi-list"}`}
+            />
+          </button>
+        )}
       </div>
     </nav>
   );

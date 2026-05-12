@@ -1,17 +1,12 @@
-// src/components/Sidebar.jsx
-import { useState } from "react";
+// src/components/Sidebar.jsx — slide-out drawer; toggle lives in Navbar (☰)
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
+import { useDashboardNav } from "../context/DashboardNavContext";
 
 const Sidebar = () => {
   const { t } = useTranslation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Check if window is in split mode
-  const isSplitWindow = () => {
-    return window.innerHeight < window.screen.height;
-  };
-  
+  const nav = useDashboardNav();
+
   const navItems = [
     { path: "/dashboard", label: t("dashboard"), icon: "bi-speedometer2", end: true },
     { path: "/map", label: t("areaMap"), icon: "bi-map" },
@@ -22,40 +17,41 @@ const Sidebar = () => {
     { path: "/monitoring", label: t("systemMonitoring"), icon: "bi-activity" },
   ];
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  if (!nav) {
+    return null;
+  }
+
+  const { drawerOpen, closeDrawer } = nav;
 
   return (
-    <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-expanded' : ''}`}>
-      {/* Mobile Menu Toggle - Show in mobile and split window */}
-      {(isMobileMenuOpen || isSplitWindow()) && (
-        <button 
-          className="mobile-menu-toggle"
-          onClick={toggleMobileMenu}
-          aria-label="Toggle menu"
-          aria-expanded={isMobileMenuOpen}
-        >
-          <i className={`bi ${isMobileMenuOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
-        </button>
-      )}
-      
-      <nav className={`nav ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
-            }
-            end={item.end}
-          >
-            <i className={`bi ${item.icon}`}></i>
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
-      </nav>
-    </aside>
+    <div className="dashboard-sidebar-mount" aria-hidden={!drawerOpen}>
+      <div
+        className={`dashboard-nav-backdrop ${drawerOpen ? "is-visible" : ""}`}
+        aria-hidden={!drawerOpen}
+        onClick={closeDrawer}
+      />
+      <aside
+        className={`sidebar dashboard-nav-drawer ${drawerOpen ? "is-open" : ""}`}
+        aria-hidden={!drawerOpen}
+      >
+        <nav className="nav" aria-label="Main navigation">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+              end={item.end}
+              onClick={closeDrawer}
+            >
+              <i className={`bi ${item.icon}`} />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+    </div>
   );
 };
 

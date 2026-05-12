@@ -94,24 +94,26 @@ export default function Monitoring() {
                 </div>
               </div>
               <h4>{t("logSources")}</h4>
-              <table className="source-table">
-                <thead>
-                  <tr>
-                    <th>{t("source")}</th>
-                    <th>{t("lastLog")}</th>
-                    <th>{t("status")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ingestion.sources.map((source, idx) => (
-                    <tr key={idx}>
-                      <td>{source.name}</td>
-                      <td>{source.lastLog}</td>
-                      <td>{getStatusBadge(source.status)}</td>
+              <div className="table-responsive">
+                <table className="source-table">
+                  <thead>
+                    <tr>
+                      <th>{t("source")}</th>
+                      <th>{t("lastLog")}</th>
+                      <th>{t("status")}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {ingestion.sources.map((source, idx) => (
+                      <tr key={idx}>
+                        <td>{source.name}</td>
+                        <td>{source.lastLog}</td>
+                        <td>{getStatusBadge(source.status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* AI Analysis Status & System Health */}

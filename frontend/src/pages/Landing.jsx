@@ -1,87 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import PublicHeader from "../components/PublicHeader";
 
 export default function Landing() {
-  const { t, i18n } = useTranslation();
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-
-  useEffect(() => {
-    // Apply theme on mount - only add class for light mode
-    if (theme === "light") {
-      document.documentElement.classList.add("light");
-    } else {
-      document.documentElement.classList.remove("light");
-    }
-  }, [theme]);
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    localStorage.setItem("i18nextLng", lng);
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    
-    // Only add light class for light mode, remove for dark mode
-    if (newTheme === "light") {
-      document.documentElement.classList.add("light");
-    } else {
-      document.documentElement.classList.remove("light");
-    }
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="landing">
-      {/* Header */}
-      <header className="landing-header">
-        <div className="container">
-          <div className="logo">
-            {/* Haramaya University Logo Image */}
-            <img
-              src="/images/picture1.jpg"
-              alt="Haramaya University Logo"
-              className="navbar-logo"
-            />
-            <span className="logo-text">{t("appName")}</span>
-          </div>
-          <nav className="nav-links">
-            <Link to="/" className="nav-link">{t("home")}</Link>
-            <Link to="/about" className="nav-link">{t("about")}</Link>
-            <Link to="/contact" className="nav-link">{t("contact")}</Link>
-            {/* Guest Alert Icon - without wrapper */}
-            <Link to="/guest-alerts" className="nav-link">
-              <i className="bi bi-bell"></i>
-            </Link>
-            {/* Theme toggle button */}
-            <button className="dark-mode-toggle" onClick={toggleTheme} title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
-              <i className={`bi ${theme === "dark" ? "bi-sun" : "bi-moon"}`}></i>
-            </button>
-            {/* Language selector with globe icon - same as dashboard */}
-            <div className="language-selector-wrapper">
-              <i className="bi bi-globe language-globe-icon"></i>
-              <select
-                value={i18n.language}
-                onChange={(e) => {
-                  localStorage.setItem("i18nextLng", e.target.value);
-                  window.location.reload();
-                }}
-                className="language-selector"
-              >
-                <option value="en">English</option>
-                <option value="am">አማርኛ</option>
-                <option value="om">Oromoo</option>
-              </select>
-            </div>
-            <Link to="/login" className="login-btn">
-              <i className="bi bi-box-arrow-in-right"></i>
-              {t("login")}
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader activePage="home" />
 
       {/* Hero Section */}
       <section id="hero" className="hero">

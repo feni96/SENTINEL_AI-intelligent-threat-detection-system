@@ -1,6 +1,7 @@
 // src/App.jsx
 import { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { DashboardNavProvider } from "./context/DashboardNavContext";
 import { TranslationProvider } from "./context/TranslationContext";
 import Landing from "./pages/Landing";  
 import AboutUs from "./pages/AboutUs";
@@ -22,6 +23,7 @@ function App() {
     <TranslationProvider>
       <Suspense fallback={<div className="loading">Loading translations...</div>}>
         <BrowserRouter>
+          <DashboardNavProvider>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/about" element={<AboutUs />} />
@@ -37,6 +39,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/monitoring" element={<Monitoring />} />
           </Routes>
+          </DashboardNavProvider>
         </BrowserRouter>
       </Suspense>
     </TranslationProvider>
