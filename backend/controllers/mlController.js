@@ -322,17 +322,44 @@ const getModelMetrics = catchAsync(async (req, res, next) => {
 
 // Check ML service health
 const checkServiceHealth = catchAsync(async (req, res, next) => {
-  const health = await mlProxyService.getHealth();
+  try {
+    const health = await mlProxyService.getHealth();
 
-  // Emit health status to admin users
-  emitMLServiceHealth(health);
+    // Emit health status to admin users
+    emitMLServiceHealth(health);
 
-  res.status(200).json({
-    success: true,
-    data: {
-      health
-    }
-  });
+    res.status(200).json({
+      success: true,
+      data: {
+        health
+      }
+    });
+  } catch (error) {
+    // ML service is offline - return graceful response
+    winston.warn('ML service health check failed:', error.message);
+    
+    const offlineHealth = {
+      status: 'offline',
+      available: false,
+      fastapi_available: false,
+      models: {
+        available_models: [],
+        status: 'unavailable'
+      },
+      timestamp: new Date().toISOString(),
+      error: 'ML service is currently offline'
+    };
+
+    // Emit offline status
+    emitMLServiceHealth(offlineHealth);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        health: offlineHealth
+      }
+    });
+  }
 });
 
 // Toggle fallback mode
@@ -477,7 +504,9 @@ const getThreatStats = catchAsync(async (req, res, next) => {
       ]),
       Threat.aggregate([
         { $match: { userId, timestamp: { $gte: last24Hours } } },
-        { $group: { _id: '$threatType', count: { $sum: 1 } }, $sort: { count: -1 }, $limit: 10 }
+        { $group: { _id: '$threatType', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: 10 }
       ]),
       Threat.countDocuments({ userId, mlPredicted: true })
     ]);
@@ -499,6 +528,7 @@ const getThreatStats = catchAsync(async (req, res, next) => {
       data: stats
     });
   } catch (error) {
+    winston.error('Error fetching threat stats:', error);
     throw error;
   }
 });

@@ -176,14 +176,34 @@ export default function Dashboard() {
         
         // Fetch all dashboard data with individual error handling
         try {
-          const [statsRes, threatsRes, healthRes, trafficRes, connectionsRes, zonesRes] = await Promise.allSettled([
+          const [statsRes, threatsRes, healthRes, trafficRes, connectionsRes, zonesRes, mlHealthRes] = await Promise.allSettled([
             api.get("/ml/threats/stats"),
             api.get("/ml/threats/recent?limit=5"),
             api.get("/system/health"),
             api.get("/traffic/summary"),
             api.get("/connections/stats"),
-            api.get("/zones")
+            api.get("/zones"),
+            api.get("/ml/health")
           ]);
+
+          // Update ML service status first
+          if (mlHealthRes.status === 'fulfilled') {
+            const mlHealth = mlHealthRes.value.data?.data?.health || {};
+            setMlServiceStatus({
+              available: mlHealth.fastapi_available === true,
+              status: mlHealth.status || 'unknown',
+              models: mlHealth.models?.available_models || [],
+              lastUpdate: timestamp
+            });
+          } else {
+            // ML service is offline
+            setMlServiceStatus({
+              available: false,
+              status: 'offline',
+              models: [],
+              lastUpdate: timestamp
+            });
+          }
 
           // Update threat statistics
           if (statsRes.status === 'fulfilled') {
