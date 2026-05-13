@@ -93,7 +93,7 @@ const ContactUs = () => {
             {/* Footer note */}
             <div className="response-note mt-5 pt-3 text-center text-light-emphasis border-top border-secondary">
               <i className="bi bi-clock me-1"></i><strong>Response Time:</strong> We typically respond within 24 hours<br />
-              <i className="bi bi-shield-exclamation me-1"></i>For urgent security matters, call <strong>+251-XXX-XXXXXX</strong>.
+              <i className="bi bi-shield-exclamation me-1"></i>For urgent security matters, call <strong>0925553019</strong>.
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ const ContactUs = () => {
               <div className="footer-contact">
                 <p><i className="bi bi-geo-alt"></i> Haramaya University, Ethiopia</p>
                 <p><i className="bi bi-envelope"></i> security@haramaya.edu.et</p>
-                <p><i className="bi bi-telephone"></i> +251 123 456 789</p>
+                <p><i className="bi bi-telephone"></i> 0925553019</p>
               </div>
             </div>
             

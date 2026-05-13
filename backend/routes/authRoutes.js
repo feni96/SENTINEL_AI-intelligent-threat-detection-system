@@ -50,7 +50,7 @@ router.post('/reset-password', resetPasswordValidation, authController.resetPass
 // Protected routes - Admin functionality only
 router.get('/profile', authenticateToken, authController.getProfile);
 router.put('/profile', authenticateToken, authController.updateProfile);
-router.put('/change-password', changePasswordValidation, authController.changePassword);
+router.put('/change-password', authenticateToken, changePasswordValidation, authController.changePassword);
 router.post('/logout', authenticateToken, authController.logout);
 router.post('/refresh-token', authenticateToken, authController.refreshToken);
 

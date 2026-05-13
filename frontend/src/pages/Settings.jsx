@@ -31,15 +31,6 @@ export default function Settings() {
   });
   const [priorityOnly, setPriorityOnly] = useState(false);
 
-  // ---------- ML Model Settings (read‑only) ----------
-  const mlModel = {
-    activeModel: "Random Forest + CNN Ensemble",
-    accuracy: 98.2,
-    falsePositiveRate: 1.8,
-    lastTrained: "2025-03-15",
-  };
-  const [modelEnabled, setModelEnabled] = useState(true);
-
   // ---------- Area / Zone Mapping ----------
   const [zones, setZones] = useState([]);
   const [loadingZones, setLoadingZones] = useState(true);
@@ -64,13 +55,6 @@ export default function Settings() {
   });
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
-  const [sessionTimeout, setSessionTimeout] = useState(30); // minutes
-  const lastLogin = "2025-03-22 08:30:15";
-  const recentActivity = [
-    "Logged in from 10.230.227.195",
-    "Changed alert threshold to Medium",
-    "Generated Weekly report",
-  ];
 
   // ---------- Zone Management ----------
   useEffect(() => {
@@ -306,41 +290,6 @@ export default function Settings() {
               </div>
             </div>
 
-            {/* ML Model Settings */}
-            <div className="settings-card">
-              <h3>
-                <i className="bi bi-cpu"></i> {t("machineLearningModel")}
-              </h3>
-              <div className="settings-section">
-                <div className="setting-row read-only">
-                  <label>{t("activeModel")}</label>
-                  <span>{mlModel.activeModel}</span>
-                </div>
-                <div className="setting-row read-only">
-                  <label>{t("accuracy")}</label>
-                  <span>{mlModel.accuracy}%</span>
-                </div>
-                <div className="setting-row read-only">
-                  <label>{t("falsePositiveRate")}</label>
-                  <span>{mlModel.falsePositiveRate}%</span>
-                </div>
-                <div className="setting-row read-only">
-                  <label>{t("lastTrained")}</label>
-                  <span>{mlModel.lastTrained}</span>
-                </div>
-                <div className="setting-row">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={modelEnabled}
-                      onChange={(e) => setModelEnabled(e.target.checked)}
-                    />
-                    {t("enableMlDetection")}
-                  </label>
-                </div>
-              </div>
-            </div>
-
             {/* Area / Zone Mapping */}
             <div className="settings-card">
               <h3>
@@ -364,45 +313,115 @@ export default function Settings() {
                 )}
                 <div className="zone-list">
                   {loadingZones ? (
-                    <div>Loading zones...</div>
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+                      <i className="bi bi-hourglass-split" style={{ marginRight: '8px' }}></i>
+                      Loading zones...
+                    </div>
                   ) : zones.length === 0 ? (
-                    <div>No zones configured</div>
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', backgroundColor: '#f1f5f9', borderRadius: '4px' }}>
+                      <i className="bi bi-inbox" style={{ marginRight: '8px', fontSize: '1.5rem' }}></i>
+                      <p>No zones configured</p>
+                    </div>
                   ) : (
-                    zones.map((zone) => (
-                      <div key={zone._id} className="zone-item">
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={zone.enabled}
-                            onChange={() => handleZoneToggle(zone._id)}
-                          />
-                          {zone.name}
-                        </label>
-                        <span className="zone-ip">{zone.ipRange}</span>
-                        <span className="zone-building">{zone.building}</span>
-                        <span className="zone-risk" style={{ 
-                          color: zone.riskLevel === 'Critical' ? '#d32f2f' : 
-                                 zone.riskLevel === 'High' ? '#f57c00' : 
-                                 zone.riskLevel === 'Medium' ? '#fbc02d' : '#388e3c'
-                        }}>
-                          {zone.riskLevel}
-                        </span>
-                        <button 
-                          onClick={() => handleDeleteZone(zone._id)}
-                          style={{ 
-                            marginLeft: '10px', 
-                            padding: '2px 8px', 
-                            backgroundColor: '#f44336', 
-                            color: 'white', 
-                            border: 'none', 
-                            borderRadius: '3px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    ))
+                    <div style={{ overflowX: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                          <tr style={{ backgroundColor: '#f1f5f9', borderBottom: '2px solid #e2e8f0' }}>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Enabled</th>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Zone Name</th>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>IP Range</th>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Building</th>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Department</th>
+                            <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Risk Level</th>
+                            <th style={{ padding: '12px', textAlign: 'center', fontWeight: '600', color: '#475569', fontSize: '0.875rem' }}>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {zones.map((zone) => {
+                            const getRiskLevelColor = (riskLevel) => {
+                              switch(riskLevel) {
+                                case 'Critical':
+                                  return { backgroundColor: '#fee2e2', color: '#dc2626', borderLeft: '4px solid #dc2626' };
+                                case 'High':
+                                  return { backgroundColor: '#fed7aa', color: '#ea580c', borderLeft: '4px solid #ea580c' };
+                                case 'Medium':
+                                  return { backgroundColor: '#fef3c7', color: '#d97706', borderLeft: '4px solid #d97706' };
+                                case 'Low':
+                                  return { backgroundColor: '#dcfce7', color: '#16a34a', borderLeft: '4px solid #16a34a' };
+                                default:
+                                  return { backgroundColor: '#f1f5f9', color: '#475569', borderLeft: '4px solid #cbd5e1' };
+                              }
+                            };
+                            
+                            const riskStyle = getRiskLevelColor(zone.riskLevel);
+                            
+                            return (
+                              <tr key={zone._id} style={{ borderBottom: '1px solid #e2e8f0', hover: { backgroundColor: '#f8fafc' } }}>
+                                <td style={{ padding: '12px', textAlign: 'left' }}>
+                                  <input
+                                    type="checkbox"
+                                    checked={zone.enabled}
+                                    onChange={() => handleZoneToggle(zone._id)}
+                                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                                  />
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'left', fontWeight: '500', color: '#1e293b' }}>
+                                  {zone.name}
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'left', color: '#475569', fontFamily: 'monospace', fontSize: '0.875rem' }}>
+                                  {zone.ipRange}
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'left', color: '#475569' }}>
+                                  {zone.building}
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'left', color: '#475569' }}>
+                                  {zone.department}
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'left' }}>
+                                  <span style={{
+                                    ...riskStyle,
+                                    padding: '4px 12px',
+                                    borderRadius: '4px',
+                                    fontWeight: '600',
+                                    fontSize: '0.875rem',
+                                    display: 'inline-block'
+                                  }}>
+                                    {zone.riskLevel}
+                                  </span>
+                                </td>
+                                <td style={{ padding: '12px', textAlign: 'center' }}>
+                                  <button 
+                                    onClick={() => handleDeleteZone(zone._id)}
+                                    style={{ 
+                                      padding: '6px 12px', 
+                                      backgroundColor: '#fee2e2', 
+                                      color: '#dc2626', 
+                                      border: '1px solid #fecaca',
+                                      borderRadius: '4px',
+                                      cursor: 'pointer',
+                                      fontWeight: '500',
+                                      fontSize: '0.875rem',
+                                      transition: 'all 0.2s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.backgroundColor = '#dc2626';
+                                      e.target.style.color = 'white';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor = '#fee2e2';
+                                      e.target.style.color = '#dc2626';
+                                    }}
+                                  >
+                                    <i className="bi bi-trash" style={{ marginRight: '4px' }}></i>
+                                    Delete
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   )}
                 </div>
                 <div style={{ marginTop: '15px' }}>
@@ -557,29 +576,6 @@ export default function Settings() {
                     {t("changePassword")}
                   </button>
                 </form>
-                <hr />
-                <div className="setting-row">
-                  <label>{t("sessionTimeoutMinutes")}</label>
-                  <input
-                    type="number"
-                    min="5"
-                    max="120"
-                    value={sessionTimeout}
-                    onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                  />
-                </div>
-                <div className="setting-row read-only">
-                  <label>{t("lastLogin")}</label>
-                  <span>{lastLogin}</span>
-                </div>
-                <div className="setting-row read-only">
-                  <label>{t("recentActivity")}</label>
-                  <ul className="activity-list">
-                    {recentActivity.map((act, idx) => (
-                      <li key={idx}>{act}</li>
-                    ))}
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
