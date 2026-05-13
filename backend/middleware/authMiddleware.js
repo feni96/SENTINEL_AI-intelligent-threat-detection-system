@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const AuditLog = require('../models/AuditLog');
 const winston = require('winston');
 
 // JWT token verification middleware
@@ -107,10 +108,20 @@ const optionalAuth = async (req, res, next) => {
   }
 };
 
+// Helper function to log admin actions
+const logAdminAction = async (admin, actionType, target, status, description, userId, ipAddress) => {
+  try {
+    await AuditLog.logAction(admin, actionType, target, status, description, userId, ipAddress);
+  } catch (error) {
+    winston.error('Failed to log admin action:', error);
+  }
+};
+
 module.exports = {
   authenticateToken,
   requireRole,
   requireAdmin,
   requireSecurityOrAdmin,
-  optionalAuth
+  optionalAuth,
+  logAdminAction
 };

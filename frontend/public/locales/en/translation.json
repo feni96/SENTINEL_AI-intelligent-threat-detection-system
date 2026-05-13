@@ -135,6 +135,7 @@
   "resolved": "Resolved",
   "falsePositiveStatus": "False Positive",
   "confidence": "Confidence",
+  "severity": "Severity",
   "sourceIP": "Source IP",
   "location": "Location",
   "timeDetected": "Time Detected",

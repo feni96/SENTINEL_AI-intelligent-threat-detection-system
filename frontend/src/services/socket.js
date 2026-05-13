@@ -159,6 +159,56 @@ export const onAdminThreatAlert = (callback) => {
 };
 
 /**
+ * Listen for connection stats update events
+ * @param {Function} callback - Callback function to handle connection stats data
+ */
+export const onConnectionStatsUpdate = (callback) => {
+  if (socket) {
+    socket.on('connectionStatsUpdate', callback);
+  }
+};
+
+/**
+ * Listen for traffic update events
+ * @param {Function} callback - Callback function to handle traffic data
+ */
+export const onTrafficUpdate = (callback) => {
+  if (socket) {
+    socket.on('trafficUpdate', callback);
+  }
+};
+
+/**
+ * Listen for zone activity update events
+ * @param {Function} callback - Callback function to handle zone activity data
+ */
+export const onZoneActivityUpdate = (callback) => {
+  if (socket) {
+    socket.on('zoneActivityUpdate', callback);
+  }
+};
+
+/**
+ * Listen for alert created events
+ * @param {Function} callback - Callback function to handle alert created data
+ */
+export const onAlertCreated = (callback) => {
+  if (socket) {
+    socket.on('alertCreated', callback);
+  }
+};
+
+/**
+ * Listen for alert acknowledged events
+ * @param {Function} callback - Callback function to handle alert acknowledged data
+ */
+export const onAlertAcknowledged = (callback) => {
+  if (socket) {
+    socket.on('alertAcknowledged', callback);
+  }
+};
+
+/**
  * Remove event listener
  * @param {string} eventName - Name of the event
  * @param {Function} callback - Callback function to remove
@@ -201,6 +251,11 @@ export default {
   onThreatStats,
   onSystemAlert,
   onAdminThreatAlert,
+  onConnectionStatsUpdate,
+  onTrafficUpdate,
+  onZoneActivityUpdate,
+  onAlertCreated,
+  onAlertAcknowledged,
   offEvent,
   removeAllListeners,
   createDashboardSocket

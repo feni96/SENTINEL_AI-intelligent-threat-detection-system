@@ -19,6 +19,11 @@ const threatRoutes = require('./routes/threatRoutes');
 const alertRoutes = require('./routes/alertRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const mlRoutes = require('./routes/mlRoutes');
+const systemRoutes = require('./routes/systemRoutes');
+const zoneRoutes = require('./routes/zoneRoutes');
+const auditLogRoutes = require('./routes/auditLogRoutes');
+const trafficRoutes = require('./routes/trafficRoutes');
+const connectionsRoutes = require('./routes/connectionsRoutes');
 
 // Services for background tasks
 const alertService = require('./services/alertService');
@@ -198,6 +203,15 @@ app.use('/api/threats', threatRoutes);
 app.use('/api/alerts', alertRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/ml', mlRoutes);
+app.use('/api/system', systemRoutes);
+app.use('/api/zones', zoneRoutes);
+app.use('/api/audit', auditLogRoutes);
+app.use('/api/traffic', trafficRoutes);
+app.use('/api/connections', connectionsRoutes);
+
+// Additional route aliases for dashboard endpoints
+app.use('/api/traffic', systemRoutes);
+app.use('/api/connections', systemRoutes);
 
 // API documentation endpoint
 app.get('/api', (req, res) => {
@@ -211,6 +225,8 @@ app.get('/api', (req, res) => {
       alerts: '/api/alerts',
       reports: '/api/reports',
       machineLearning: '/api/ml',
+      zones: '/api/zones',
+      system: '/api/system',
       health: '/health',
       swaggerDocs: '/api-docs'
     },

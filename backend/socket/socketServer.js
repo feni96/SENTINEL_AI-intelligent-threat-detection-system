@@ -67,7 +67,48 @@ const initializeSocket = (server) => {
       socket.leave('threat_updates');
       console.log(`User ${socket.user.username} unsubscribed from threat updates`);
     });
+
+    // Handle zone-specific subscriptions
+    socket.on('subscribeZone', (zoneName) => {
+      socket.join(`zone_${zoneName}`);
+      console.log(`User ${socket.user.username} subscribed to zone: ${zoneName}`);
+    });
+
+    socket.on('unsubscribeZone', (zoneName) => {
+      socket.leave(`zone_${zoneName}`);
+      console.log(`User ${socket.user.username} unsubscribed from zone: ${zoneName}`);
+    });
+
+    // Handle zone statistics requests
+    socket.on('requestZoneStats', async () => {
+      try {
+        const Zone = require('../models/Zone');
+        const stats = await Zone.aggregate([
+          { $group: { _id: '$zoneType', count: { $sum: 1 } } }
+        ]);
+        socket.emit('zoneStats', stats);
+      } catch (error) {
+        socket.emit('error', { message: 'Failed to fetch zone statistics' });
+      }
+    });
   });
+
+  // Helper function to emit zone-based threat alerts
+  io.emitZoneThreat = (zoneName, threatData) => {
+    // Emit to general threat updates
+    io.to('threat_updates').emit('threatDetected', threatData);
+    
+    // Emit to zone-specific room
+    if (zoneName) {
+      io.to(`zone_${zoneName}`).emit('zoneThreatDetected', {
+        ...threatData,
+        zone: zoneName
+      });
+    }
+    
+    // Emit to admin room
+    io.to('admin_room').emit('adminThreatAlert', threatData);
+  };
 
   return io;
 };

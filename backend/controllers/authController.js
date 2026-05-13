@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const { catchAsync, AppError } = require('../middleware/errorHandler');
 const winston = require('winston');
+const { logAdminAction } = require('../middleware/authMiddleware');
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -63,6 +64,17 @@ const login = catchAsync(async (req, res, next) => {
 
   // Generate token
   const token = generateToken(user._id);
+
+  // Log admin login action
+  await logAdminAction(
+    user.username,
+    'Login',
+    '-',
+    'Success',
+    `Administrator logged in from IP ${req.ip}`,
+    user._id,
+    req.ip
+  );
 
   winston.info(`Admin logged in: ${user.username} (${ADMIN_EMAIL})`);
 
@@ -181,15 +193,97 @@ const refreshToken = catchAsync(async (req, res, next) => {
   });
 });
 
-// Password reset disabled for single admin system
-// const forgotPassword = catchAsync(async (req, res, next) => {
-//   return next(new AppError('Password reset is disabled. Please contact administrator.', 403));
-// });
+// Forgot password - Generate reset token for admin
+const forgotPassword = catchAsync(async (req, res, next) => {
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
+  }
 
-// Password reset disabled for single admin system
-// const resetPassword = catchAsync(async (req, res, next) => {
-//   return next(new AppError('Password reset is disabled. Please contact administrator.', 403));
-// });
+  const { email } = req.body;
+
+  // For single admin system, only allow the admin email
+  const ADMIN_EMAIL = 'admin@sentinel-ai.local';
+  
+  if (email !== ADMIN_EMAIL) {
+    // Don't reveal if email exists or not for security
+    return res.status(200).json({
+      success: true,
+      message: 'If an account with this email exists, a reset link has been sent.'
+    });
+  }
+
+  // Generate reset token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+  
+  // Set token expiry (15 minutes)
+  const resetTokenExpires = Date.now() + 15 * 60 * 1000;
+
+  // Update user with reset token
+  const user = await User.findOne({ email: ADMIN_EMAIL });
+  if (!user) {
+    return res.status(200).json({
+      success: true,
+      message: 'If an account with this email exists, a reset link has been sent.'
+    });
+  }
+
+  user.passwordResetToken = resetTokenHash;
+  user.passwordResetExpires = resetTokenExpires;
+  await user.save();
+
+  // In a real system, you would send an email here
+  // For now, we'll return the token in development mode
+  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+  
+  winston.info(`Password reset requested for admin: ${ADMIN_EMAIL}`);
+
+  res.status(200).json({
+    success: true,
+    message: 'Password reset link sent to your email',
+    // In development, include the token for testing
+    ...(process.env.NODE_ENV === 'development' && { resetToken, resetUrl })
+  });
+});
+
+// Reset password - Validate token and update password
+const resetPassword = catchAsync(async (req, res, next) => {
+  // Validate input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new AppError(`Validation failed: ${errors.array().map(e => e.msg).join(', ')}`, 400));
+  }
+
+  const { token, newPassword } = req.body;
+
+  // Hash the token to compare with stored hash
+  const resetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  // Find user with valid reset token
+  const user = await User.findOne({
+    passwordResetToken: resetTokenHash,
+    passwordResetExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    return next(new AppError('Password reset token is invalid or has expired', 400));
+  }
+
+  // Update password
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+  winston.info(`Password reset completed for user: ${user.username}`);
+
+  res.status(200).json({
+    success: true,
+    message: 'Password reset successfully'
+  });
+});
 
 module.exports = {
   // register: disabled for single admin system,
@@ -199,6 +293,6 @@ module.exports = {
   changePassword,
   logout,
   refreshToken,
-  // forgotPassword: disabled for single admin system,
-  // resetPassword: disabled for single admin system
+  forgotPassword,
+  resetPassword
 };

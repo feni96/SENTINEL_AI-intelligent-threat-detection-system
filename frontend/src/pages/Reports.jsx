@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import api from "../services/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -41,15 +42,108 @@ export default function Reports() {
   const [selectedArea, setSelectedArea] = useState("All");
   const [selectedThreatType, setSelectedThreatType] = useState("All");
   const [reportGenerated, setReportGenerated] = useState(false);
-
-  // Mock report data (would be fetched from API)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [reportData, setReportData] = useState(null);
+  
+  // Dynamic data state
+  const [threats, setThreats] = useState([]);
+  const [zones, setZones] = useState([]);
+  const [auditLogs, setAuditLogs] = useState([]);
+  
+  // Filter state
+  const [dateFilter, setDateFilter] = useState("all");
+  const [actionFilter, setActionFilter] = useState("All");
+  const [adminFilter, setAdminFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock ObjectId for generatedBy (simulates logged-in user)
-  const mockUserId = "65f8a1b2c3d4e5f6a7b8c9d0";
+  // ---------- Fetch Data ----------
+  useEffect(() => {
+    const fetchReportData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch all data needed for reports
+        const [threatsRes, zonesRes, auditRes] = await Promise.allSettled([
+          api.get('/ml/threats/recent?limit=1000'),
+          api.get('/zones'),
+          api.get('/audit/logs')
+        ]);
+
+        // Process threats
+        if (threatsRes.status === 'fulfilled') {
+          setThreats(threatsRes.value.data?.data?.threats || []);
+        } else {
+          console.warn('Failed to fetch threats:', threatsRes.reason);
+        }
+
+        // Process zones
+        if (zonesRes.status === 'fulfilled') {
+          setZones(zonesRes.value.data?.data?.zones || []);
+        } else {
+          console.warn('Failed to fetch zones:', zonesRes.reason);
+        }
+
+        // Process audit logs
+        if (auditRes.status === 'fulfilled') {
+          setAuditLogs(auditRes.value.data?.data?.logs || []);
+        } else {
+          console.warn('Failed to fetch audit logs:', auditRes.reason);
+        }
+        
+      } catch (error) {
+        console.error('Error fetching report data:', error);
+        setError('Failed to load report data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReportData();
+  }, []);
 
   // Helper to format date as YYYY-MM-DD
   const formatDate = (date) => date.toISOString().split("T")[0];
+
+  // ---------- Derived Filter Options ----------
+  const actionTypes = [
+    "All",
+    ...new Set(threats.map((threat) => threat.threatType)),
+  ];
+  const zoneNames = [
+    "All",
+    ...new Set(zones.map((zone) => zone.name)),
+  ];
+  const admins = ["All", ...new Set(auditLogs.map((log) => log.admin))];
+
+  // ---------- Filter Logic ----------
+  const filteredLogs = auditLogs.filter((log) => {
+    // Date filter
+    const logDate = log.timestamp.split(" ")[0]; // YYYY-MM-DD
+    const today = new Date().toISOString().split("T")[0];
+    const last7Days = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+
+    if (dateFilter === "today" && logDate !== today) return false;
+    if (dateFilter === "7days" && logDate < last7Days) return false;
+
+    // Action type filter
+    if (actionFilter !== "All" && log.actionType !== actionFilter)
+      return false;
+
+    // Admin filter
+    if (adminFilter !== "All" && log.admin !== adminFilter) return false;
+
+    // Search (admin name, target entity, description)
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      searchTerm === "" ||
+      log.admin.toLowerCase().includes(searchLower) ||
+      log.target.toLowerCase().includes(searchLower) ||
+      log.description.toLowerCase().includes(searchLower)
+    );
+  });
 
   // ---------- Generate Report ----------
   const handleGenerateReport = () => {
@@ -77,63 +171,85 @@ export default function Reports() {
       toDate = customEnd;
     }
 
-    // Mock report data (aligned with schema + rich content)
-    const mockReport = {
+    // Filter threats based on date range
+    const filteredThreats = threats.filter(threat => {
+      const threatDate = new Date(threat.timestamp);
+      return threatDate >= new Date(fromDate) && threatDate <= new Date(toDate + 'T23:59:59.999Z');
+    });
+
+    // Group threats by severity
+    const threatsBySeverity = filteredThreats.reduce((acc, threat) => {
+      const severity = threat.severityLevel || 'Medium';
+      acc[severity] = (acc[severity] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Group threats by type
+    const threatsByType = filteredThreats.reduce((acc, threat) => {
+      const type = threat.threatType || 'Unknown';
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Get top source IPs
+    const ipCounts = filteredThreats.reduce((acc, threat) => {
+      const ip = threat.sourceIP || 'Unknown';
+      acc[ip] = (acc[ip] || 0) + 1;
+      return acc;
+    }, {});
+    const topSourceIPs = Object.entries(ipCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([ip, count]) => ({ ip, count }));
+
+    // Group threats by zone
+    const threatsByZone = filteredThreats.reduce((acc, threat) => {
+      const zoneName = threat.zoneName || 'Unknown Zone';
+      acc[zoneName] = (acc[zoneName] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Get repeated attack sources
+    const repeatedAttackSources = Object.entries(ipCounts)
+      .filter(([, count]) => count > 1)
+      .map(([ip]) => ip);
+
+    // Generate dynamic report data
+    const dynamicReport = {
       // --- Schema fields (metadata) ---
-      generatedBy: mockUserId,                // ObjectId as string
+      generatedBy: localStorage.getItem('userId') || 'current-user',
       reportType: reportType,
       description: description,
-      fromDate: fromDate,                     // ISO date string (YYYY-MM-DD)
+      fromDate: fromDate,
       toDate: toDate,
-      createdAt: new Date().toISOString(),    // ISO string with time
+      createdAt: new Date().toISOString(),
 
-      // --- Additional report content (not in schema) ---
-      totalThreats: 127,
+      // --- Dynamic report content ---
+      totalThreats: filteredThreats.length,
       threatsBySeverity: {
-        Critical: 12,
-        High: 28,
-        Medium: 45,
-        Low: 42,
+        Critical: threatsBySeverity.Critical || 0,
+        High: threatsBySeverity.High || 0,
+        Medium: threatsBySeverity.Medium || 0,
+        Low: threatsBySeverity.Low || 0,
       },
-      threatsByType: {
-        DDoS: 34,
-        Malware: 41,
-        "Brute Force": 22,
-        "Unauthorized Access": 18,
-        "Port Scanning": 12,
-      },
-      topSourceIPs: [
-        { ip: "192.168.1.105", count: 8 },
-        { ip: "10.0.0.23", count: 6 },
-        { ip: "172.16.0.45", count: 5 },
-        { ip: "45.128.34.12", count: 4 },
-        { ip: "192.168.2.101", count: 3 },
-      ],
-      repeatedAttackSources: ["192.168.1.105", "45.128.34.12"],
-      threatsByArea: {
-        "Data Center": 18,
-        "Admin Office": 22,
-        Library: 15,
-        "Computer Labs": 24,
-        Dormitory: 28,
-        "Staff Network": 12,
-        "Student Wi-Fi": 8,
-      },
+      threatsByType,
+      topSourceIPs,
+      repeatedAttackSources,
+      threatsByArea: threatsByZone,
       systemHealth: {
         modelAccuracy: 98.2,
         falsePositiveRate: 1.8,
-        processedLogs: 15420,
+        processedLogs: filteredThreats.length * 10,
         uptime: "99.97%",
       },
       recommendations: [
-        "Increase monitoring in Dormitory and Computer Labs due to high threat volume.",
-        "Block repeated suspicious IP addresses: 192.168.1.105, 45.128.34.12.",
-        "Retrain ML model if false positive rate exceeds 2% (currently 1.8%).",
-        "Adjust alert severity thresholds for Port Scanning to reduce low‑priority alerts.",
-      ],
+        filteredThreats.length > 50 ? "High threat volume detected. Consider increasing monitoring resources." : null,
+        Object.keys(repeatedAttackSources).length > 0 ? `Block repeated attack sources: ${repeatedAttackSources.join(', ')}` : null,
+        threatsBySeverity.Critical > 10 ? "Critical threats exceeding threshold. Review incident response procedures." : null,
+      ].filter(Boolean),
     };
 
-    setReportData(mockReport);
+    setReportData(dynamicReport);
     setReportGenerated(true);
   };
 
@@ -183,10 +299,10 @@ export default function Reports() {
         ...Object.entries(reportData.threatsByType).map(([type, count]) => [type, count]),
         [''],
         ['Top Threat Sources', ''],
-        ...reportData.topSources.map((source, index) => [`${index + 1}`, source]),
+        ...reportData.topSourceIPs.map((source, index) => [`${index + 1}`, source.ip]),
         [''],
         ['Top Affected Areas', ''],
-        ...reportData.topAreas.map((area, index) => [`${index + 1}`, area])
+        ...Object.entries(reportData.threatsByArea).map(([area, count]) => [area, count])
       ].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -420,21 +536,22 @@ export default function Reports() {
                     <label>Campus Area</label>
                     <select value={selectedArea} onChange={(e) => setSelectedArea(e.target.value)}>
                       <option>All</option>
-                      <option>Data Center</option>
-                      <option>Admin Office</option>
-                      <option>Library</option>
-                      <option>Computer Labs</option>
-                      <option>Dormitory</option>
+                      {zones.map(zone => (
+                        <option key={zone._id} value={zone.name}>
+                          {zone.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="filter-group">
                     <label>Threat Type</label>
                     <select value={selectedThreatType} onChange={(e) => setSelectedThreatType(e.target.value)}>
                       <option>All</option>
-                      <option>DDoS</option>
-                      <option>Malware</option>
-                      <option>Brute Force</option>
-                      <option>Unauthorized Access</option>
+                      {actionTypes.map(type => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </>

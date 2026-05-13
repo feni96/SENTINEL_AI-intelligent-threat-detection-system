@@ -1,31 +1,103 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import api from "../services/api";
+import { createDashboardSocket } from "../services/socket";
 
 export default function AreaMap() {
   const { t } = useTranslation();
-  // ---------- Mock Data ----------
-  const campusZones = [
-    { id: "zone1", name: "Data Center", ipRange: "10.0.0.0/24", lat: 9.3, lng: 42.1 },
-    { id: "zone2", name: "Admin Office", ipRange: "10.0.1.0/24", lat: 9.31, lng: 42.11 },
-    { id: "zone3", name: "Library", ipRange: "10.0.2.0/24", lat: 9.32, lng: 42.09 },
-    { id: "zone4", name: "Computer Labs", ipRange: "10.0.3.0/24", lat: 9.33, lng: 42.12 },
-    { id: "zone5", name: "Dormitory Network", ipRange: "10.0.4.0/24", lat: 9.34, lng: 42.13 },
-    { id: "zone6", name: "Staff Network", ipRange: "10.0.5.0/24", lat: 9.35, lng: 42.14 },
-    { id: "zone7", name: "Student Wi-Fi", ipRange: "10.0.6.0/24", lat: 9.36, lng: 42.15 },
-  ];
+  
+  // ---------- State ----------
+  const [zones, setZones] = useState([]);
+  const [threats, setThreats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  
+  // ---------- Fetch Data ----------
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch zones and threats in parallel
+        const [zonesRes, threatsRes] = await Promise.allSettled([
+          api.get('/zones'),
+          api.get('/ml/threats/recent?limit=50')
+        ]);
 
-  // Mock threats (some with location mapping)
-  const [threats] = useState([
-    { id: "THR-001", type: "DDoS", severity: "Critical", confidence: 98, sourceIP: "10.0.1.105", zoneId: "zone2", time: "2025-03-20 10:45" },
-    { id: "THR-002", type: "Malware", severity: "High", confidence: 87, sourceIP: "10.0.2.23", zoneId: "zone3", time: "2025-03-20 09:22" },
-    { id: "THR-003", type: "Brute Force", severity: "Medium", confidence: 76, sourceIP: "10.0.3.45", zoneId: "zone4", time: "2025-03-19 15:15" },
-    { id: "THR-004", type: "Port Scan", severity: "Low", confidence: 65, sourceIP: "10.0.4.101", zoneId: "zone5", time: "2025-03-19 11:30" },
-    { id: "THR-005", type: "DDoS", severity: "Critical", confidence: 95, sourceIP: "10.0.0.12", zoneId: "zone1", time: "2025-03-20 12:05" },
-    { id: "THR-006", type: "Unauthorized Access", severity: "High", confidence: 82, sourceIP: "10.0.5.67", zoneId: "zone6", time: "2025-03-20 08:10" },
-    { id: "THR-007", type: "Malware", severity: "Medium", confidence: 71, sourceIP: "10.0.6.89", zoneId: "zone7", time: "2025-03-20 07:30" },
-  ]);
+        // Process zones
+        if (zonesRes.status === 'fulfilled') {
+          const zonesData = zonesRes.value.data?.data?.zones || [];
+          setZones(zonesData);
+        } else {
+          console.warn('Failed to fetch zones:', zonesRes.reason);
+        }
+
+        // Process threats
+        if (threatsRes.status === 'fulfilled') {
+          const threatsData = threatsRes.value.data?.data?.threats || [];
+          // Enrich threats with zone information
+          const enrichedThreats = await Promise.all(
+            threatsData.map(async (threat) => {
+              try {
+                // Resolve source IP to zone
+                const zoneRes = await api.get(`/zones/resolve/${threat.sourceIP}`);
+                const zone = zoneRes.data?.data?.zone;
+                
+                return {
+                  ...threat,
+                  zoneId: zone?._id || 'unknown',
+                  zoneName: zone?.name || 'Unknown Zone'
+                };
+              } catch (error) {
+                console.warn('Failed to resolve zone for threat:', error);
+                return {
+                  ...threat,
+                  zoneId: 'unknown',
+                  zoneName: 'Unknown Zone'
+                };
+              }
+            })
+          );
+          setThreats(enrichedThreats);
+        } else {
+          console.warn('Failed to fetch threats:', threatsRes.reason);
+        }
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to load data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // Set up Socket.IO for real-time updates
+    const token = localStorage.getItem("token");
+    try {
+      const socket = createDashboardSocket(token);
+      if (socket) {
+        socket.on("newThreat", (event) => {
+          const incoming = {
+            _id: event.id,
+            type: event.threatType,
+            severity: event.severityLevel || "Medium",
+            confidence: Math.round((event.confidence || 0) * 100),
+            sourceIP: event.sourceIP,
+            zoneId: event.zoneId || 'unknown',
+            zoneName: event.zoneName || 'Unknown Zone',
+            time: event.timestamp || new Date().toISOString(),
+          };
+          setThreats((prev) => [incoming, ...prev].slice(0, 50));
+        });
+      }
+    } catch (error) {
+      console.warn('Socket.IO setup failed:', error);
+    }
+  }, []);
 
   // ---------- State ----------
   const [selectedZone, setSelectedZone] = useState(null);
@@ -50,9 +122,9 @@ export default function AreaMap() {
   });
 
   // Group threats by zone for heatmap intensity
-  const zoneThreatCounts = campusZones.reduce((acc, zone) => {
-    const count = filteredThreats.filter(t => t.zoneId === zone.id).length;
-    acc[zone.id] = count;
+  const zoneThreatCounts = zones.reduce((acc, zone) => {
+    const count = filteredThreats.filter(t => t.zoneId === zone._id).length;
+    acc[zone._id] = count;
     return acc;
   }, {});
 
@@ -86,6 +158,14 @@ export default function AreaMap() {
     if (count <= 1) return "heat-low";
     if (count <= 2) return "heat-medium";
     return "heat-high";
+  };
+
+  // Helper to get zone coordinates
+  const getZoneCoordinates = (zone) => {
+    return {
+      lat: zone.coordinates?.latitude || 9.3,
+      lng: zone.coordinates?.longitude || 42.1
+    };
   };
 
   const handleZoneClick = (zone) => {
@@ -140,36 +220,43 @@ export default function AreaMap() {
 
           {/* Map Area */}
           <div className="map-container">
-            <div className="realtime-grid">
-              {campusZones.map(zone => {
-                const threatCount = getThreatCount(zone.id);
-                const highestSeverity = getZoneHighestSeverity(zone.id);
-                const heatClass = getHeatIntensity(threatCount);
-                return (
-                  <div
-                    key={zone.id}
-                    className="realtime-metric-card"
-                    data-zone={zone.id}
-                    onClick={() => handleZoneClick(zone)}
-                  >
-                    <div className="realtime-content">
-                      <span className="realtime-label">{zone.name}</span>
-                      <span className="realtime-value">{threatCount}</span>
-                      <span className="realtime-unit">threats</span>
+            {loading ? (
+              <div className="loading-message">Loading zones and threats...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <div className="realtime-grid">
+                {zones.map(zone => {
+                  const threatCount = getThreatCount(zone._id);
+                  const highestSeverity = getZoneHighestSeverity(zone._id);
+                  const heatClass = getHeatIntensity(threatCount);
+                  const coords = getZoneCoordinates(zone);
+                  return (
+                    <div
+                      key={zone._id}
+                      className="realtime-metric-card"
+                      data-zone={zone._id}
+                      onClick={() => handleZoneClick(zone)}
+                    >
+                      <div className="realtime-content">
+                        <span className="realtime-label">{zone.name}</span>
+                        <span className="realtime-value">{threatCount}</span>
+                        <span className="realtime-unit">threats</span>
+                      </div>
+                      {threatCount > 0 && (
+                        <div
+                          className="threat-indicator"
+                          style={{
+                            backgroundColor: getMarkerColor(highestSeverity),
+                          }}
+                          title={`${threatCount} threat(s), highest severity: ${highestSeverity}`}
+                        ></div>
+                      )}
                     </div>
-                    {threatCount > 0 && (
-                      <div
-                        className="threat-indicator"
-                        style={{
-                          backgroundColor: getMarkerColor(highestSeverity),
-                        }}
-                        title={`${threatCount} threat(s), highest severity: ${highestSeverity}`}
-                      ></div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
 
             {/* Legend */}
             <div className="map-legend">
@@ -204,15 +291,18 @@ export default function AreaMap() {
               <h3>{selectedZone.name}</h3>
               <button className="close-btn" onClick={() => setShowZoneDetails(false)}>×</button>
               <p><strong>IP Range:</strong> {selectedZone.ipRange}</p>
-              <p><strong>Total Threats:</strong> {getThreatCount(selectedZone.id)}</p>
-              <p><strong>Highest Severity:</strong> {getZoneHighestSeverity(selectedZone.id) || "None"}</p>
+              <p><strong>Building:</strong> {selectedZone.building}</p>
+              <p><strong>Department:</strong> {selectedZone.department}</p>
+              <p><strong>Risk Level:</strong> {selectedZone.riskLevel}</p>
+              <p><strong>Total Threats:</strong> {getThreatCount(selectedZone._id)}</p>
+              <p><strong>Highest Severity:</strong> {getZoneHighestSeverity(selectedZone._id) || "None"}</p>
               <p><strong>{t("lastDetected")}</strong> {
-                threats.filter((item) => item.zoneId === selectedZone.id)
+                threats.filter((item) => item.zoneId === selectedZone._id)
                   .sort((a, b) => new Date(b.time) - new Date(a.time))[0]?.time || t("notAvailable")
               }</p>
               <h4>{t("threatsInThisZone")}</h4>
               <ul className="threat-list">
-                {threats.filter((item) => item.zoneId === selectedZone.id).map((item) => (
+                {threats.filter((item) => item.zoneId === selectedZone._id).map((item) => (
                   <li key={item.id}>
                     <span className={`threat-type-badge ${item.severity.toLowerCase()}`}>{item.type}</span>
                     <span>{item.severity}</span>
@@ -222,7 +312,7 @@ export default function AreaMap() {
                 ))}
               </ul>
               <button className="btn-primary" onClick={() => {
-                const zoneId = selectedZone?.id;
+                const zoneId = selectedZone?._id;
                 if (zoneId) {
                   sessionStorage.setItem('zoneFilter', zoneId);
                   window.location.href = '/threats';

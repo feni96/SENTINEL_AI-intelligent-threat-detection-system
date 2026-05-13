@@ -58,6 +58,13 @@ const emitMLServiceHealth = (healthData) => {
   try {
     const io = getIO();
     
+    io.to('threat_updates').emit('mlServiceHealth', {
+      status: healthData.status,
+      available: healthData.fastapi_available,
+      models: healthData.models,
+      timestamp: healthData.timestamp
+    });
+
     io.to('admin_room').emit('mlServiceHealth', {
       status: healthData.status,
       available: healthData.fastapi_available,
@@ -83,6 +90,7 @@ const emitThreatStats = (statsData) => {
       lowThreats: statsData.lowThreats,
       recentThreats: statsData.recentThreats,
       topThreatTypes: statsData.topThreatTypes,
+      mlPredictedCount: statsData.mlPredictedCount,
       timestamp: statsData.timestamp
     });
 
@@ -109,10 +117,118 @@ const emitSystemAlert = (alertData) => {
   }
 };
 
+// NEW: Connection stats real-time updates
+const emitConnectionStatsUpdate = (statsData) => {
+  try {
+    const io = getIO();
+    
+    io.to('threat_updates').emit('connectionStatsUpdate', {
+      connectionsPerSecond: statsData.connectionsPerSecond || 0,
+      concurrentConnections: statsData.concurrentConnections || 0,
+      tcpConnections: statsData.tcpConnections || 0,
+      udpConnections: statsData.udpConnections || 0,
+      uniqueIPs: statsData.uniqueIPs || 0,
+      onlineUsers: statsData.onlineUsers || 0,
+      timestamp: new Date()
+    });
+
+    console.log('Connection stats update emitted');
+  } catch (error) {
+    console.error('Error emitting connection stats update:', error);
+  }
+};
+
+// NEW: Traffic data real-time updates
+const emitTrafficUpdate = (trafficData) => {
+  try {
+    const io = getIO();
+    
+    io.to('threat_updates').emit('trafficUpdate', {
+      labels: trafficData.labels || [],
+      data: trafficData.data || [],
+      timestamp: new Date()
+    });
+
+    console.log('Traffic update emitted');
+  } catch (error) {
+    console.error('Error emitting traffic update:', error);
+  }
+};
+
+// NEW: Zone activity updates
+const emitZoneActivityUpdate = (zoneData) => {
+  try {
+    const io = getIO();
+    
+    io.to(`zone_${zoneData.zoneName}`).emit('zoneActivityUpdate', {
+      zoneName: zoneData.zoneName,
+      threatCount: zoneData.threatCount || 0,
+      lastThreat: zoneData.lastThreat,
+      timestamp: new Date()
+    });
+
+    console.log(`Zone activity update emitted for zone: ${zoneData.zoneName}`);
+  } catch (error) {
+    console.error('Error emitting zone activity update:', error);
+  }
+};
+
+// NEW: Alert created event
+const emitAlertCreated = (alertData) => {
+  try {
+    const io = getIO();
+    
+    io.to('threat_updates').emit('alertCreated', {
+      alertId: alertData._id,
+      threatId: alertData.threatId,
+      priority: alertData.priority,
+      message: alertData.message,
+      alertType: alertData.alertType,
+      timestamp: alertData.timestamp
+    });
+
+    // Also emit to admin room
+    io.to('admin_room').emit('alertCreated', {
+      alertId: alertData._id,
+      threatId: alertData.threatId,
+      priority: alertData.priority,
+      message: alertData.message,
+      alertType: alertData.alertType,
+      timestamp: alertData.timestamp
+    });
+
+    console.log(`Alert created event emitted: ${alertData._id}`);
+  } catch (error) {
+    console.error('Error emitting alert created event:', error);
+  }
+};
+
+// NEW: Alert acknowledged event
+const emitAlertAcknowledged = (alertId, acknowledgedBy) => {
+  try {
+    const io = getIO();
+    
+    io.to('threat_updates').emit('alertAcknowledged', {
+      alertId,
+      acknowledgedBy,
+      timestamp: new Date()
+    });
+
+    console.log(`Alert acknowledged event emitted: ${alertId}`);
+  } catch (error) {
+    console.error('Error emitting alert acknowledged event:', error);
+  }
+};
+
 module.exports = {
   emitNewThreat,
   emitThreatUpdate,
   emitMLServiceHealth,
   emitThreatStats,
-  emitSystemAlert
+  emitSystemAlert,
+  emitConnectionStatsUpdate,
+  emitTrafficUpdate,
+  emitZoneActivityUpdate,
+  emitAlertCreated,
+  emitAlertAcknowledged
 };

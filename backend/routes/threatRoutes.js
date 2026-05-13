@@ -122,10 +122,33 @@ const queryValidation = [
     .withMessage('Rule based must be boolean')
 ];
 
+// Create threat validation
+const createThreatValidation = [
+  body('threatType').notEmpty().withMessage('Threat type is required'),
+  body('sourceIP').isIP().withMessage('Valid source IP is required'),
+  body('destinationIP').optional().isIP().withMessage('Valid destination IP is required'),
+  body('severityLevel').isIn(['Low', 'Medium', 'High', 'Critical']).withMessage('Valid severity level is required'),
+  body('confidenceScore').isInt({ min: 0, max: 100 }).withMessage('Confidence score must be 0-100'),
+  body('description').optional().isLength({ max: 1000 }).withMessage('Description cannot exceed 1000 characters')
+];
+
+// ML prediction validation
+const mlPredictionValidation = [
+  body('sourceIP').isIP().withMessage('Valid source IP is required'),
+  body('destinationIP').optional().isIP().withMessage('Valid destination IP is required'),
+  body('prediction').notEmpty().withMessage('Prediction is required'),
+  body('confidence').isFloat({ min: 0, max: 1 }).withMessage('Confidence must be 0-1'),
+  body('riskScore').isFloat({ min: 0, max: 1 }).withMessage('Risk score must be 0-1')
+];
+
 // Routes
 router.get('/', authenticateToken, queryValidation, threatController.getThreats);
 router.get('/stats', authenticateToken, queryValidation, threatController.getThreatStats);
 router.get('/:id', authenticateToken, threatController.getThreatById);
+router.get('/:id/related-logs', authenticateToken, threatController.getThreatRelatedLogs);
+router.get('/:id/investigation', authenticateToken, threatController.getThreatInvestigation);
+router.post('/', authenticateToken, requireSecurityOrAdmin, createThreatValidation, threatController.createThreat);
+router.post('/ml-prediction', authenticateToken, mlPredictionValidation, threatController.processMLPrediction);
 router.put('/:id', authenticateToken, requireSecurityOrAdmin, updateThreatValidation, threatController.updateThreat);
 router.put('/:id/assign', authenticateToken, requireSecurityOrAdmin, assignThreatValidation, threatController.assignThreat);
 router.put('/:id/resolve', authenticateToken, requireSecurityOrAdmin, resolveThreatValidation, threatController.resolveThreat);

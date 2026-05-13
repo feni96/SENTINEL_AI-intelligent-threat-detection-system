@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import api from "../services/api";
 
 export default function Settings() {
   const { t } = useTranslation();
@@ -40,15 +41,20 @@ export default function Settings() {
   const [modelEnabled, setModelEnabled] = useState(true);
 
   // ---------- Area / Zone Mapping ----------
-  const [zones, setZones] = useState([
-    { id: 1, name: "Library", ipRange: "10.0.2.0/24", enabled: true },
-    { id: 2, name: "Computer Labs", ipRange: "10.0.3.0/24", enabled: true },
-    { id: 3, name: "Dormitory", ipRange: "10.0.4.0/24", enabled: true },
-    { id: 4, name: "Data Center", ipRange: "10.0.0.0/24", enabled: true },
-    { id: 5, name: "Admin Office", ipRange: "10.0.1.0/24", enabled: true },
-    { id: 6, name: "Student Wi-Fi", ipRange: "10.0.6.0/24", enabled: false },
-  ]);
+  const [zones, setZones] = useState([]);
+  const [loadingZones, setLoadingZones] = useState(true);
+  const [zoneError, setZoneError] = useState("");
   const [areaVizEnabled, setAreaVizEnabled] = useState(true);
+  const [showAddZoneForm, setShowAddZoneForm] = useState(false);
+  const [newZone, setNewZone] = useState({
+    name: "",
+    building: "",
+    department: "",
+    ipRange: "",
+    riskLevel: "Medium",
+    zoneType: "Academic",
+    enabled: true
+  });
 
   // ---------- Security & Account ----------
   const [passwordForm, setPasswordForm] = useState({
@@ -56,6 +62,8 @@ export default function Settings() {
     new: "",
     confirm: "",
   });
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
   const [sessionTimeout, setSessionTimeout] = useState(30); // minutes
   const lastLogin = "2025-03-22 08:30:15";
   const recentActivity = [
@@ -63,6 +71,69 @@ export default function Settings() {
     "Changed alert threshold to Medium",
     "Generated Weekly report",
   ];
+
+  // ---------- Zone Management ----------
+  useEffect(() => {
+    fetchZones();
+  }, []);
+
+  const fetchZones = async () => {
+    try {
+      setLoadingZones(true);
+      const response = await api.get('/zones');
+      setZones(response.data.data.zones);
+      setZoneError("");
+    } catch (error) {
+      setZoneError("Failed to fetch zones: " + (error.response?.data?.message || error.message));
+    } finally {
+      setLoadingZones(false);
+    }
+  };
+
+  const handleZoneToggle = async (zoneId) => {
+    try {
+      const zone = zones.find(z => z._id === zoneId);
+      if (zone) {
+        await api.put(`/zones/${zoneId}`, { enabled: !zone.enabled });
+        setZones(zones.map(z => z._id === zoneId ? { ...z, enabled: !z.enabled } : z));
+      }
+    } catch (error) {
+      setZoneError("Failed to update zone: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleAddZone = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('/zones', newZone);
+      setZones([...zones, response.data.data.zone]);
+      setNewZone({
+        name: "",
+        building: "",
+        department: "",
+        ipRange: "",
+        riskLevel: "Medium",
+        zoneType: "Academic",
+        enabled: true
+      });
+      setShowAddZoneForm(false);
+      setZoneError("");
+    } catch (error) {
+      setZoneError("Failed to add zone: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleDeleteZone = async (zoneId) => {
+    if (window.confirm("Are you sure you want to delete this zone?")) {
+      try {
+        await api.delete(`/zones/${zoneId}`);
+        setZones(zones.filter(z => z._id !== zoneId));
+        setZoneError("");
+      } catch (error) {
+        setZoneError("Failed to delete zone: " + (error.response?.data?.message || error.message));
+      }
+    }
+  };
 
   // ---------- Handlers ----------
   const handleThreatTypeToggle = (type) => {
@@ -77,26 +148,40 @@ export default function Settings() {
     setNotifySeverities((prev) => ({ ...prev, [sev]: !prev[sev] }));
   };
 
-  const handleZoneToggle = (id) => {
-    setZones(zones.map((z) => (z.id === id ? { ...z, enabled: !z.enabled } : z)));
-  };
-
   const handlePasswordChange = (e) => {
     setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
   };
 
-  const handleSavePassword = (e) => {
+  const handleSavePassword = async (e) => {
     e.preventDefault();
+    
+    // Clear previous messages
+    setPasswordError("");
+    setPasswordSuccess("");
+    
     if (passwordForm.new !== passwordForm.confirm) {
-      alert(t("newPasswordsDoNotMatch"));
+      setPasswordError(t("newPasswordsDoNotMatch"));
       return;
     }
     if (passwordForm.new.length < 8) {
-      alert(t("passwordMustBeAtLeast8Characters"));
+      setPasswordError(t("passwordMustBeAtLeast8Characters"));
       return;
     }
-    alert(t("passwordChangedSuccessfully"));
-    setPasswordForm({ current: "", new: "", confirm: "" });
+    
+    try {
+      const response = await api.put('/auth/change-password', {
+        currentPassword: passwordForm.current,
+        newPassword: passwordForm.new
+      });
+      
+      setPasswordSuccess(response.data?.message || t("passwordChangedSuccessfully"));
+      setPasswordForm({ current: "", new: "", confirm: "" });
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setPasswordSuccess(""), 3000);
+    } catch (error) {
+      setPasswordError(error.response?.data?.error?.message || error.response?.data?.message || t("passwordChangeFailed"));
+    }
   };
 
   const handleSaveSettings = () => {
@@ -272,21 +357,152 @@ export default function Settings() {
                     {t("enableAreaBasedVisualization")}
                   </label>
                 </div>
+                {zoneError && (
+                  <div className="error-message" style={{ color: 'red', marginBottom: '10px', padding: '10px', backgroundColor: '#ffebee', border: '1px solid #f44336', borderRadius: '4px' }}>
+                    {zoneError}
+                  </div>
+                )}
                 <div className="zone-list">
-                  {zones.map((zone) => (
-                    <div key={zone.id} className="zone-item">
-                      <label>
-                        <input
-                          type="checkbox"
-                          checked={zone.enabled}
-                          onChange={() => handleZoneToggle(zone.id)}
-                        />
-                        {zone.name}
-                      </label>
-                      <span className="zone-ip">{zone.ipRange}</span>
-                    </div>
-                  ))}
+                  {loadingZones ? (
+                    <div>Loading zones...</div>
+                  ) : zones.length === 0 ? (
+                    <div>No zones configured</div>
+                  ) : (
+                    zones.map((zone) => (
+                      <div key={zone._id} className="zone-item">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={zone.enabled}
+                            onChange={() => handleZoneToggle(zone._id)}
+                          />
+                          {zone.name}
+                        </label>
+                        <span className="zone-ip">{zone.ipRange}</span>
+                        <span className="zone-building">{zone.building}</span>
+                        <span className="zone-risk" style={{ 
+                          color: zone.riskLevel === 'Critical' ? '#d32f2f' : 
+                                 zone.riskLevel === 'High' ? '#f57c00' : 
+                                 zone.riskLevel === 'Medium' ? '#fbc02d' : '#388e3c'
+                        }}>
+                          {zone.riskLevel}
+                        </span>
+                        <button 
+                          onClick={() => handleDeleteZone(zone._id)}
+                          style={{ 
+                            marginLeft: '10px', 
+                            padding: '2px 8px', 
+                            backgroundColor: '#f44336', 
+                            color: 'white', 
+                            border: 'none', 
+                            borderRadius: '3px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))
+                  )}
                 </div>
+                <div style={{ marginTop: '15px' }}>
+                  <button 
+                    onClick={() => setShowAddZoneForm(!showAddZoneForm)}
+                    style={{ 
+                      padding: '8px 16px', 
+                      backgroundColor: '#2196f3', 
+                      color: 'white', 
+                      border: 'none', 
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {showAddZoneForm ? 'Cancel' : 'Add New Zone'}
+                  </button>
+                </div>
+                {showAddZoneForm && (
+                  <form onSubmit={handleAddZone} style={{ marginTop: '15px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                      <input
+                        type="text"
+                        placeholder="Zone Name"
+                        value={newZone.name}
+                        onChange={(e) => setNewZone({...newZone, name: e.target.value})}
+                        required
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: '10px' }}>
+                      <input
+                        type="text"
+                        placeholder="Building"
+                        value={newZone.building}
+                        onChange={(e) => setNewZone({...newZone, building: e.target.value})}
+                        required
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: '10px' }}>
+                      <input
+                        type="text"
+                        placeholder="Department"
+                        value={newZone.department}
+                        onChange={(e) => setNewZone({...newZone, department: e.target.value})}
+                        required
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: '10px' }}>
+                      <input
+                        type="text"
+                        placeholder="IP Range (e.g., 10.0.2.0/24)"
+                        value={newZone.ipRange}
+                        onChange={(e) => setNewZone({...newZone, ipRange: e.target.value})}
+                        required
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: '10px' }}>
+                      <select
+                        value={newZone.riskLevel}
+                        onChange={(e) => setNewZone({...newZone, riskLevel: e.target.value})}
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      >
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                      </select>
+                    </div>
+                    <div style={{ marginBottom: '10px' }}>
+                      <select
+                        value={newZone.zoneType}
+                        onChange={(e) => setNewZone({...newZone, zoneType: e.target.value})}
+                        style={{ width: '100%', padding: '8px', marginBottom: '5px' }}
+                      >
+                        <option value="Academic">Academic</option>
+                        <option value="Administrative">Administrative</option>
+                        <option value="Student Housing">Student Housing</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Public Access">Public Access</option>
+                        <option value="Research">Research</option>
+                      </select>
+                    </div>
+                    <button 
+                      type="submit"
+                      style={{ 
+                        padding: '8px 16px', 
+                        backgroundColor: '#4caf50', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Add Zone
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
 
@@ -297,6 +513,16 @@ export default function Settings() {
               </h3>
               <div className="settings-section">
                 <form onSubmit={handleSavePassword}>
+                  {passwordError && (
+                    <div className="error-message" style={{ color: 'red', marginBottom: '10px', padding: '10px', backgroundColor: '#ffebee', border: '1px solid #f44336', borderRadius: '4px' }}>
+                      {passwordError}
+                    </div>
+                  )}
+                  {passwordSuccess && (
+                    <div className="success-message" style={{ color: 'green', marginBottom: '10px', padding: '10px', backgroundColor: '#e8f5e8', border: '1px solid #4caf50', borderRadius: '4px' }}>
+                      {passwordSuccess}
+                    </div>
+                  )}
                   <div className="setting-row">
                     <label>{t("currentPassword")}</label>
                     <input
