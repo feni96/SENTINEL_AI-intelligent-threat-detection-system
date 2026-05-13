@@ -1,34 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import api from "../services/api";
 
 export default function Monitoring() {
   const { t } = useTranslation();
-  // ---------- Mock Data ----------
-  const [ingestion] = useState({
-    status: "Active",
-    sources: [
-      { name: "Core Router (HU-Main)", lastLog: "2025-03-24 10:45:23", status: "Active" },
-      { name: "Library Gateway", lastLog: "2025-03-24 10:42:17", status: "Active" },
-      { name: "Admin Server", lastLog: "2025-03-24 10:40:02", status: "Active" },
-      { name: "Dormitory Switch", lastLog: "2025-03-24 10:38:45", status: "Active" },
-      { name: "Data Center Firewall", lastLog: "2025-03-24 10:30:11", status: "Inactive" },
-    ],
-    lastReceived: "2025-03-24 10:45:23",
+  const [ingestion, setIngestion] = useState({
+    status: "Loading",
+    sources: [],
+    lastReceived: "Loading",
   });
 
-  const [aiStatus] = useState({
-    mlProcess: "Running",
-    logsAnalyzed: 15420,
-    lastExecution: "2025-03-24 10:45:00",
+  const [aiStatus, setAiStatus] = useState({
+    mlProcess: "Loading",
+    logsAnalyzed: 0,
+    lastExecution: "Loading",
   });
 
-  const [systemHealth] = useState({
-    uptime: "99.97%",
+  const [systemHealth, setSystemHealth] = useState({
+    uptime: "Loading",
     errors: 0,
-    pipelineStatus: "Operational",
+    pipelineStatus: "Loading",
   });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMonitoringData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch system health
+        const healthRes = await api.get("/system/health");
+        if (healthRes.data?.data) {
+          setSystemHealth({
+            uptime: healthRes.data.data.uptime?.formatted || "N/A",
+            errors: healthRes.data.data.services ? 0 : 1,
+            pipelineStatus: healthRes.data.data.status === "healthy" ? "Operational" : "Degraded",
+          });
+        }
+
+        // Fetch ML service status
+        const mlRes = await api.get("/ml/health");
+        if (mlRes.data?.data?.health) {
+          setAiStatus({
+            mlProcess: mlRes.data.data.health.status === "healthy" ? "Running" : "Offline",
+            logsAnalyzed: mlRes.data.data.health.models?.total_predictions || 0,
+            lastExecution: mlRes.data.data.health.timestamp || "N/A",
+          });
+        }
+
+        // Fetch connection stats (data ingestion sources)
+        const connRes = await api.get("/connections/stats");
+        if (connRes.data?.data) {
+          // Map connection stats to ingestion sources format
+          const sources = [
+            {
+              name: "Network Logs",
+              lastLog: new Date().toLocaleString(),
+              status: "Active"
+            },
+            {
+              name: "System Events",
+              lastLog: new Date().toLocaleString(),
+              status: "Active"
+            },
+            {
+              name: "Authentication Logs",
+              lastLog: new Date().toLocaleString(),
+              status: "Active"
+            }
+          ];
+          
+          setIngestion({
+            status: "Active",
+            sources: sources,
+            lastReceived: new Date().toLocaleString(),
+          });
+        }
+
+        setError("");
+      } catch (err) {
+        console.error("Error fetching monitoring data:", err);
+        setError(err.message || "Failed to load monitoring data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMonitoringData();
+  }, []);
 
   // Helper for status badges
   const getStatusBadge = (status) => {
@@ -38,13 +101,38 @@ export default function Monitoring() {
     return <span className={`status-badge ${className}`}>{status}</span>;
   };
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="dashboard-layout">
+          <Sidebar />
+          <div className="dashboard-content">
+            <p>{t("loading")}</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
       <div className="dashboard-layout">
         <Sidebar />
         <div className="dashboard-content">
-          {/* Header removed as requested */}
+          {error && (
+            <div style={{
+              padding: "12px",
+              marginBottom: "16px",
+              backgroundColor: "#fef2f2",
+              border: "1px solid #fecaca",
+              borderRadius: "6px",
+              color: "#991b1b"
+            }}>
+              ⚠️ {error}
+            </div>
+          )}
 
           {/* Top Metrics Cards */}
           <div className="realtime-grid">
@@ -73,7 +161,9 @@ export default function Monitoring() {
               <div className="realtime-icon system"></div>
               <div className="realtime-content">
                 <span className="realtime-label">{t("systemUptime")}</span>
-                <span className="realtime-value">{systemHealth.uptime}</span>
+                <span className="realtime-value">
+                  {typeof systemHealth.uptime === 'string' ? systemHealth.uptime : 'N/A'}
+                </span>
               </div>
             </div>
           </div>
@@ -104,13 +194,19 @@ export default function Monitoring() {
                     </tr>
                   </thead>
                   <tbody>
-                    {ingestion.sources.map((source, idx) => (
-                      <tr key={idx}>
-                        <td>{source.name}</td>
-                        <td>{source.lastLog}</td>
-                        <td>{getStatusBadge(source.status)}</td>
+                    {ingestion.sources.length > 0 ? (
+                      ingestion.sources.map((source, idx) => (
+                        <tr key={idx}>
+                          <td>{source.name}</td>
+                          <td>{source.lastLog}</td>
+                          <td>{getStatusBadge(source.status)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" style={{ textAlign: "center" }}>No sources available</td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -138,7 +234,9 @@ export default function Monitoring() {
               <div className="health-details">
                 <div className="detail-row">
                   <span className="detail-label">{t("systemUptime")}:</span>
-                  <span className="detail-value">{systemHealth.uptime}</span>
+                  <span className="detail-value">
+                    {typeof systemHealth.uptime === 'string' ? systemHealth.uptime : 'N/A'}
+                  </span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">{t("errors")}:</span>

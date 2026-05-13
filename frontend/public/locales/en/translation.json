@@ -530,5 +530,9 @@
   "areaBasedVisualizationDescription": "Maps threats to specific campus locations using IP-to-building mapping",
   "viewAllThreatsInZone": "View All Threats in Zone",
   "guestAccessNote": "Guest Access Notice",
-  "guestAccessDescription": "This is a limited guest view. For full access to threat intelligence and system controls, please sign in with administrator credentials."
+  "guestAccessDescription": "This is a limited guest view. For full access to threat intelligence and system controls, please sign in with administrator credentials.",
+  "loading": "Loading...",
+  "logs": "Logs",
+  "ml": "ML",
+  "analysis": "Analysis"
 }
