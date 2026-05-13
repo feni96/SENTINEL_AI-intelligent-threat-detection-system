@@ -1,60 +1,25 @@
 const { catchAsync, AppError } = require('../middleware/errorHandler');
+const AuditLog = require('../models/AuditLog');
 const winston = require('winston');
 
-// Get all audit logs with filtering and pagination
+// Get all audit logs with pagination
 const getAuditLogs = catchAsync(async (req, res) => {
   try {
     const {
       page = 1,
-      limit = 50,
-      dateFilter = 'all',
-      actionType = 'all',
-      admin = 'all',
-      search = ''
+      limit = 100
     } = req.query;
 
     const skip = (page - 1) * limit;
 
-    // Build query
-    let query = {};
-    
-    // Date filter
-    if (dateFilter === 'today') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      query.timestamp = { $gte: today };
-    } else if (dateFilter === '7days') {
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      query.timestamp = { $gte: sevenDaysAgo };
-    }
-
-    // Action type filter
-    if (actionType && actionType !== 'all') {
-      query.actionType = actionType;
-    }
-
-    // Admin filter
-    if (admin && admin !== 'all') {
-      query.admin = admin;
-    }
-
-    // Search filter
-    if (search) {
-      query.$or = [
-        { admin: { $regex: search, $options: 'i' } },
-        { target: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
-      ];
-    }
-
     // Get total count for pagination
-    const total = await AuditLog.countDocuments(query);
+    const total = await AuditLog.countDocuments();
     
-    // Get logs with pagination
-    const logs = await AuditLog.find(query)
+    // Get logs with pagination, sorted by newest first
+    const logs = await AuditLog.find()
       .sort({ timestamp: -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(parseInt(limit))
       .lean();
 
     res.status(200).json({
@@ -62,10 +27,10 @@ const getAuditLogs = catchAsync(async (req, res) => {
       data: {
         logs,
         pagination: {
-          current: page,
-          pageSize: limit,
+          current: parseInt(page),
+          pageSize: parseInt(limit),
           total,
-          pages: Math.ceil(total / limit)
+          pages: Math.ceil(total / parseInt(limit))
         }
       }
     });

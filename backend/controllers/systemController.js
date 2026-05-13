@@ -1,6 +1,7 @@
 const { catchAsync } = require('../middleware/errorHandler');
 const NetworkLog = require('../models/NetworkLog');
 const Threat = require('../models/Threat');
+const AuditLog = require('../models/AuditLog');
 
 // Track server start time
 const serverStartTime = Date.now();
@@ -187,6 +188,102 @@ const getConnectionStats = catchAsync(async (req, res) => {
 });
 
 /**
+ * Get logs analyzed count
+ * Returns count of network logs that have been analyzed
+ */
+const getLogsAnalyzed = catchAsync(async (req, res) => {
+  const userId = req.user._id;
+  const now = new Date();
+  const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  // Get count of analyzed logs in last 24 hours
+  const analyzedCount = await NetworkLog.countDocuments({
+    userId,
+    isAnalyzed: true,
+    timestamp: { $gte: last24Hours }
+  });
+
+  // Get total analyzed logs
+  const totalAnalyzed = await NetworkLog.countDocuments({
+    userId,
+    isAnalyzed: true
+  });
+
+  // Get total logs
+  const totalLogs = await NetworkLog.countDocuments({ userId });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      analyzedLast24h: analyzedCount,
+      totalAnalyzed,
+      totalLogs,
+      analysisPercentage: totalLogs > 0 ? Math.round((totalAnalyzed / totalLogs) * 100) : 0,
+      timestamp: now.toISOString()
+    }
+  });
+});
+
+/**
+ * Get audit logs count and summary
+ * Returns count of audit logs and recent activity
+ */
+const getAuditLogsSummary = catchAsync(async (req, res) => {
+  const userId = req.user._id;
+  const now = new Date();
+  const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  // Get count of audit logs in last 24 hours
+  const auditLogsLast24h = await AuditLog.countDocuments({
+    userId,
+    timestamp: { $gte: last24Hours }
+  });
+
+  // Get total audit logs
+  const totalAuditLogs = await AuditLog.countDocuments({ userId });
+
+  // Get audit logs by action type
+  const auditLogsByType = await AuditLog.aggregate([
+    {
+      $match: { userId }
+    },
+    {
+      $group: {
+        _id: '$actionType',
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort: { count: -1 }
+    }
+  ]);
+
+  // Get audit logs by status
+  const auditLogsByStatus = await AuditLog.aggregate([
+    {
+      $match: { userId }
+    },
+    {
+      $group: {
+        _id: '$status',
+        count: { $sum: 1 }
+      }
+    }
+  ]);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      auditLogsLast24h,
+      totalAuditLogs,
+      byActionType: auditLogsByType,
+      byStatus: auditLogsByStatus,
+      timestamp: now.toISOString()
+    }
+  });
+});
+
+/**
  * Format uptime in human-readable format
  */
 function formatUptime(seconds) {
@@ -207,5 +304,7 @@ function formatUptime(seconds) {
 module.exports = {
   getSystemHealth,
   getTrafficSummary,
-  getConnectionStats
+  getConnectionStats,
+  getLogsAnalyzed,
+  getAuditLogsSummary
 };

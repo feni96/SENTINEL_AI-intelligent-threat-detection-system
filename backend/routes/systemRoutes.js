@@ -4,7 +4,9 @@ const { authenticateToken } = require('../middleware/authMiddleware');
 const {
   getSystemHealth,
   getTrafficSummary,
-  getConnectionStats
+  getConnectionStats,
+  getLogsAnalyzed,
+  getAuditLogsSummary
 } = require('../controllers/systemController');
 
 /**
@@ -26,5 +28,15 @@ router.get('/traffic/summary', authenticateToken, getTrafficSummary);
 // @desc    Get real-time connection statistics
 // @access  Private
 router.get('/connections/stats', authenticateToken, getConnectionStats);
+
+// @route   GET /api/system/logs-analyzed
+// @desc    Get count of analyzed logs
+// @access  Private
+router.get('/logs-analyzed', authenticateToken, getLogsAnalyzed);
+
+// @route   GET /api/system/audit-logs-summary
+// @desc    Get audit logs summary and statistics
+// @access  Private
+router.get('/audit-logs-summary', authenticateToken, getAuditLogsSummary);
 
 module.exports = router;

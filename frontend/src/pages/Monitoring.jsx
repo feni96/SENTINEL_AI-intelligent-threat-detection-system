@@ -42,13 +42,13 @@ export default function Monitoring() {
           });
         }
 
-        // Fetch ML service status
-        const mlRes = await api.get("/ml/health");
-        if (mlRes.data?.data?.health) {
+        // Fetch logs analyzed count
+        const logsRes = await api.get("/system/logs-analyzed");
+        if (logsRes.data?.data) {
           setAiStatus({
-            mlProcess: mlRes.data.data.health.status === "healthy" ? "Running" : "Offline",
-            logsAnalyzed: mlRes.data.data.health.models?.total_predictions || 0,
-            lastExecution: mlRes.data.data.health.timestamp || "N/A",
+            mlProcess: "Running",
+            logsAnalyzed: logsRes.data.data.totalAnalyzed || 0,
+            lastExecution: logsRes.data.data.timestamp || "N/A",
           });
         }
 
