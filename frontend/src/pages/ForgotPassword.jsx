@@ -18,9 +18,13 @@ export default function ForgotPassword() {
 
     try {
       const response = await api.post('/auth/forgot-password', { email });
-      setMessage(response.data?.message || 'Reset link sent');
+      setMessage(response.data?.message || 'Reset link sent to your email');
+      setEmail(''); // Clear the email field on success
     } catch (err) {
-      setError(err.response?.data?.error?.message || err.response?.data?.message || 'Something went wrong.');
+      const errorMessage = err.response?.data?.error?.message || 
+                          err.response?.data?.message || 
+                          'Something went wrong. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -31,6 +35,9 @@ export default function ForgotPassword() {
       <div className="auth-card">
         <h1>{t('forgotPassword')}</h1>
         <p>{t('forgotPasswordInstructions')}</p>
+        <div className="info-message" style={{ backgroundColor: '#e3f2fd', border: '1px solid #90caf9', padding: '10px', borderRadius: '4px', marginBottom: '15px', fontSize: '14px' }}>
+          <strong>Note:</strong> Only the administrator email (fenetmahdi@gmail.com) can reset the password.
+        </div>
         {message && <div className="success-message">{message}</div>}
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>

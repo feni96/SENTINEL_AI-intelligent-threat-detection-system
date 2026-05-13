@@ -534,5 +534,18 @@
   "loading": "Loading...",
   "logs": "Logs",
   "ml": "ML",
-  "analysis": "Analysis"
+  "analysis": "Analysis",
+  "forgotPasswordInstructions": "Enter your email address and we'll send you a link to reset your password.",
+  "sending": "Sending...",
+  "sendResetLink": "Send Reset Link",
+  "invalidResetLink": "Invalid or Expired Reset Link",
+  "requestNewLink": "Request a new reset link",
+  "resetPassword": "Reset Password",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confirm New Password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordMinLength": "Password must be at least 8 characters",
+  "passwordResetSuccess": "Password reset successfully! Redirecting to login...",
+  "resetFailed": "Failed to reset password. Please try again.",
+  "resetting": "Resetting..."
 }

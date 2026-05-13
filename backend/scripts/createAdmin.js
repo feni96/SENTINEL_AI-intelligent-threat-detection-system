@@ -11,13 +11,17 @@ async function createAdminUser() {
     // Check if admin user already exists
     const existingAdmin = await User.findOne({ 
       $or: [
-        { email: 'admin@sentinel-ai.local' },
+        { email: 'fenetmahdi@gmail.com' },
         { username: 'admin' }
       ]
     });
     
     if (existingAdmin) {
       console.log('Admin user already exists');
+      console.log('📋 Existing Admin:');
+      console.log(`   Email: ${existingAdmin.email}`);
+      console.log(`   Username: ${existingAdmin.username}`);
+      console.log(`   Role: ${existingAdmin.role}`);
       process.exit(0);
     }
     
@@ -26,7 +30,7 @@ async function createAdminUser() {
     
     const adminUser = new User({
       username: 'admin',
-      email: 'admin@sentinel-ai.local',
+      email: 'fenetmahdi@gmail.com',
       password: hashedPassword,
       role: 'admin',
       department: 'Security Operations',
@@ -37,9 +41,15 @@ async function createAdminUser() {
     await adminUser.save();
     console.log('✅ Admin user created successfully');
     console.log('📋 Login Credentials:');
-    console.log('   Email: admin@sentinel-ai.local');
+    console.log('   Email: fenetmahdi@gmail.com');
     console.log('   Password: Admin123!');
     console.log('   Role: admin');
+    console.log('\n📧 Email Configuration:');
+    console.log('   To enable password reset emails, configure your .env file:');
+    console.log('   - EMAIL_SERVICE=gmail');
+    console.log('   - EMAIL_USER=fenetmahdi@gmail.com');
+    console.log('   - EMAIL_PASSWORD=<your-app-password>');
+    console.log('\n   See EMAIL_SETUP_GUIDE.md for detailed instructions');
     
     await mongoose.disconnect();
     process.exit(0);

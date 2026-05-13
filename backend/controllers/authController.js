@@ -5,6 +5,7 @@ const User = require('../models/User');
 const { catchAsync, AppError } = require('../middleware/errorHandler');
 const winston = require('winston');
 const { logAdminAction } = require('../middleware/authMiddleware');
+const emailService = require('../services/emailService');
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -31,7 +32,7 @@ const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   // Hardcoded admin credentials for single-admin system
-  const ADMIN_EMAIL = 'admin@sentinel-ai.local';
+  const ADMIN_EMAIL = 'fenetmahdi@gmail.com';
   const ADMIN_USERNAME = 'admin';
 
   // Validate against hardcoded admin credentials
@@ -204,14 +205,11 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
   // For single admin system, only allow the admin email
-  const ADMIN_EMAIL = 'admin@sentinel-ai.local';
+  const ADMIN_EMAIL = 'fenetmahdi@gmail.com';
   
   if (email !== ADMIN_EMAIL) {
-    // Don't reveal if email exists or not for security
-    return res.status(200).json({
-      success: true,
-      message: 'If an account with this email exists, a reset link has been sent.'
-    });
+    // Return error for non-admin emails
+    return next(new AppError('Only the admin email can reset password. Please contact system administrator.', 403));
   }
 
   // Generate reset token
@@ -224,20 +222,28 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   // Update user with reset token
   const user = await User.findOne({ email: ADMIN_EMAIL });
   if (!user) {
-    return res.status(200).json({
-      success: true,
-      message: 'If an account with this email exists, a reset link has been sent.'
-    });
+    return next(new AppError('Admin account not found. Please contact system administrator.', 404));
   }
 
   user.passwordResetToken = resetTokenHash;
   user.passwordResetExpires = resetTokenExpires;
   await user.save();
 
-  // In a real system, you would send an email here
-  // For now, we'll return the token in development mode
+  // Generate reset URL
   const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
   
+  // Send password reset email
+  try {
+    const emailResult = await emailService.sendPasswordResetEmail(ADMIN_EMAIL, resetToken, resetUrl);
+    winston.info(`Password reset email sent to ${ADMIN_EMAIL}`, {
+      messageId: emailResult.messageId
+    });
+  } catch (emailError) {
+    winston.error(`Failed to send password reset email to ${ADMIN_EMAIL}:`, emailError);
+    // Don't fail the request if email fails - user can still use the token
+    // In production, you might want to handle this differently
+  }
+
   winston.info(`Password reset requested for admin: ${ADMIN_EMAIL}`);
 
   res.status(200).json({
